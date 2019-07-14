@@ -28,7 +28,8 @@ public interface CommunityService
 
 	ArrayList<Community> SelectManagebulletinList();
 
-	int CommunityPostInsert(CommunityPost cp);
+	//게시파 생성 메소드 
+	int CommunityPostInsert(CommunityPost cp, CommunityAttachment ca);
 
 	//게시판 수정폼 메소드
 	Community communityUpdateForm(int bno);
@@ -69,6 +70,23 @@ public interface CommunityService
 	int commentListcount(int contentno);
 
 	ArrayList<HashMap<String, java.lang.Object>> selectcommentList(PageInfo pi, Integer contentno);
+
+	 CommunityAttachment AttachmentSelect(int contentNO);
+
+	//파일 다운로드 메소드  
+	CommunityAttachment communityDownloadFile(int contentNO);
+
+	//게시글  카운터
+	int selectCommunityPostlistCount(int bno);
+    //게시글 페이징
+	/*
+	 * ArrayList<HashMap<String, java.lang.Object>> CommunityPostpageList(PageInfo
+	 * pi);
+	 */
+
+	/* ArrayList<CommunityPost> CommunityPostPageList(PageInfo pi); */
+
+	ArrayList<HashMap<String, java.lang.Object>> communityPostList(PageInfo pi, int bno); 
 
 	
 

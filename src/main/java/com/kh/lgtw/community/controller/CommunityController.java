@@ -1,11 +1,14 @@
 package com.kh.lgtw.community.controller;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -139,27 +142,38 @@ public class CommunityController {
 
 		System.out.println(filePath);
 
-		int result = cs.CommunityPostInsert(cp);
 
 		String originFileName = files.getOriginalFilename();
 		System.out.println("originFileName값:" + originFileName);
 		String ext = originFileName.substring(originFileName.lastIndexOf("."));
 		System.out.println("ext값:" + ext);
-		String changeName = CommonUtils.getRandomString();
-		System.out.println("changeName:" + changeName);
+		String changeName = CommonUtils.getRandomString()+ext;
+		System.out.println("changeName:" + changeName); 
+		
+		
+		
+		
+		
 
 		ca.setOriginName(originFileName);
 		ca.setChangName(changeName);
 		ca.setFilePath(filePath);
 		ca.setFileType(ext);
-		ca.setPsno(cp.getContentNO());
+		
 
 		System.out.println("ca값 :" + ca);
 
 		HashMap<String, Object> file = new HashMap<String, Object>();
+		
+		int result = cs.CommunityPostInsert(cp ,ca);
+		
+		
+		
+		
+		
 
 		try {
-			files.transferTo(new File(filePath + "\\" + changeName + ext));
+			files.transferTo(new File(filePath + "\\" + changeName ));
 			return "redirect:communityList.co";
 		} catch (Exception e) {
 			new File(filePath + "\\" + changeName + ext).delete();
@@ -170,13 +184,44 @@ public class CommunityController {
 
 	// 게시글 조회용 매소드
 	@RequestMapping("communityPostList.co")
-	public String CommunityPostList(Model model, int bno) {
+	public String CommunityPostList(Model model, HttpServletRequest request) {
 
+		
+		/*
+		 * int currentPage = 1 ;
+		 * 
+		 * if()
+		 */
+		 
+	   //게시글 조회 용 bno 
+		int bno = Integer.parseInt(request.getParameter("bno"));
+        //페이징 변수
+		int currentPage = 1; 
+		int listCount = 0;
+		
+		if(request.getParameter("currentPage") != null) {
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
+		listCount = cs.selectCommunityPostlistCount(bno);
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+		/* ArrayList<CommunityPost> list = cs.CommunityPostList(bno); */
+		
+		
+		/*
+		 * ArrayList<HashMap<String, Object>> pageList = cs.CommunityPostpageList(pi);
+		 */
+	    
+		ArrayList<HashMap<String, Object>> list  = cs.communityPostList(pi,bno);
+		/* ArrayList <CommunityPost> pageList = cs.CommunityPostPageList(pi); */
+		
+		
+		
+		/* model.addAttribute("list", list); */
+			
+		
+		System.out.println("currentPage :" +currentPage);
+		System.out.println("listcount 값:" +listCount);
 		System.out.println("bno 값:" + bno);
-
-		ArrayList<CommunityPost> list = cs.CommunityPostList(bno);
-		model.addAttribute("list", list);
-
 		System.out.println("CommunityPost=" + list);
 
 		return "community/communityPostList";
@@ -189,8 +234,14 @@ public class CommunityController {
 		System.out.println("게시글 상세  contentNO 값:" + contentNO);
 		ArrayList<CommunityPost> list = cs.CommunityPostDetails(contentNO);
 		ArrayList<CommunityComment> commentlist = cs.commentlist(contentNO);
+		CommunityAttachment ca = cs.AttachmentSelect(contentNO);  
+		
+		System.out.println("ca값:" +ca);
+		
+		
 		model.addAttribute("list", list);
 		model.addAttribute("commentlist", commentlist);
+		model.addAttribute("ca", ca);
 
 		System.out.println("comentComment" + commentlist);
 		return "community/communityPostDetails";
@@ -527,5 +578,64 @@ public class CommunityController {
 	
 	
 	
-	}
+	} 
+	
+	//파일 다운로드 
+	  @RequestMapping("communityDownloadFile.co")
+	  public void communityDownloadFile ( int contentNO , HttpServletRequest request, HttpServletResponse response) 
+	  {
+		  
+	  System.out.println("내가 다운로드다");
+	  System.out.println(contentNO);
+	  
+	  CommunityAttachment ca = cs.communityDownloadFile(contentNO);  
+	  
+	  System.out.println("ca 값:"+ ca);  
+	  
+	  BufferedInputStream buf = null;
+	  
+	  ServletOutputStream downOut = null;
+	  
+	  try {
+		  	 downOut =response.getOutputStream();
+		  
+		  	 File downFile = new File(ca.getFilePath()+"/"+ca.getChangName()); 
+	  
+
+	         response.setContentType("text/plain; charset=UTF-8");
+	         
+	         response.setHeader("Content-Disposition", "contract; filename=\"" + 
+	                  new String(ca.getOriginName().getBytes("UTF-8"), "ISO-8859-1") + "\"");
+	         
+
+	         response.setContentLength((int)downFile.length());
+	         
+	         FileInputStream fin = new FileInputStream(downFile);
+	         
+	         buf = new BufferedInputStream(fin);
+
+	         int readBytes = 0;
+	         
+
+	         while((readBytes = buf.read()) != -1) {
+	            downOut.write(readBytes);
+	         
+	         }
+	         downOut.close();
+	         buf.close();
+	  		
+	   	} catch (IOException e) {
+	         e.printStackTrace();
+	   		}
+	         
+	  
+	  
+	  
+	  
+	  }
+	 
+	
+	
+	
+	
 }

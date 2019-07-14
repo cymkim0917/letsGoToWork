@@ -36,8 +36,8 @@
 			
 			<div class="content" >
 			
-				<div id="searcArea" align="center">
-			   	<label>검색조건</label>
+				<!-- <div id="searcArea" align="center"> -->
+			   	<!-- <label>검색조건</label>
 			   	<select id="searchCondition" name="searchCondition">
 			   	   
 			   	     <option value="title">게시판 이름</option>
@@ -64,7 +64,7 @@
 			  
 			  
 			  </script>
-						
+						 -->
 				
 				
 			

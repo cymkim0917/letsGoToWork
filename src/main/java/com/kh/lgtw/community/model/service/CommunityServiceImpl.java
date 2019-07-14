@@ -79,12 +79,7 @@ public class CommunityServiceImpl  implements CommunityService{
 	}
 
 
-	//게시글 생성 메소드
-	@Override
-	public int CommunityPostInsert(CommunityPost cp) {
-		// TODO Auto-generated method stub
-		return cd.CommunityPostInsert(sqlSession ,cp);
-	}
+	
 
 
 	//게시판 수정폼 메소드
@@ -208,6 +203,70 @@ public class CommunityServiceImpl  implements CommunityService{
 		return cd.selectcommentList(pi,contentno,sqlSession );
 	}
 
+
+	//게시글 조회 
+	@Override
+	public int CommunityPostInsert(CommunityPost cp, CommunityAttachment ca) {
+		
+		
+		return cd.CommunityPostInsert(sqlSession,cp,ca);
+	}
+
+
+
+	@Override
+	public CommunityAttachment AttachmentSelect(int contentNO) {
+		// TODO Auto-generated method stub
+		return cd.AttachmentSelect(sqlSession,contentNO);
+	}
+
+
+    //파일 다운로드
+	@Override
+	public CommunityAttachment communityDownloadFile(int contentNO) {
+		// TODO Auto-generated method stub
+		return cd.CommunityAttachment(sqlSession,contentNO);
+	}
+
+
+
+	@Override
+	public int selectCommunityPostlistCount(int bno) {
+		// TODO Auto-generated method stub
+		return cd.selectCommunityPostlistCount(sqlSession,bno);
+	}
+
+
+	/*
+	 * @Override public ArrayList<CommunityPost> CommunityPostPageList(PageInfo pi)
+	 * { // TODO Auto-generated method stub return
+	 * cd.CommunityPostPageList(sqlSession,pi); }
+	 */
+
+
+
+	@Override
+	public ArrayList<HashMap<String, java.lang.Object>> communityPostList(PageInfo pi, int bno) {
+		// TODO Auto-generated method stub
+		return  cd.communityPostList(sqlSession,pi,bno);
+	}
+
+
+	/*
+	 * //게시글 페이징
+	 * 
+	 * @Override public ArrayList<HashMap<String, java.lang.Object>>
+	 * CommunityPostpageList(PageInfo pi) { // TODO Auto-generated method stub
+	 * return cd.CommunityPostpageList(sqlSession ,pi); }
+	 */
+
+	/*
+	 * // 게시글 첨뷰파일 조회
+	 * 
+	 * @Override public CommunityAttachment AttachmentSelect(int contentNO) { //
+	 * TODO Auto-generated method stub return
+	 * cd.AttachmentSelect(sqlSession,contentNO); }
+	 */
 
 
 
