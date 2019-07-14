@@ -16,6 +16,7 @@ import com.kh.lgtw.common.model.vo.Attachment;
 import com.kh.lgtw.employee.model.exception.LoginException;
 import com.kh.lgtw.employee.model.util.ExcelRead;
 import com.kh.lgtw.employee.model.util.ExcelReadOption;
+import com.kh.lgtw.employee.model.vo.Attendance;
 import com.kh.lgtw.employee.model.vo.DeptHistory;
 import com.kh.lgtw.employee.model.vo.DeptVo;
 import com.kh.lgtw.employee.model.vo.Employee;
@@ -277,61 +278,16 @@ public class EmployeeDaoImpl implements EmployeeDao{
 	}
 
 	@Override
-	public int checkEmpWork(SqlSession sqlSession, int empNo) {
-		return sqlSession.selectOne("Employee.checkEmpWork",empNo);
+	public int checkEmpWork(SqlSession sqlSession, Attendance attend) {
+		return sqlSession.selectOne("Employee.checkEmpWork",attend);
+	}
+
+	@Override
+	public int insertEmpWork(SqlSession sqlSession, Attendance attend) {
+		return sqlSession.insert("Employee.insertEmpWork", attend);
 	}
 
 
-
-
-//	@Override
-//	public Employee loginEmpl(Employee employee, SqlSession sqlSession) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public ArrayList<Employee> selectEmpList(SqlSession sqlSession) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public Employee selectOneEmp(SqlSession sqlSession, Employee employee) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public int updateOneEmp(SqlSession sqlSession, Employee loginUser, Employee employee) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public ArrayList<Employee> searchEmp(SqlSession sqlSession, Employee employee) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public int reqHoliday(SqlSession sqlSession, Employee loginUser) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public Attendace selectAttend(SqlSession sqlSession, Employee loginUser) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public int insertEmp(SqlSession sqlSession, Employee employee) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
 //	@Override
 //	public int insertDuty(SqlSession sqlSession) {
 //		// TODO Auto-generated method stub

@@ -5,10 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -49,6 +49,7 @@ import com.kh.lgtw.common.Pagination;
 import com.kh.lgtw.common.model.vo.Attachment;
 import com.kh.lgtw.employee.model.exception.LoginException;
 import com.kh.lgtw.employee.model.service.EmployeeService;
+import com.kh.lgtw.employee.model.vo.Attendance;
 import com.kh.lgtw.employee.model.vo.DeptVo;
 import com.kh.lgtw.employee.model.vo.Employee;
 import com.kh.lgtw.employee.model.vo.EmployeeResult;
@@ -501,11 +502,42 @@ public class EmployeeController {
 			
 			return "redirect:showEmployeeAdmin.em";
 		}
-		
 		//휴직자 추가
-		@RequestMapping("updateLeave.em")
-		public String updateLeave(Employee employee, Model model) {
-			//int result = emplService.updateLeave(employee);
+		@RequestMapping(value="/employee/insertLeaveEmp", produces="application/text; charset=utf8")
+		@ResponseBody
+		public String insertLeaveEmp(@RequestBody Map<String, Object> map) {
+			
+			System.out.println(map.get("empArr"));
+			
+			ArrayList<Object> empList = (ArrayList)map.get("empArr");
+			ArrayList<Object> reasonList = (ArrayList)map.get("reason");
+			ArrayList<Employee> list = new ArrayList<Employee>();
+			Employee emp = null;
+			
+			System.out.println(empList.size());
+			
+			int[] empNo = new int[empList.size()];
+			String[] offWorkReason = new String[reasonList.size()];
+			
+			
+			for(int i =0; i<empList.size(); i++) {
+				empNo[i] = Integer.parseInt((String)empList.get(i));
+				offWorkReason[i] = (String)reasonList.get(i);
+			}
+			
+			for(int i=0; i<empNo.length; i++) {
+				emp = new Employee();
+				emp.setEmpNo(empNo[i]);
+				emp.setLeaveReason(offWorkReason[i]);
+				list.add(emp);
+			}
+			
+			
+			
+			for(int i=0; i<list.size(); i++) {
+				System.out.println(list.get(i));
+			}
+			
 			return "";
 		}
 		
@@ -553,43 +585,108 @@ public class EmployeeController {
 		public String goToWork(@RequestBody Map<String, Object> map) throws ParseException {
 			System.out.println("넘어가니~"+map.get("workArr"));
 			ArrayList<Object> info = (ArrayList)map.get("workArr");
-			String status = null;
+			String status = "";
+			
+			Attendance attend = new Attendance();
 			
 			int empNo = Integer.parseInt(info.get(0).toString());
 			String workTime = info.get(1).toString();
-			long nowTime = Long.parseLong(info.get(2).toString());
+			String today = info.get(2).toString();
 			
-			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss",Locale.KOREA);
+			String[] timeArr = workTime.split(":");
 			
-			Date d1 = sdf.parse("09:00:00");
-			Date d2 = sdf.parse("18:00:00");
-			
-			System.out.println("출근시간"+d1);
-			System.out.println("퇴근시간"+d2);
-			
-			System.out.println(nowTime);
+			Date sysdate = Date.valueOf(today);
 			
 			
+			int[] lateCheck = new int[2];
 			
-		/* int[] lateCheck= */
+			for(int i = 0; i<timeArr.length; i++) {
+				lateCheck[i]=Integer.parseInt(timeArr[i]);
+			}
+			
+			System.out.println(lateCheck[0]+1);
+			System.out.println(lateCheck[1]+1);
+			
+			attend.setEmpNo(empNo);
+			attend.setStartTime(workTime);
+			attend.setAttendanceDate(sysdate);
 			
 			
 			System.out.println(empNo+5);
 			System.out.println("우어크 타임:"+workTime);
 			
-			//int checkWork = empService.checkEmpWork(empNo);
+			int checkWork = empService.checkEmpWork(attend);
 			
-//			if(checkWork==0) {
-//				//int work = empService.insertEmpWork(empNo,workTime);
-//			}else {
-//				status="출근은 아까 찍었습니다";
-//			}
-			
+			if(checkWork==0) {
+				
+				int work = empService.insertEmpWork(attend);
+				if(lateCheck[0]>=9 && lateCheck[1]>0) {
+					status="지각입니다.";
+					System.out.println("지각");
+				}else {
+					status="노 지각입니다.";
+					System.out.println("노지각");
+				}
+			}else {
+				status="이미 처리되었습니다.";
+				System.out.println("이미처리");
+			}
 			
 			
 			return status;
 		}
 		
+		@RequestMapping(value="/employee/offWork",produces="application/text; charset=utf8")
+		@ResponseBody
+		public String offWork(@RequestBody Map<String, Object> map) throws ParseException {
+			System.out.println("넘어가니~"+map.get("workArr"));
+			ArrayList<Object> info = (ArrayList)map.get("workArr");
+			String status = "";
+			
+			Attendance attend = new Attendance();
+			
+			int empNo = Integer.parseInt(info.get(0).toString());
+			String workTime = info.get(1).toString();
+			String today = info.get(2).toString();
+			
+			String[] timeArr = workTime.split(":");
+			
+			Date sysdate = Date.valueOf(today);
+			
+			
+			int[] lateCheck = new int[2];
+			
+			for(int i = 0; i<timeArr.length; i++) {
+				lateCheck[i]=Integer.parseInt(timeArr[i]);
+			}
+			
+			System.out.println(lateCheck[0]+1);
+			System.out.println(lateCheck[1]+1);
+			
+			attend.setEmpNo(empNo);
+			attend.setEndTime(workTime);
+			attend.setAttendanceDate(sysdate);
+			
+			int checkWork = empService.checkEmpWork(attend);
+			
+			if(checkWork==1) {
+				
+				int work = empService.insertEmpWork(attend);
+				if(lateCheck[0]>=9 && lateCheck[1]>0) {
+					status="지각입니다.";
+					System.out.println("지각");
+				}else {
+					status="노 지각입니다.";
+					System.out.println("노지각");
+				}
+			}else {
+				status="이미 처리되었습니다.";
+				System.out.println("이미처리");
+			}
+			
+			
+			return status;
+		}
 		
 		
 	// ------------------------조직도--------------------------

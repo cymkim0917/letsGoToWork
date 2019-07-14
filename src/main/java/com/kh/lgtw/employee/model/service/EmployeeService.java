@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.kh.lgtw.approval.model.vo.PageInfo;
 import com.kh.lgtw.common.model.vo.Attachment;
 import com.kh.lgtw.employee.model.exception.LoginException;
+import com.kh.lgtw.employee.model.vo.Attendance;
 import com.kh.lgtw.employee.model.vo.DeptVo;
 import com.kh.lgtw.employee.model.vo.Employee;
 import com.kh.lgtw.employee.model.vo.EmployeeResult;
@@ -82,7 +83,9 @@ public interface EmployeeService {
 
 	ArrayList<EmployeeResult> selectEmpList(PageInfo pi);
 
-	int checkEmpWork(int empNo);
+	int checkEmpWork(Attendance attend);
+
+	int insertEmpWork(Attendance attend);
 
 
 

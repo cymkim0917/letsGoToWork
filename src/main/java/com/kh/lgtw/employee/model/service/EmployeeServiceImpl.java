@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.session.SqlSession;
@@ -32,6 +31,7 @@ import com.kh.lgtw.approval.model.vo.PageInfo;
 import com.kh.lgtw.common.model.vo.Attachment;
 import com.kh.lgtw.employee.model.dao.EmployeeDao;
 import com.kh.lgtw.employee.model.exception.LoginException;
+import com.kh.lgtw.employee.model.vo.Attendance;
 import com.kh.lgtw.employee.model.vo.DeptHistory;
 import com.kh.lgtw.employee.model.vo.DeptVo;
 import com.kh.lgtw.employee.model.vo.Employee;
@@ -573,8 +573,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public int checkEmpWork(int empNo) {
-		return empDao.checkEmpWork(sqlSession, empNo);
+	public int checkEmpWork(Attendance attend) {
+		return empDao.checkEmpWork(sqlSession, attend);
+	}
+
+	@Override
+	public int insertEmpWork(Attendance attend) {
+		
+		return empDao.insertEmpWork(sqlSession, attend);
 	}
 
 	

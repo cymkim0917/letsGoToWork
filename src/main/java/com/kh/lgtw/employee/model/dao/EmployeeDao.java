@@ -11,6 +11,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import com.kh.lgtw.approval.model.vo.PageInfo;
 import com.kh.lgtw.common.model.vo.Attachment;
 import com.kh.lgtw.employee.model.exception.LoginException;
+import com.kh.lgtw.employee.model.vo.Attendance;
 import com.kh.lgtw.employee.model.vo.DeptHistory;
 import com.kh.lgtw.employee.model.vo.DeptVo;
 import com.kh.lgtw.employee.model.vo.Employee;
@@ -89,7 +90,9 @@ public interface EmployeeDao{
 
 	ArrayList<EmployeeResult> selectEmpList(SqlSession sqlSession, PageInfo pi);
 
-	int checkEmpWork(SqlSession sqlSession, int empNo);
+	int checkEmpWork(SqlSession sqlSession, Attendance attend);
+
+	int insertEmpWork(SqlSession sqlSession, Attendance attend);
 
 
 

@@ -35,6 +35,7 @@
 	.cancle{
 		color:skyblue;
 	}
+	
 </style>
 
 </head>
@@ -53,7 +54,7 @@
 					<button id="searchBtn">검색</button>
 				</div>
 				<div>
-					<a href="#" onclick="showModal()">관리자 추가</a> &nbsp;&nbsp; <a href="#" onclick="deleteManager();">관리자 삭제</a> 
+					<a href="#" onclick="showModal()">휴직자 추가</a> &nbsp;&nbsp; <a href="#" onclick="deleteManager();">휴직자 삭제</a> 
 				</div>
 				<br>
 				<form action="insertEmpQuick.em" method="post">
@@ -154,6 +155,7 @@
 						</c:if>
 					</div> --%>
 			</div>
+			<!-- 모달 -->
 			<button type="button" class="btn btn-info btn-lg modalBtn" data-toggle="modal" data-target="#myModal" onclick="selectEmp();" style="display:none">Open Modal</button>
 			<div id="myModal" class="modal fade" role="dialog">
 					  <div class="modal-dialog">			
@@ -378,29 +380,31 @@
 		
 	});
 	
-	//관리자 추가
+	//휴직자 추가
 	function insertApprovalMng(){
 		var empArr = new Array();
-		
+		var reason = new Array();
 		$(".circleList").children().each(function(){
 			empArr.push($(this).val());
+			reason.push(prompt($(this).html().replace(/<(\/label|label)([^>]*)>/gi,"")+'휴직기간과 사유를 입력하세요(휴직기간/휴직사유)'));
 		});
-		
+			
 		var object = {
-				empArr:empArr
+				empArr:empArr,
+				reason:reason
 		}
 		
 		$.ajax({
-			url:"${contextPath}/approval/insertApprovalMng",
+			url:"${contextPath}/employee/insertLeaveEmp",
 			type:"post",
 		    contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(object),
 			success:function(data){
-				alert(data + "명의 관리자가 추가되었습니다.");
+				alert(data + "휴직자가 추가되었습니다.");
 				window.location.reload();
 			},
 			error:function(data){
-				alert("뭐지");
+				alert("실패");
 			}
 		});
 	}
