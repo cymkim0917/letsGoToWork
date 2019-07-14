@@ -122,27 +122,13 @@
 			<%-- <jsp:forward page="index.jsp"/> --%> 
 			<div class="page">
 				<button id="gotoWork" class="btn btn-primary btn-lg" onclick="goToWork();">출근합시다</button>
-			  	<button id="dontWork" class="fun-btn">퇴근합시다</button>
+			  	<button id="dontWork" class="fun-btn" onclick="offWork();">퇴근합시다</button>
 			</div>
 			
 		</c:if>		
 	</section>
 	
 	<script>
-		$('.fun-btn').on('click', function(event) {
-		  $(this).toggleClass('start-fun');
-		  var $page = $('.page');
-		  $page.toggleClass('color-bg-start')
-		    .toggleClass('bg-animate-color');
-
-		  //change text when when button is clicked
-
-		  $(this).hasClass('start-fun') ?
-		    $(this).text('stop the fun') :
-		    $(this).text('start the fun');
-
-		});
-		
 		var xmlHttp;
 	     
 		function srvTime(){
@@ -170,13 +156,19 @@
 	    	  var empNo = ${loginEmp.empNo};
 	    	  var hours = date.getHours();
 	    	  var minutes = date.getMinutes();
-	    	  var time=date.getTime();
-	    	  console.log(time);
-	    	  console.log(date);
-	    	  console.log(hours);
-	    	  console.log(minutes);
-	    	  console.log("사번"+empNo);
-	    	  console.log(hours+":"+minutes);
+	    	  var year = date.getFullYear();
+	    	    var month = date.getMonth()+1
+	    	    var day = date.getDate();
+	    	    if(month < 10){
+	    	        month = "0"+month;
+	    	    }
+	    	    if(day < 10){
+	    	        day = "0"+day;
+	    	    }
+	    	 
+	    	    var today = year+"-"+month+"-"+day;
+	    	    
+	    	    console.log(today)
 	    	  
 	    	  var workTime = hours+":"+minutes;
 	    	  
@@ -184,7 +176,7 @@
 	    	  
 	    	  workArr.push(empNo);
 	    	  workArr.push(workTime);
-	    	  workArr.push(date);
+	    	  workArr.push(today);
 	    	  
 	    	  var object = {
 	    			  workArr:workArr
@@ -195,21 +187,50 @@
 	    		  type:"post",
 	    		  contentType: 'application/json; charset=utf-8',
 	    		  data:JSON.stringify(object),
-	    		  succes:function(data){
+	    		  success:function(data){
 	    			  console.log("성공");
+	    			  alert(data);
 	    			  window.location.reload();
 	    		  },
 	    		  error:function(data){
-	    			  arlert("실패");
+	    			  alert("실패");
 	    		  }
 	    	  });
 	    	  
-	    	  if(hours>=9 && minutes>=0){
-	    		  console.log('출근시간 지났으~');
-	    		  alert('지각!');
-	    	  }else{
-				  alert('출근하셨습니다.');	    		  
-	    	  }
+	      }
+	      
+	      function offWork(){
+	    	  var empNo = ${loginEmp.empNo};
+	    	  var hours = date.getHours();
+	    	  var minutes = date.getMinutes();
+	    	  var workTime = hours+":"+minutes;
+	    	  
+	    	  console.log(empNo)
+	    	  
+	    	  var workArr = new Array();
+	    	  
+	    	  workArr.push(empNo);
+	    	  workArr.push(workTime);
+	    	  
+	    	  var object = {
+	    			  workArr:workArr
+				}
+	    	  
+	    	  $.ajax({
+	    		  url:"${contextPath}/employee/offWork",
+	    		  type:"post",
+	    		  contentType: 'application/json; charset=utf-8',
+	    		  data:JSON.stringify(object),
+	    		  success:function(data){
+	    			  console.log("성공");
+	    			  alert(data);
+	    			  window.location.reload();
+	    		  },
+	    		  error:function(data){
+	    			  alert("실패");
+	    		  }
+	    	  });
+	    	  
 	      }
 	      
 	</script>

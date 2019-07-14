@@ -109,6 +109,13 @@
 		<result property="stat" column="STAT"/>
 	</resultMap>
 	
+	<resultMap id="attend" type="com.kh.lgtw.employee.model.vo.Attendance">
+		<id column="ATTENDANCE_DATE" property="attendanceDate"/>
+		<result column="EMPNO" property="empNo"/>
+		<result column="START_TIME" property="startTime"/>
+		<result column="END_TIME" property="endTime"/>
+	</resultMap>
+  
 	<!-- 욱 휴가 -->
 	<!-- <resultMap type="java.util.HashMap" id="holidayResultSet">
 		<id column="EMPNO" property="empNo"/>
@@ -364,9 +371,13 @@
         ORDER BY J.JOB_CODE
 	</select>
 	
-	<select id="checkEmpWork" resultType="_int" parameterType="_int">
-		select count(*) from attendance where =#{empNo} 
+	<select id="checkEmpWork" resultType="_int" parameterType="Attendance">
+		select count(*) from attendance where EMPNO=#{empNo} AND TO_CHAR(ATTENDANCE_DATE,'yyyy-MM-dd')=#{attendanceDate}
 	</select>
+	
+	<insert id="insertEmpWork" parameterType="Attendance">
+		INSERT INTO ATTENDANCE VALUES(SYSDATE,#{empNo},#{startTime},null)
+	</insert>
 	
 	<!-- 휴가추가 - 욱 -->
 	<insert id="insertHolidayAdmin">
@@ -391,14 +402,7 @@
 		]]>
 		AND E.STATUS = 'Y')
 	</insert>
-	
 	<!-- <select id="showHolidayApply" parameterType="_int" resultType="">
 		
 	</select> -->
-	
-	
-	
-	
-	
-	
 </mapper>
