@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Messenger">
+	<!-- <resultMap id="내가쓸 이름" type="vo풀네임">
+		<id column="" property="PK"/>
+		<result column="" property="필드 명"/>
+	</resultMap>
+		
+	쿼리문 작성
+	<select id="구분이름" parameterType="매개변수 타입"> </select> -->
+	<resultMap type="java.util.HashMap" id="messengerResultMap">
+		<id property="msgNo" column="MSG_NO" />
+		<result property="msgTitle" column="MSGTITLE"/>
+		<result property="msgContent" column="MSGCONTENT"/>
+		<result property="sendDate" column="SEND_DATE"/>
+		<result property="sender" column="SENDER"/>
+		<result property="recipient" column="RECIPIENT"/>
+		<result property="readStatus" column="READ_STATUS"/>
+		<result property="status" column="STATUS"/>
+		<result property="rStatus" column="R_STATUS"/>
+		<result property="msgGroup" column="MSG_GROUP"/>
+		<result property="empName" column="EMP_NAME"/>
+		<result property="deptName" column="DEPT_NAME"/>
+		<result property="jobName" column="JOB_NAME"/>
+		<result property="gNum" column="GNUM"/>
+	</resultMap>
+		
+	<insert id="sendMessenger" parameterType="java.util.Map">
+		<selectKey keyProperty="groupId" resultType="int" order="BEFORE">
+				SELECT SEQ_MSG_GROUP.CURRVAL From DUAL
+			</selectKey>
+			INSERT INTO MESSENSER
+			<if test="sendType=='save'">
+				VALUES (SEQ_MSG_NO.NEXTVAL, #{messengerName}, #{messengerContent}, SYSDATE, #{sender}, #{sendEmp}, 'N','S','N',#{groupId})
+			</if>
+			<if test="sendType=='send'">
+				VALUES (SEQ_MSG_NO.NEXTVAL, #{messengerName}, #{messengerContent}, SYSDATE, #{sender}, #{sendEmp}, 'N','Y','Y',#{groupId})
+			</if>
+	</insert>
+	
+	<select id="msgNoSeq" resultType="int">
+		SELECT SEQ_MSG_GROUP.NEXTVAL From DUAL
+	</select>
+	
+	<select id="selctMessengerList" resultMap="messengerResultMap" parameterType="java.util.Map">
+		SELECT 
+		<if test="status =='sto'">
+		MG.MSG_NO,MG.MSG_GROUP,(SELECT COUNT(*) FROM MESSENSER M1 WHERE MG.MSG_GROUP = M1.MSG_GROUP AND M1.STATUS= 'S' GROUP BY MSG_GROUP) GNUM
+		</if>
+		<if test="status =='res' || status=='del' || status == 'req'">
+		M.MSG_NO
+		</if>
+		,M.MSGTITLE,M.MSGCONTENT,M.SEND_DATE,M.SENDER,M.RECIPIENT,M.READ_STATUS,M.STATUS,M.MSG_GROUP,E.EMP_NAME,D.DEPT_NAME,J.JOB_NAME
+		<if test="status =='sto'">
+		FROM (SELECT MIN(MSG_NO) MSG_NO, MSG_GROUP FROM MESSENSER WHERE STATUS = 'S' GROUP BY MSG_GROUP) MG
+		JOIN MESSENSER M ON (MG.MSG_NO = M.MSG_NO)
+		</if>
+		<if test="status =='res' || status=='del' || status == 'req'">
+		FROM MESSENSER M 
+		</if>
+		<if test="status =='res' || status=='del' ">
+		JOIN EMPLOYEE E ON (M.SENDER = E.EMPNO)
+		</if>
+		<if test="status =='req' || status=='sto'">
+		JOIN EMPLOYEE E ON (M.RECIPIENT = E.EMPNO)
+		</if>
+		JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+		JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+		JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+		JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+		WHERE 1=1
+		<if test="status =='res' || status=='del'">
+		AND M.RECIPIENT = #{empNo}
+			<if test="status =='res' || status =='req'">
+			AND M.R_STATUS = 'Y'
+			</if>
+		</if>	
+		<if test="status =='req' || status=='sto'">
+			AND M.SENDER = #{empNo}
+			<if test="status =='res' || status =='req'">
+			AND M.STATUS = 'Y'
+			</if>
+			<if test="status=='sto'">
+			AND M.STATUS = 'S'
+			</if>
+			<if test="status=='del'">
+			AND M.STATUS = 'N'
+		</if>
+		</if>
+		<if test="searchCondition =='name'">
+		AND M.MSGTITLE LIKE  '%' || #{content} || '%'
+		</if>
+		<if test="searchCondition =='writer'">
+		AND E.EMP_NAME LIKE  '%' || #{content} || '%'
+		</if>
+		<if test="searchCondition =='content'">
+		AND M.MSGCONTENT LIKE  '%' || #{content} || '%'
+		</if>		
+		AND M.SEND_DATE BETWEEN TO_DATE(#{startDate}) AND TO_DATE(#{endDate}) + 1
+		ORDER BY SEND_DATE DESC, READ_STATUS DESC
+	</select>
+	
+	<select id="selectMessengerCount" parameterType="java.util.Map" resultType="_int">
+		SELECT COUNT(*)
+		<if test="status =='sto'">
+		FROM (SELECT MIN(MSG_NO) MSG_NO, MSG_GROUP FROM MESSENSER WHERE STATUS = 'S' GROUP BY MSG_GROUP) MG
+		JOIN MESSENSER M ON (MG.MSG_NO = M.MSG_NO)
+		</if>
+		<if test="status =='res' || status=='del' || status == 'req'">
+		FROM MESSENSER M 
+		</if>
+		<if test="status =='res' || status=='del'">
+		JOIN EMPLOYEE E ON (M.SENDER = E.EMPNO)
+		</if>
+		<if test="status =='req' || status=='sto'">
+		JOIN EMPLOYEE E ON (M.RECIPIENT = E.EMPNO)
+		</if>
+		JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+		JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+		JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+		JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+		WHERE 1=1
+		<if test="status =='res' || status=='del'">
+			AND M.RECIPIENT = #{empNo}
+			<if test="status =='res' || status =='req'">
+			AND M.R_STATUS = 'Y'
+			</if>
+		</if>	
+		<if test="status =='req' || status=='sto'">
+			AND M.SENDER = #{empNo}
+			<if test="status =='res' || status =='req'">
+			AND M.STATUS = 'Y'
+			</if>
+			<if test="status=='sto'">
+			AND M.STATUS = 'S'
+			</if>
+			<if test="status=='del'">
+			AND M.STATUS = 'N'
+		</if>
+		</if>
+		<if test="searchCondition =='name'">
+		AND M.MSGTITLE LIKE  '%' || #{content} || '%'
+		</if>
+		<if test="searchCondition =='writer'">
+		AND E.EMP_NAME LIKE  '%' || #{content} || '%'
+		</if>
+		<if test="searchCondition =='content'">
+		AND M.MSGCONTENT LIKE  '%' || #{content} || '%'
+		</if>		
+		AND M.SEND_DATE BETWEEN TO_DATE(#{startDate}) AND TO_DATE(#{endDate}) + 1
+	</select>	
+	
+	<select id="selectMessengerDetail" parameterType="java.util.Map" resultMap="messengerResultMap">
+		SELECT M.MSG_NO,M.MSGTITLE,M.MSGCONTENT,M.SEND_DATE,M.SENDER,M.RECIPIENT,M.READ_STATUS,M.STATUS,M.MSG_GROUP,E.EMP_NAME,D.DEPT_NAME,J.JOB_NAME
+		FROM MESSENSER M
+		<if test="messageType =='res' || messageType=='del'">
+		JOIN EMPLOYEE E ON (M.SENDER = E.EMPNO)
+		</if>
+		<if test="messageType =='req' || messageType=='sto'">	
+		JOIN EMPLOYEE E ON (M.RECIPIENT = E.EMPNO)
+		</if>
+		JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+		JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+		JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+		JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+		WHERE 1=1
+		AND M.MSG_NO = #{msgNo}
+		<if test="messageType =='res' || messageType=='del'">
+			AND M.RECIPIENT = #{empNo}
+		</if>
+	</select>
+	
+	<insert id="reSendMessneger" parameterType="java.util.Map">
+		INSERT INTO MESSENSER
+		VALUES (SEQ_MSG_NO.NEXTVAL, #{msgTitle}, #{msgContent}, SYSDATE, #{sender}, #{receiper}, 'N','Y',SEQ_MSG_GROUP.NEXTVAL)
+	</insert>
+	
+	<update id="updateReadStatus">
+		UPDATE MESSENSER
+		SET READ_STATUS = 'Y'
+		WHERE MSG_NO = #{msgNo}
+	</update>
+	
+	<update id="deleteMessenger" parameterType="java.util.Map">
+		UPDATE MESSENSER
+		<if test="messageType=='res'">
+			SET R_STATUS = 'N'
+		</if>
+		<if test="messageType=='req' || messageType=='sto' || messageType=='del'">
+			SET STATUS = 'D'
+		</if>
+		<if test="messageType=='req' || messageType=='res' || messageType=='del'">
+			WHERE MSG_NO = #{msgNoList}
+		</if>
+		<if test="messageType=='sto'">
+			WHERE MSG_GROUP = (SELECT MSG_GROUP FROM MESSENSER WHERE MSG_NO = #{msgNoList})
+		</if>
+		
+	</update>
+	
+	<update id="updateMessenger" parameterType="java.util.Map">
+		UPDATE MESSENSER
+		SET MSGTITLE = #{messengerName}, MSGCONTENT = #{messengerContent}
+		WHERE MSG_NO = #{msgNoArr}
+	</update>
+	
+	<select id="getStoDetail" resultMap="messengerResultMap" parameterType="java.util.Map">
+		SELECT M.MSG_NO,M.MSGTITLE,M.MSGCONTENT,M.SEND_DATE,M.SENDER,M.RECIPIENT,M.READ_STATUS,M.STATUS,M.MSG_GROUP,E.EMP_NAME,D.DEPT_NAME,J.JOB_NAME
+		FROM MESSENSER M
+		JOIN EMPLOYEE E ON (M.RECIPIENT = E.EMPNO)
+		JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+		JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+		JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+		JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+		WHERE M.MSG_GROUP = (SELECT MSG_GROUP FROM MESSENSER WHERE MSG_NO = #{msgNo})
+		AND M.STATUS = 'S'
+	</select>
+	
+	<update id="stoSendMessenger">
+		UPDATE MESSENSER
+		SET MSGTITLE = #{messengerName}, MSGCONTENT = #{messengerContent}, STATUS = 'Y', R_STATUS='Y'
+		WHERE MSG_NO = #{msgNoArr}
+	</update>
+	
+	<update id="delMessenger">
+		UPDATE MESSENSER
+		<if test="messageType == 'res'">
+		SET R_STATUS = 'D'
+		</if>
+		<if test="messageType == 'req' || messageType == 'del'">
+		SET STATUS = 'D'
+		</if>
+		WHERE MSG_NO = #{msgNoArr}
+	</update>
+		
+</mapper>

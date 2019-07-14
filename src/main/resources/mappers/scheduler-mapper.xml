@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Scheduler">
+	<resultMap type="Scheduler" id="schedulerResultSet">
+		<id property="schedulerNo" column="SCHEDULER_NO"/>
+		<result property="schedulerName" column="SCHEDULER_NAME"/>
+		<result property="schedulerType" column="SCHEDULER_TYPE"/>
+		<result property="createEmpNo" column="CREATE_EMPNO"/>
+		<result property="schedulerColor" column="SCHEDULER_COLOR"/>
+		<result property="status" column="STATUS"/>
+	</resultMap>
+	
+	<resultMap type="GroupMember" id="groupMemberResultSet">
+		<id property="invitationNo" column="INVITATION_NO"/>
+		<result property="schedulerNo" column="SCHEDULER_NO"/>
+		<result property="empNo" column="EMPNO"/>
+		<result property="authority" column="AUTHORITY"/>
+		<result property="gmStatus" column="GM_STATUS"/>
+	</resultMap>
+	
+	<resultMap type="Schedule" id="scheduleResultSet">
+		<id property="scheduleNo" column="SCHEDULE_NO"/>
+		<result property="startDate" column="START_DATE"/>
+		<result property="endDate" column="END_DATE"/>
+		<result property="startTime" column="START_TIME"/>
+		<result property="endTime" column="END_TIME"/>
+		<result property="scheduleName" column="SCHEDULE_NAME"/>
+		<result property="scheduleContent" column="SCHEDULE_CONTENT"/>
+		<result property="status" column="STATUS"/>
+		<result property="writer" column="WRITER"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="modifyDate" column="MODIFY_DATE"/>
+		<result property="schedulerNo" column="SCHEULER_NO"/>
+		<collection property="schedulerList" javaType="java.util.ArrayList" resultMap="schedulerResultSet"></collection>
+	</resultMap>
+	
+	<resultMap type="Schedule" id="allResultSet">
+		<id property="scheduleNo" column="SCHEDULE_NO"/>
+		<result property="startDate" column="START_DATE"/>
+		<result property="endDate" column="END_DATE"/>
+		<result property="startTime" column="START_TIME"/>
+		<result property="endTime" column="END_TIME"/>
+		<result property="scheduleName" column="SCHEDULE_NAME"/>
+		<result property="scheduleContent" column="SCHEDULE_CONTENT"/>
+		<result property="status" column="STATUS"/>
+		<result property="writer" column="WRITER"/>
+		<result property="createDate" column="CREATE_DATE"/>
+		<result property="modifyDate" column="MODIFY_DATE"/>
+		<result property="schedulerNo" column="SCHEULER_NO"/>
+		<collection property="schedulerList" javaType="java.util.ArrayList" resultMap="schedulerResultSet"></collection>
+		<collection property="groupList" javaType="java.util.ArrayList" resultMap="groupMemberResultSet"></collection>
+	</resultMap>
+	
+	<resultMap type="Scheduler" id="schedulerResultSet2">
+		<id property="schedulerNo" column="SCHEDULER_NO"/>
+		<result property="schedulerName" column="SCHEDULER_NAME"/>
+		<result property="schedulerType" column="SCHEDULER_TYPE"/>
+		<result property="createEmpNo" column="CREATE_EMPNO"/>
+		<result property="schedulerColor" column="SCHEDULER_COLOR"/>
+		<result property="status" column="STATUS"/>
+		<collection property="groupList" javaType="java.util.ArrayList" resultMap="groupMemberResultSet"></collection>
+	</resultMap>
+	
+	<resultMap type="java.util.HashMap" id="empResultSet2">
+		<id property="empNo" column="EMPNO"/>
+		<result column="EMP_ID" property="empId"/>
+		<result column="EMP_NAME" property="empName"/>
+		<result column="JOB_CODE" property="jobCode"/>
+		<result column="JOB_NAME" property="jobName"/>
+		<result column="DEPT_CODE" property="deptCode"/>
+		<result column="DEPT_NAME" property="deptName"/>
+		<result column="MANAGER_EMPNO" property="managerEmpno"/>
+	</resultMap>
+	
+	
+	<!-- 쿼리문 영역 -->
+	<!-- 개인캘린더 목록 조회용 -->
+	<select id="selectEmpSc" resultMap="schedulerResultSet" parameterType="_int">
+		SELECT *
+		FROM SCHEDULER
+		WHERE CREATE_EMPNO = #{empNo}
+		AND SCHEDULER_TYPE = '개인'
+	</select>
+	
+	<!-- 공유캘린더 목록 조회용 -->
+	<select id="selectGpSc" resultMap="schedulerResultSet2" parameterType="_int">
+		SELECT *
+		FROM SCHEDULER SCR
+		JOIN GROUP_MEMBER GM ON (SCR.SCHEDULER_NO = GM.SCHEDULER_NO)
+		WHERE SCR.SCHEDULER_TYPE = '공용'
+		AND GM.EMPNO = #{empNo}
+	</select>
+	
+	<!-- 일정 목록 조회용 -->
+	<select id="selectSc" resultMap="allResultSet" parameterType="_int">
+		SELECT *
+		FROM SCHEDULE SC
+		LEFT JOIN SCHEDULER SCR ON (SC.SCHEDULER_NO = SCR.SCHEDULER_NO)
+        LEFT JOIN GROUP_MEMBER GM ON (SCR.SCHEDULER_NO = GM.SCHEDULER_NO)
+		WHERE SCR.SCHEDULER_TYPE = '개인'
+		AND SC.WRITER = #{empNo}
+		AND SC.STATUS = 'Y'
+		
+        UNION
+		
+		SELECT *
+		FROM SCHEDULE SC
+		LEFT JOIN SCHEDULER SCR ON (SC.SCHEDULER_NO = SCR.SCHEDULER_NO)
+		LEFT JOIN GROUP_MEMBER GM ON (SCR.SCHEDULER_NO = GM.SCHEDULER_NO)
+		WHERE SC.STATUS = 'Y'
+		AND SCR.SCHEDULER_TYPE = '공용'
+		AND GM.EMPNO = #{empNo}
+	</select>
+	
+	<!-- 개인캘린더 추가 쿼리문 -->
+	<insert id="insertMemberScheduler" parameterType="Scheduler">
+		INSERT INTO SCHEDULER
+		VALUES(SEQ_SCHEDULER_NO.NEXTVAL, #{schedulerName}, '개인', #{createEmpNo}, #{schedulerColor}, DEFAULT)
+	</insert>
+	
+	<!-- 개인캘린더 수정 쿼리문 -->
+	<update id="updateEmpScheduler" parameterType="Scheduler">
+		UPDATE SCHEDULER
+		SET SCHEDULER_NAME = #{schedulerName}, SCHEDULER_COLOR = #{schedulerColor}
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</update>
+	
+	<!-- 개인캘린더 삭제 시 일정 완전삭제 쿼리문 -->
+	<delete id="deleteScheduler1" parameterType="Scheduler">
+		DELETE FROM SCHEDULE
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</delete>
+	
+	<!-- 개인캘린더 삭제 -->
+	<delete id="deleteScheduler2" parameterType="Scheduler">
+		DELETE FROM SCHEDULER
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</delete>
+	
+	<!-- 캘린더 리스트 조회용 쿼리문 -->
+	<select id="selectSchedulerList" parameterType="_int" resultMap="schedulerResultSet">
+		SELECT SC.SCHEDULER_NO, SC.SCHEDULER_NAME
+		FROM SCHEDULER SC
+		LEFT JOIN GROUP_MEMBER GM ON (SC.SCHEDULER_NO = GM.SCHEDULER_NO)
+		WHERE (SC.SCHEDULER_TYPE = '개인' AND SC.CREATE_EMPNO = #{empNo})
+		OR (GM.EMPNO = #{empNo} AND GM.AUTHORITY = 'Y')
+	</select>
+	
+	<!-- 일정추가 시 캘린더의 상태를 불러오는 쿼리문 -->
+	<select id="selectScrStatus" parameterType="Schedule" resultType="java.lang.String">
+		SELECT STATUS
+		FROM SCHEDULER
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</select>
+
+	<!-- 일정추가 쿼리문 -->
+	<insert id="insertSchedule" parameterType="Schedule">
+		INSERT INTO SCHEDULE
+		VALUES(SEQ_SCHEDULE_NO.NEXTVAL, #{startDate}, #{endDate}, #{startTime}, #{endTime},
+		       #{scheduleName}, #{scheduleContent}, #{status}, #{writer}, SYSDATE, SYSDATE, #{schedulerNo})
+	</insert>
+	
+	<!-- 일정 상세보기용 쿼리문 -->
+	<select id="selectScheduleDetail" parameterType="Schedule" resultMap="allResultSet">
+		SELECT *
+		FROM SCHEDULE SC
+		LEFT JOIN SCHEDULER SCR ON (SC.SCHEDULER_NO = SCR.SCHEDULER_NO)
+		LEFT JOIN GROUP_MEMBER GM ON (SCR.SCHEDULER_NO = GM.SCHEDULER_NO)
+		WHERE SC.SCHEDULE_NO = #{scheduleNo}
+		<if test="schedulerList[0].schedulerType == '개인'">
+			AND WRITER = #{writer}
+		</if>
+		<if test="schedulerList[0].schedulerType == '공용'">
+			AND GM.EMPNO = #{writer}
+		</if>
+		
+	</select>
+	
+	<!-- 일정 삭제용 쿼리문 -->
+	<delete id="deleteSchedule" parameterType="Schedule">
+		DELETE FROM SCHEDULE
+		WHERE SCHEDULE_NO = #{scheduleNo}
+	</delete>
+	
+	<!-- 일정 수정용 쿼리문 -->
+	<update id="updateSchedule" parameterType="Schedule">
+		UPDATE SCHEDULE
+		SET SCHEDULE_NAME = #{scheduleName}, START_DATE = #{startDate}, END_DATE = #{endDate},
+		    START_TIME = #{startTime}, END_TIME = #{endTime}, SCHEDULE_CONTENT = #{scheduleContent},
+		    MODIFY_DATE = SYSDATE
+		WHERE SCHEDULE_NO = #{scheduleNo}
+	</update>
+	
+	<!-- 드랍 이벤트로 인한 일정 수정용 쿼리문 -->
+	<update id="dropEventUpdate" parameterType="Schedule">
+		UPDATE SCHEDULE
+		SET START_DATE = #{startDate}, END_DATE = #{endDate}, MODIFY_DATE = SYSDATE
+		WHERE SCHEDULE_NO = #{scheduleNo}
+	</update>
+	
+	<!-- 드래그 이벤트로 인한 일정 수정용 쿼리문 -->
+	<update id="dragEventUpdate" parameterType="Schedule">
+		UPDATE SCHEDULE
+		SET END_DATE = #{endDate}, MODIFY_DATE = SYSDATE
+		WHERE SCHEDULE_NO = #{scheduleNo}
+	</update>
+	
+	<!-- 명시값 수정용 쿼리들 -->
+	<update id="updateScStatusN" parameterType="Scheduler">
+		UPDATE SCHEDULE
+		SET STATUS = 'N'
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</update>
+	
+	<update id="updateScrStatusN" parameterType="Scheduler">
+		UPDATE SCHEDULER
+		SET STATUS = 'N'
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</update>
+	
+	<update id="updateScStatusY" parameterType="Scheduler">
+		UPDATE SCHEDULE
+		SET STATUS = 'Y'
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</update>
+	
+	<update id="updateScrStatusY" parameterType="Scheduler">
+		UPDATE SCHEDULER
+		SET STATUS = 'Y'
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</update>
+	
+	<!-- 그룹캘린더 생성용 쿼리문 -->
+	<insert id="insertGscr" parameterType="Scheduler">
+		INSERT INTO SCHEDULER
+		VALUES(SEQ_SCHEDULER_NO.NEXTVAL, #{schedulerName}, '공용', #{createEmpNo},
+			   #{schedulerColor}, 'Y')
+	</insert>
+	
+	<!-- 그룹캘린더 권한 주입용 쿼리문들 -->
+	<insert id="insertGscrSetter" parameterType="_int">
+		INSERT INTO GROUP_MEMBER
+		VALUES(SEQ_INVITATION_NO.NEXTVAL, SEQ_SCHEDULER_NO.CURRVAL, #{empNo}, 'Y', 'Y')
+	</insert>
+	
+	<insert id="insertGscrReader" parameterType="_int">
+		INSERT INTO GROUP_MEMBER
+		VALUES(SEQ_INVITATION_NO.NEXTVAL, SEQ_SCHEDULER_NO.CURRVAL, #{empNo}, 'N', 'Y')
+	</insert>
+	
+	<!-- 그룹캘린더 명시값 바꾸는 쿼리문들 -->
+	<update id="updateGscrStatusN" parameterType="Scheduler">
+		UPDATE GROUP_MEMBER
+		SET GM_STATUS = 'N'
+		WHERE SCHEDULER_NO = #{schedulerNo}
+		AND EMPNO = #{createEmpNo}
+	</update>
+	
+	<update id="updateGscrStatusY" parameterType="Scheduler">
+		UPDATE GROUP_MEMBER
+		SET GM_STATUS = 'Y'
+		WHERE SCHEDULER_NO = #{schedulerNo}
+		AND EMPNO = #{createEmpNo}
+	</update>
+	
+	<!-- 그룹캘린더 수정 시 나오는 값들  -->
+	<select id="selectSetter" parameterType="_int" resultMap="empResultSet2">
+		SELECT E.EMPNO, E.EMP_ID, E.EMP_NAME, J.JOB_CODE, J.JOB_NAME, D.DEPT_CODE, D.DEPT_NAME, D.MANAGER_EMPNO
+		FROM EMPLOYEE E
+		JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+		JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+		LEFT JOIN EMPLOYEE E2 ON (D.MANAGER_EMPNO = E2.EMPNO)
+		JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+		JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+		JOIN GROUP_MEMBER GM ON (E.EMPNO = GM.EMPNO)
+		JOIN SCHEDULER SCR ON (SCR.SCHEDULER_NO = GM.SCHEDULER_NO)
+		WHERE SCR.SCHEDULER_NO = #{no}
+		AND GM.AUTHORITY = 'Y'
+	</select>
+	
+	<select id="selectReader" parameterType="_int" resultMap="empResultSet2">
+		SELECT E.EMPNO, E.EMP_ID, E.EMP_NAME, J.JOB_CODE, J.JOB_NAME, D.DEPT_CODE, D.DEPT_NAME, D.MANAGER_EMPNO
+		FROM EMPLOYEE E
+		JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+		JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+		LEFT JOIN EMPLOYEE E2 ON (D.MANAGER_EMPNO = E2.EMPNO)
+		JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+		JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+		JOIN GROUP_MEMBER GM ON (E.EMPNO = GM.EMPNO)
+		JOIN SCHEDULER SCR ON (SCR.SCHEDULER_NO = GM.SCHEDULER_NO)
+		WHERE SCR.SCHEDULER_NO = #{no}
+		AND GM.AUTHORITY = 'N'
+	</select>
+	
+	<!-- 그룹멤버 수정 전 삭제용 -->
+	<delete id="deleteGMList" parameterType="Scheduler">
+		DELETE FROM GROUP_MEMBER
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</delete>
+	
+	<!-- 그룹멤버 수정 -->
+	<insert id="updateGscrSetter" parameterType="Scheduler">
+		INSERT INTO GROUP_MEMBER
+		VALUES(SEQ_INVITATION_NO.NEXTVAL, #{schedulerNo}, #{createEmpNo}, 'Y', 'Y')
+	</insert>
+	
+	<insert id="updateGscrReader" parameterType="Scheduler">
+		INSERT INTO GROUP_MEMBER
+		VALUES(SEQ_INVITATION_NO.NEXTVAL, #{schedulerNo}, #{createEmpNo}, 'N', 'Y')
+	</insert>
+	
+	<!-- 그룹캘린더 삭제 시 쿼리문들 -->
+	<delete id="deleteGscList" parameterType="_int">
+		DELETE FROM SCHEDULE
+		WHERE SCHEDULER_NO = #{schedulerNo}
+	</delete>
+	
+</mapper>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

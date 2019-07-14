@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Mail">
+	<resultMap type="com.kh.lgtw.mail.model.vo.Mail" id="resultMailSet">
+		<id property="mailNo" column="Mail_No"/>
+		<result property="mTitle" column="MTITLE"/>
+		<result property="mContent" column="MCONTENT"/>
+		<result property="sendMail" column="SEND_MAIL"/>
+		<result property="reciveMail" column="RECIVE_MAIL"/>
+		<result property="dStatus" column="DSTATUS"/>
+		<result property="sendDate" column="SEND_DATE"/>
+		<result property="rStatus" column="RSTATUS"/>
+		<result property="mailType" column="MAIL_TYPE"/>
+		<result property="mSize" column="MSIZE"/>
+		<result property="reservationCheck" column="RESERVATION_CHECK"/>
+		<result property="reservationDate" column="RESERVATION_DATE"/>
+		<result property="reservationTime" column="RESERVATION_TIME"/>
+	</resultMap>
+	
+	<resultMap type="com.kh.lgtw.mail.model.vo.Absence" id="resultAbsenceSet">
+		<id property="aNo" column="ANO"/>
+		<result property="startDate" column="START_DATE"/>
+		<result property="endDate" column="END_DATE"/>
+		<result property="aKind" column="AKIND"/>
+		<result property="content" column="CONTENT"/>
+		<result property="dStatus" column="DSTATUS"/>
+		<result property="empNo" column="EMPNO"/>
+	</resultMap>
+	
+	<resultMap type="java.util.HashMap" id="resultMailEmpInfoSet">
+		<result property="empName" column="EMP_NAME"/>
+		<result property="deptName" column="DEPT_NAME"/>
+		<result property="jobName" column="JOB_NAME"/>
+	</resultMap>
+	
+	<!-- 쿼리문 -->
+	<!-- 페이징-리스트 갯수 조회 -->
+	<select id="getMailListCount" resultType="_int">
+		SELECT COUNT(*)
+		FROM MAIL
+		WHERE DSTATUS = 'N' 
+	</select>
+	
+	<!-- 메일 리스트 조회 -->
+	<select id="selectMailList" parameterType="PageInfo" resultMap="resultMailSet">
+		SELECT *
+		FROM MAIL 
+		WHERE DSTATUS = 'N'
+		ORDER BY MAIL_NO DESC
+	</select>
+	
+	<!-- 읽음 상태 수정 -->
+	<update id="updateReadStatus">
+		UPDATE MAIL
+		SET RSTATUS = 'Y'
+		WHERE MAIL_NO = #{ mailNo }
+	</update>
+	
+	<!-- 삭제 상태 수정 -->
+	<update id="updateDeleteStatus">
+		UPDATE MAIL
+		SET DSTATUS = 'Y'
+		WHERE MAIL_NO = #{ mailNo }
+	</update>
+	
+	<!-- 메일 상세 페이지 조회 -->
+	<select id="selectMailDetail" parameterType="int" resultMap="resultMailSet">
+		SELECT *
+		FROM MAIL
+		WHERE DSTATUS = 'N'
+		AND MAIL_NO = #{ mailNo }
+	</select>
+	
+	<!-- 부재중 정보 추가 -->
+	<insert id="insertAbsenceMail" parameterType="Absence">
+		INSERT INTO ABSENCE(ANO, START_DATE, END_DATE, AKIND, CONTENT, DSTATUS, EMPNO)
+		VALUES (SEQ_ANO.NEXTVAL, #{ startDate }, #{ endDate }, #{ aKind }, #{ content }, 'N', #{ empNo })
+	</insert>
+	
+	<!-- 부재중 조회 -->
+	<select id="selectAbsenceList" parameterType="int" resultMap="resultAbsenceSet">
+		SELECT * 
+		FROM ABSENCE
+		WHERE DSTATUS = 'N'
+		AND EMPNO = #{ empNo }
+		ORDER BY START_DATE DESC
+	</select>
+	
+	<!-- 메일 보내기 DB저장 -->
+	<insert id="sendMail" parameterType="Mail">
+		INSERT INTO MAIL(MAIL_NO, MTITLE, MCONTENT, SEND_MAIL, RECIVE_MAIL, MAIL_TYPE, MSIZE)
+		VALUES (SEQ_MAIL_NO.NEXTVAL, #{ mTitle }, #{ mContent }, #{ sendMail }, #{ reciveMail }, '보낸메일', #{ mSize })
+	</insert>
+	
+	<!-- 검색과 리스트 카운트 조회 -->
+	<select id="getMailSearchListCount" resultType="_int">
+		SELECT count(*)
+		FROM MAIL 
+		WHERE (SEND_MAIL = #{ empMail } 
+		OR RECIVE_MAIL = #{ empMail }) 
+		<choose>
+			<when test="listType == 'receive'">AND MAIL_TYPE = '받은메일'</when>
+			<when test="listType == 'send'"> AND MAIL_TYPE = '보낸메일'</when>
+			<when test="listType == 'outbox'"> AND MAIL_TYPE = '임시보관'</when>
+			<when test="listType == 'trash'"> AND DSTATUS = 'Y'</when>
+			<when test="listType != 'trash'">AND DSTATUS = 'N'</when>
+		</choose>
+		<choose>
+			<when test="sMail != null and sMail.size != 0"> 
+			<foreach collection="sMail" index="index" item="mail" separator="OR" open="AND">
+				(RECIVE_MAIL = #{ mail } OR SEND_MAIL = #{ mail }) 
+			</foreach>
+			</when>
+			<when test="sTitle != null">AND MTITLE LIKE '%' || #{ sTitle } || '%'</when>
+			<when test="sContent != null">AND MCONTENT LIKE '%' || #{ sContent } || '%' </when>
+			<when test="sMail != null">AND (RECIVE_MAIL = #{ sMail } OR SEND_MAIL = #{ sMail })</when>
+			<when test="sEmail != null"> 
+				AND (RECIVE_MAIL LIKE '%' || #{ sEmail } || '%' OR SEND_MAIL LIKE '%' || #{ sEmail } || '%')
+			</when>
+		</choose>
+		ORDER BY MAIL_NO DESC  
+	</select>
+	
+	<!-- 검색 메일 조회 - 해쉬맵으로 -->
+	<select id="searchList" resultMap="resultMailSet">
+		SELECT *
+		FROM MAIL 
+		WHERE (SEND_MAIL = #{ empMail } 
+		OR RECIVE_MAIL = #{ empMail }) 
+		<choose>
+			<when test="listType == 'receive'">AND MAIL_TYPE = '받은메일'</when>
+			<when test="listType == 'send'"> AND MAIL_TYPE = '보낸메일'</when>
+			<when test="listType == 'outbox'"> AND MAIL_TYPE = '임시보관'</when>
+			<when test="listType == 'trash'"> AND DSTATUS = 'Y'</when>
+			<when test="listType != 'trash'">AND DSTATUS = 'N'</when>
+		</choose>
+		<choose>
+			<when test="sMail != null and sMail.size != 0"> 
+			<foreach collection="sMail" index="index" item="mail" separator="OR" open="AND">
+				(RECIVE_MAIL = #{ mail } OR SEND_MAIL = #{ mail }) 
+			</foreach>
+			</when>
+			<when test="sTitle != null">AND MTITLE LIKE '%' || #{ sTitle } || '%'</when>
+			<when test="sContent != null">AND MCONTENT LIKE '%' || #{ sContent } || '%' </when>
+			<when test="sMail != null">AND (RECIVE_MAIL = #{ sMail } OR SEND_MAIL = #{ sMail })</when>
+			<when test="sEmail != null"> 
+				AND (RECIVE_MAIL LIKE '%' || #{ sEmail } || '%' OR SEND_MAIL LIKE '%' || #{ sEmail } || '%')
+			</when>
+		</choose>
+		ORDER BY MAIL_NO DESC 
+	</select>
+	
+	<insert id="insertReciveMail" parameterType="Mail">
+		INSERT INTO MAIL(MAIL_NO, MTITLE, MCONTENT, SEND_MAIL, RECIVE_MAIL, MAIL_TYPE, MSIZE, SEND_DATE)
+		VALUES (SEQ_MAIL_NO.NEXTVAL, #{ mTitle }, #{ objContent }, #{ sendMail }, #{ reciveMail }, #{ mailType }, #{ mSize }, #{ sendStringDate })
+	</insert>
+	
+	<select id="selectSendEmpName" resultMap="resultMailEmpInfoSet">
+		WITH TREE_DEPT AS (SELECT(SELECT D2.DEPT_NAME 
+                                     FROM DEPT D2 
+                                     WHERE D1.TOP_DEPT = D2.DEPT_CODE) AS TOP, 
+                                     LEVEL LV, D1.DEPT_NAME AS ORIGIN, DEPT_CODE
+                           FROM DEPT D1
+                           START WITH D1.DEPT_NAME = '출근합시다'
+                           CONNECT BY PRIOR D1.DEPT_CODE = D1.TOP_DEPT)
+		SELECT CASE
+                  WHEN TD.LV = 1 THEN TD.ORIGIN
+                  WHEN TD.LV = 2 THEN TD.ORIGIN
+                  ELSE TOP
+               END AS DEPT_NAME, E.EMP_NAME, J.JOB_NAME
+		FROM TREE_DEPT TD 
+		RIGHT JOIN DEPT_HISTORY DH ON(TD.DEPT_CODE = DH.DEPT_CODE)
+		JOIN EMPLOYEE E ON (E.EMPNO = DH.EMPNO)
+		JOIN PROMOTION_HISTORY PH ON (E.EMPNO = PH.EMPNO)
+		JOIN JOB J ON (J.JOB_CODE = PH.JOB_CODE)
+		WHERE E.EMAIL = #{ sendMail }
+		AND E.STATUS = 'Y'
+	</select>
+	
+	<select id="selectReciveEmpName" resultMap="resultMailEmpInfoSet">
+		WITH TREE_DEPT AS (SELECT (SELECT D2.DEPT_NAME 
+                                    FROM DEPT D2 
+                                    WHERE D1.TOP_DEPT = D2.DEPT_CODE) AS TOP, 
+                                    LEVEL LV, D1.DEPT_NAME AS ORIGIN, DEPT_CODE
+                          FROM DEPT D1
+                          START WITH D1.DEPT_NAME = '출근합시다'
+                          CONNECT BY PRIOR D1.DEPT_CODE = D1.TOP_DEPT)
+		SELECT CASE
+	              WHEN TD.LV = 1 THEN TD.ORIGIN
+	              WHEN TD.LV = 2 THEN TD.ORIGIN
+	              ELSE TOP
+	           END AS DEPT_NAME, E.EMP_NAME, J.JOB_NAME
+		FROM TREE_DEPT TD 
+		RIGHT JOIN DEPT_HISTORY DH ON(TD.DEPT_CODE = DH.DEPT_CODE)
+		JOIN EMPLOYEE E ON (E.EMPNO = DH.EMPNO)
+		JOIN PROMOTION_HISTORY PH ON (E.EMPNO = PH.EMPNO)
+		JOIN JOB J ON (J.JOB_CODE = PH.JOB_CODE)
+		WHERE E.EMAIL = #{ reciveMail }
+		AND E.STATUS = 'Y'
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+

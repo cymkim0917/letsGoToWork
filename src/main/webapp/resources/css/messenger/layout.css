@@ -1,0 +1,75 @@
+@charset "UTF-8";
+
+.listTable [type="checkbox"]{
+	width: 20px;
+	height : 20px;
+}
+
+.listTable th:nth-child(n){
+	background: rgba(191, 191, 191, .5);
+}
+.listTable tr:nth-child(1){
+	background: white !important;
+}
+.listTable tr:nth-child(1):hover{
+	cursor : pointer !important;
+	background : rgba(230, 230, 230, .5) !important;
+}
+
+.bottomBtn{
+	margin-right: 7%;
+}
+.bottomBtn button{
+	padding: 5px 17px;
+	margin-left: 15px;
+	border: 3px solid rgba(191, 191, 191, 1.0);
+	background : rgba(191, 191, 191, 1.0);
+	color: white;
+	font-weight: bold;
+	border-radius: 5px;
+}
+
+.bottomBtn button:hover{
+	background : white;
+	color: black;
+}
+.searchArea{
+	margin-bottom : 20px;
+}
+.searchArea > *{
+	height : 20px;
+}
+
+.searchBtn{
+	height : 35px;
+	/* width:100% !important; */
+	border: 3px solid rgba(191, 191, 191, 1.0);
+	background : rgba(191, 191, 191, 1.0);
+	color: white;
+	font-weight: bold;
+	border-radius: 5px;
+}
+.searchBtn:hover{
+	background : white;
+	color: black;
+}
+.contentSelectArea li{
+		font-size:15px !important;
+		cursor:pointer;
+}	
+.contentSelectArea li:hover{
+	background:#80aaff !important;
+	color:white !important;
+}
+
+.content form-group{
+	width:100%
+}
+
+.datepicker-here{
+	
+} 
+.form-group < table{
+	width:100%;
+	
+}
