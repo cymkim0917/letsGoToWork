@@ -70,6 +70,24 @@
    
    </resultMap>
    
+   
+      
+<!-- 파일 업로드 컬럼 리스트     -->
+   <resultMap id="CommunityAttachmentResultSet" type="com.kh.lgtw.community.model.vo.CommunityAttachment"> 
+    <id column="ATTACHMENT_NO" property="attno"/>
+    <result column="CONTENT_NO" property="psno"/>
+    <result column="ORIGIN_NAME" property="originName" />
+    <result column="CHANGE_NAME" property="changName"/>
+    <result column="FILEPATH" property="filePath"/>
+    <result column="FILE_TYPE" property="fileType"/>
+    
+      
+   
+   </resultMap>
+   
+   
+   
+   
 <!--게시판 조회 쿼리문     -->   
    <select id="selectCommunityList" resultMap="communityResultSet2">
       SELECT ROWNUM AS ORD , B.* , E.EMP_NAME
@@ -134,7 +152,14 @@
         INSERT INTO CONTENT 
         VALUES(SEQ_CONTENT_NO.NEXTVAL,#{bno},#{bwriter},#{btitle},#{bcontent},SYSDATE,SYSDATE,0,'N')
         
-        </insert>
+        </insert> 
+        
+       <!--파일 생성   -->
+        <insert  id="CommunityPostFileInsert" parameterType="CommunityAttachment"> 
+        INSERT  INTO ATTACHMENT
+        VALUES(SEQ_ATTACHMENT_NO.nextval,#{originName},#{changName},#{filePath},null,#{fileType},null,SEQ_CONTENT_NO.CURRVAL,null,null)
+        </insert> 
+        
         
       <!--게시판 수정 폼    -->
         <select id="communityUpdateForm" resultMap="communityResultSet" parameterType="_int"> 
@@ -261,7 +286,40 @@
 	      
 	      
 		
+	</select>  
+	
+	
+	<select id="AttachmentSelect" resultMap="CommunityAttachmentResultSet" parameterType="_int">
+	
+		SELECT A.*
+		FROM CONTENT C   
+		JOIN  ATTACHMENT A ON(C.CONTENT_NO= A.CONTENT_NO)
+		WHERE A.CONTENT_NO = #{psno}
+	
+	</select> 
+	
+	<select id="selectCommunityPostlistCount" parameterType="_int" resultType="_int"> 
+		SELECT COUNT(C.CONTENT_NO)
+		FROM BOARD B
+		JOIN CONTENT C ON (B.BNO = C.BNO)
+		WHERE C.BNO  = #{bno} 
+		AND C.STATUS = 'N'
+	
 	</select>
+	
+	<select id="CommunityPostPageList" resultMap="communityPostResultSet">
+	    SELECT *
+		FROM BOARD B
+		JOIN CONTENT C ON(B.BNO = C.BNO)
+		WHERE C.STATUS = 'N'
+		ORDER BY CONTENT_NO DESC
+	
+	
+	
+	</select>
+	
+	
+	
 	
 
 </mapper>
