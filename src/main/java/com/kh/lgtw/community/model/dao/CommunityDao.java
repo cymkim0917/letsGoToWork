@@ -27,7 +27,7 @@ public interface CommunityDao {
 
 	ArrayList<Community> SelectManagebulletinList(SqlSessionTemplate sqlSession);
 
-	int CommunityPostInsert(SqlSessionTemplate sqlSession, CommunityPost cp);
+	int CommunityPostInsert(SqlSessionTemplate sqlSession, CommunityPost cp, CommunityAttachment ca);
 
 	Community communityUpdateForm(SqlSessionTemplate sqlSession, int bno);
 
@@ -67,6 +67,29 @@ public interface CommunityDao {
 
 	ArrayList<HashMap<String, java.lang.Object>> selectcommentList(PageInfo pi, Integer contentno,
 			SqlSessionTemplate sqlSession);
+
+	CommunityAttachment AttachmentSelect(SqlSessionTemplate sqlSession, int contentNO);
+
+	//파일 다운로드 메소드
+	CommunityAttachment CommunityAttachment(SqlSessionTemplate sqlSession, int contentNO);
+
+	//게시글  카운터
+	int selectCommunityPostlistCount(SqlSessionTemplate sqlSession, int bno);
+
+	ArrayList<CommunityPost> CommunityPostPageList(SqlSessionTemplate sqlSession, PageInfo pi);
+
+	ArrayList<HashMap<String, java.lang.Object>> communityPostList(SqlSessionTemplate sqlSession, PageInfo pi, int bno);
+
+	//게시글 페이징
+	/*
+	 * ArrayList<HashMap<String, java.lang.Object>>
+	 * CommunityPostpageList(SqlSessionTemplate sqlSession, PageInfo pi);
+	 */
+
+	/*
+	 * CommunityAttachment AttachmentSelect(SqlSessionTemplate sqlSession, int
+	 * contentNO);
+	 */
 
 
 

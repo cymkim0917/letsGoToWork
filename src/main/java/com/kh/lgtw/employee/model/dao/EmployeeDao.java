@@ -94,13 +94,11 @@ public interface EmployeeDao{
 
 	int insertEmpWork(SqlSession sqlSession, Attendance attend);
 
-
-
-
-
-
-
-
+	//휴가추가 - 욱
+	int holidayInsertAdmin(SqlSession sqlSession);
+	
+	//휴가 신청 조회 - 욱
+	HashMap<String, Object> showHolidayApply(SqlSession sqlSession, int empNo);
 
 
 //	Employee loginEmpl(Employee employee, SqlSession sqlSession);
@@ -125,4 +123,23 @@ public interface EmployeeDao{
 //
 //	ArrayList<Employee> selectLeaveList(SqlSession sqlSession);
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

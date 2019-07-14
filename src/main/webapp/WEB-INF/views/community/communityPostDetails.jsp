@@ -47,7 +47,7 @@
                            </tr>
                                       
                              <tr>
-                              <td width="10%;">첨부파일: 2019-06-21 안전교육 일정안내서</td>
+                              <td width="10%;">첨부파일: <a href="${ contextPath }/communityDownloadFile.co?contentNO=${ c.contentNO }"> ${ ca.originName }</a></td>
                              
          
                              </tr>
@@ -80,8 +80,8 @@
                 
                 <br>
                 <div>
-                <%-- <c:forEach var="c" items="${list }">  
-                   <c:if test="${c.status eq 'N'}"> 
+                <c:forEach var="c" items="${list }">  
+                   <%-- <c:if test="${c.status eq 'N'}"> --%> 
                    <table class="table table-striped"  >
                     <thead>
                       <tr> 
@@ -90,21 +90,21 @@
                          <th></th>
                          <!-- <th></th>  -->   
                       </tr> 
-                      <c:forEach var="cc" items="${commentlist }">
+                      <%-- <c:forEach var="cc" items="${commentlist }"> --%>
                       <tr> 
                       <c:if test="${!empty sessionScope.loginEmp.empNo}">
                
                       
                          <td>${sessionScope.loginEmp.empName}</td>
-                         <td><!-- <input type="text" id="ccontent"> --><textarea id="ccontent" style="width:100%; height:auto; "></textarea></td>
+                         <td><textarea id="ccontent" style="width:100%; height:auto; "></textarea></td>
                          <td><button type="button" class="btn btn-info btn-lg" id="addReply">생성</button></td>
                       
                       </c:if>
                       </tr>
-                      </c:forEach>
+                      <%-- </c:forEach> --%>
                    
                       
-                      
+               <%--        
                       <tr><th>댓글</th></tr>
                       <tr>  
                       <c:forEach var="cc" items="${commentlist }">
@@ -149,17 +149,21 @@
                          
                        
                        </c:forEach>
-                       </tr>   
+                       </tr>  --%>  
                         
                 </thead>   
             </table>
-            </c:if>
-            </c:forEach> --%>
+           <%--  </c:if> --%>
+           			 </c:forEach> 
+            
+            
             <table id="replyTable" class="table table-striped">
             
             
             </table>
            </div>
+           
+           
            <div class="modal fade" id="myModal" role="dialog">
                      <div class="modal-dialog">
                       <div class="modal-content">
@@ -182,7 +186,7 @@
            
             
         	 </div>
-     		 <div class="paging">
+     		 <div class="paging"   align="center" >
 						<ul class="pagination">
 							<li><a href="#"><</a></li>
 							<li><a href="#">1</a></li>
@@ -197,7 +201,180 @@
    </div>
    
    <jsp:include page="../common/footer.jsp"/>
-    <script> 
+  
+ 
+ 
+ 
+ <script>
+ 
+ 	$(document).ready(function(){
+ 		listReply("1");
+ 	})
+ 	 
+ 	function listReply(num){
+ 		var contentno =$("#contentNOHidden").val(); 
+ 		
+ 		/* console.log (num);  */
+ 		console.log(contentno); 
+ 		
+ 		$.ajax({
+ 			type:"get",
+ 			url:"${contextPath}/commentList.co",
+ 			data:{curPage:num,contentno:contentno},		
+ 			success:function(data){ 
+ 			console.log(data); 
+ 			
+ 			createCommentList(data.list);
+ 			createPaging(data.pi);
+ 			
+ 			
+ 			
+ 			
+ 			
+ 			
+ 			
+ 			/* for(var i in result){
+ 				output += "<td>"+result[i];
+ 				output += "</td>";
+ 			} 
+ 				 */
+ 				
+ 			}
+ 		
+ 		}); 
+ 		
+ 		
+ 		
+ 		
+ 		
+ 	} 
+ 	
+ 	function createCommentList(commentInfo){
+ 	console.log(commentInfo);
+ 	
+ 	var $replyTable = $("#replyTable");
+ 	
+ 	$("#replyTable").children().remove();
+ 		for (var i= 0 ; i<commentInfo.length; i++){
+ 							
+ 			var $replyTd = $("<tr>");
+ 			var $nameTd = $("<td>").text(commentInfo[i].empname);
+ 			var $contentTd = $("<td>").text(commentInfo[i].ccontent).attr({"id":"replyList"});
+ 			var $hiddencontent = $("<input>").attr({"type":"hidden"}).val(commentInfo[i].ccontent);
+ 			var $hiddencno = $("<input>").attr({"type":"hidden"}).val(commentInfo[i].cno);
+ 			var loginEmpno =${sessionScope.loginEmp.empNo} 
+ 			
+ 			var $updateBtn = $("<button>").text("수정")
+ 								.attr({"class":"btn btn-info btn-lg","onclick":"updateBtn(this)","id":"updateBtn"});
+ 			var $deleteBtn = $("<button>").text("삭제")
+ 			                   .attr({"class":"btn btn-info btn-lg","onclick":"sendAndDelete(this)","name":"deleteReply"});
+ 			
+ 	
+ 			var $updateBtnTd = $("<td>").append($hiddencno).append($hiddencontent).append($updateBtn).append($deleteBtn); 
+ 		   
+ 			
+ 			
+ 			
+ 			/* var $deleteBtnTd = $("<td>").append($deleteBtn);  */
+ 			
+ 		
+ 			
+ 			if(loginEmpno == commentInfo[i].cwriter){
+ 				
+		 			console.log($updateBtnTd); 
+		 			
+		 			$replyTd.append($nameTd);
+		 			$replyTd.append($contentTd);
+		 			
+		 			$replyTd.append($updateBtnTd);
+		 			/* $replyTd.append($deleteBtnTd); */
+		 			$replyTable.append($replyTd);
+ 			}
+ 			else
+ 			{
+	 				/* console.log($updateBtnTd); */ 
+	 	 			$replyTd.append($nameTd);
+	 	 			$replyTd.append($contentTd);
+	 	 			$replyTable.append($replyTd);	
+ 			}
+ 			
+ 				
+ 			
+ 			
+ 			
+ 			 
+ 			
+ 			
+ 			
+ 		}
+ 	}
+ 	
+ 	
+function createPaging(pageInfo){
+		
+		var $pagination = $(".pagination");
+		$pagination.empty();
+		
+		var currentPage = pageInfo.currentPage;
+		var startPage = pageInfo.startPage;
+		var endPage = pageInfo.endPage;
+		var limit = pageInfo.limit;
+		var maxPage = pageInfo.maxPage;
+		
+			$pagination.append($("<li>").append($("<a>").text("<<")).css("cursor","pointer").click(function(){	
+				listReply(1);
+			}));
+		   	   
+			if(currentPage <= 1) { 
+				$pagination.append($("<li>").append($("<a>").text("<")).attr("disabled",true).css("cursor","pointer"));
+			}else{ 
+				$pagination.append($("<li>").append($("<a>").text("<")).css("cursor","pointer").click(function(){
+					listReply(currentPage - 1);
+				}));
+
+			 } 
+			 for(var p= startPage; p <= endPage; p++){
+				if(p == currentPage){
+				$pagination.append($("<li>").append($("<a>").text(p)).attr("disabled",true));
+			 }else{ 
+				$pagination.append($("<li>").append($("<a>").text(p)).css("cursor","pointer").click(function(){
+					listReply($(this).children().text());
+				}));
+			 }
+				
+			 } 
+			 if(currentPage >= maxPage){ 
+				 $pagination.append($("<li>").append($("<a>").text(">")).attr("disabled",true).css("cursor","pointer"));					
+			 }else {
+				 $pagination.append($("<li>").append($("<a>").text(">")).css("cursor","pointer").click(function(){
+					 viewMessage(currentPage + 1,messageType,startDate,endDate,searchValue,searchCondition);
+				 }));
+			 } 
+			 	$pagination.append($("<li>").append($("<a>").text(">>")).css("cursor","pointer").click(function(){
+			 		viewMessage(endPage,messageType,startDate,endDate,searchValue,searchCondition);
+			 	}));
+		
+	}
+
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 
+ 
+ 
+ 
+ </script>  
+ 
+  
+   <script>
+   // 게시판 수정
          $("button[name='updateBtn']").click(function(){
             var contentno = $("#contentNOHidden").val();
             
@@ -206,7 +383,9 @@
              location.href= "communityPostUpdateForm.co?contentno="+contentno;  
          }); 
          
-         $("button[name='deleteBtn']").click(function(){
+        
+   //게시판 삭제
+    $("button[name='deleteBtn']").click(function(){
             var contentno = $("#contentNOHidden").val();
             var bno = $("#bnohidden").val();
             console.log(contentno);
@@ -215,6 +394,8 @@
          });
          
          
+         
+       /* 댓글생성  */
          $(function(){
            $("#addReply").click(function(){
               var writer = ${sessionScope.loginEmp.empNo}; 
@@ -251,8 +432,8 @@
              var ccontent = $(this).parents().prev().children().val();
              var contentno = $("#contentNOHidden").val();
              
-            /* console.log(cno); */
-            console.log(ccontent);
+             console.log(cno);
+             console.log(ccontent);
             
                $.ajax({
                   url:"updateComment.co", 
@@ -273,19 +454,21 @@
            
             
             
-         
+         //수정 폼
          function updateBtn(updateBtn){
-        	console.log();
         	var inputArea = $(updateBtn).parent().siblings("#replyList");
+        	console.log(inputArea);
+        	
+        	
         	
         	 if($(updateBtn).text() == '수정'){ 
         		 inputArea.text(""); 
-        		 inputArea.append($("<textarea>").css({"width":"100%","height":"auto","resize":"none"}).val(inputArea.next().children().val()));
+        		 inputArea.append($("<textarea>").css({"width":"100%","height":"auto","resize":"none"}).val(inputArea.next().children().eq(1).val()));
         		 $(updateBtn).text("취소");
         		 $(updateBtn).next().text("전송");
         	} else{
         		inputArea.empty();
-        		inputArea.text(inputArea.next().children().val());
+        		inputArea.text(inputArea.next().children().eq(1).val());
         		$(updateBtn).text("수정");
         		$(updateBtn).next().text("삭제");
         	}
@@ -301,7 +484,7 @@
         	  var contentno = $("#contentNOHidden").val();
         	  /* console.log(writer); */
         	  	/* console.log(contentno); */ 
-        	  
+        	  console.log('수정 : ' + cno);
         	  	 $.ajax({
                     url:"updateComment.co", 
                     data:{cno:cno,ccontent:ccontent,contentno:contentno} , 
@@ -315,15 +498,9 @@
                     }
                        
                  });
-               
-           
-           
-  			 	
- 
-        	  
-        		 
+              	 
         	 }else{
-        		 delReply();
+        		 delReply(); 
         	 }
         	 
          }
@@ -332,7 +509,7 @@
              var contentno = $("#contentNOHidden").val();
              
              
-             /* console.log(cno); */
+              console.log('삭제 : ' + cno);
              /*  console.log(contentno); */ 
              
              $.ajax({
@@ -358,90 +535,6 @@
       </script>
  
  
- 
- <script>
- 
- 	$(document).ready(function(){
- 		listReply("1");
- 	})
- 	 
- 	function listReply(num){
- 		var contentno =$("#contentNOHidden").val(); 
- 		
- 		/* console.log (num);  */
- 		console.log(contentno); 
- 		
- 		$.ajax({
- 			type:"get",
- 			url:"${contextPath}/commentList.co",
- 			data:{curPage:num,contentno:contentno},		
- 			success:function(data){ 
- 			console.log(data); 
- 			
- 			createCommentList(data.list); 
- 			
- 			
- 			
- 			
- 			
- 			
- 			
- 			/* for(var i in result){
- 				output += "<td>"+result[i];
- 				output += "</td>";
- 			} 
- 				 */
- 				
- 			}
- 		
- 		}); 
- 		
- 		
- 		
- 		
- 		
- 	} 
- 	
- 	function createCommentList(commentInfo){
- 	console.log(commentInfo);
- 	
- 	var $replyTable = $("#replyTable");
- 	
- 		for (var i= 0 ; i<commentInfo.length; i++){
- 			var $replyTd = $("<tr>");
- 			var $nameTd = $("<td>").text(commentInfo[i].empname);
- 			var $contentTd = $("<td>").text(commentInfo[i].ccontent);
- 			var $updateBtn = $("<button>").text("수정")
- 								.attr({"class":"btn btn-info btn-lg","onclick":"updateBtn(this)","id":"updateBtn"});
- 			var $deleteBtn = $("<button>").text("삭제")
- 			                   .attr({"class":"btn btn-info btn-lg","onclick":"sendAndDelete(this)","id":"deleteReply"});
- 			
- 			 
- 			
- 			var $updateBtnTd = $("<td>").append($updateBtn).append($deleteBtn); ;
- 			/* var $deleteBtnTd = $("<td>").append($deleteBtn);  */
- 			
- 			
- 			$replyTd.append($nameTd);
- 			$replyTd.append($contentTd);
- 			$replyTd.append($updateBtnTd);
- 			/* $replyTd.append($deleteBtnTd); */
- 			
- 			$replyTable.append($replyTd);
- 		}
- 	}
- 	
- 	
- 	
- 	
- 	
- 	
- 	
- 
- 
- 
- 
- </script>
  
  
 

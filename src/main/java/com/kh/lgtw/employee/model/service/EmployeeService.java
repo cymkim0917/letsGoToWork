@@ -86,12 +86,14 @@ public interface EmployeeService {
 	int checkEmpWork(Attendance attend);
 
 	int insertEmpWork(Attendance attend);
-
-
-
-
-
-
+  
+	int checkEmpWork(int empNo);
+	
+	//휴가 추가 - 욱
+	int holidayInsertAdmin();
+	
+	//휴가신청조회 - 욱
+	HashMap<String, Object> showHolidayApply(int empNo);
 
 
 
