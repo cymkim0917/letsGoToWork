@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.http.ResponseEntity;
 
 import com.kh.lgtw.approval.model.vo.PageInfo;
 import com.kh.lgtw.common.model.vo.Attachment;
@@ -98,8 +99,13 @@ public interface EmployeeDao{
 	int holidayInsertAdmin(SqlSession sqlSession);
 	
 	//휴가 신청 조회 - 욱
-	HashMap<String, Object> showHolidayApply(SqlSession sqlSession, int empNo);
+	ArrayList<HashMap<String, Object>> showHolidayApply(SqlSession sqlSession, int empNo);
+	
+	//휴가 신청 - 욱
+	int applyHoliday(SqlSession sqlSession, HashMap<String, Object> params);
 
+	ArrayList<HashMap<String, Object>> getAdminHoliday(SqlSession sqlSession, HashMap<String,Object> parmas);
+	
 
 //	Employee loginEmpl(Employee employee, SqlSession sqlSession);
 //
