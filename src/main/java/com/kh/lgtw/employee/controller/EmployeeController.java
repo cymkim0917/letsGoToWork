@@ -748,7 +748,7 @@ public class EmployeeController {
 		}
 		//휴가 관리 페이지
 		@RequestMapping("showHolidayAdmin.em")
-		public String showHolidayAdminPage() {
+		public String showHolidayAdminPage(HttpSession session) {
 			return "employee/holidayAdmin";
 		}
 		
