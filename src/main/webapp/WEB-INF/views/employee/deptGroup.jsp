@@ -42,19 +42,6 @@
     		data.addRows([deptList[i]])
     	})
         
-        // For each orgchart box, provide the name, manager, and tooltip to show.
-/*         data.addRows([
-        	[{v:result[0].deptCode,f:result[0].deptName},{v:result[0].topDept}],
-        	[{v:result[1].deptCode,f:result[1].deptName},{v:result[1].topDept}],
-        	[{v:result[2].deptCode,f:result[2].deptName},{v:result[2].topDept}],
-        	[{v:result[3].deptCode,f:result[3].deptName},{v:result[3].topDept}],
-        	[{v:result[4].deptCode,f:result[4].deptName},{v:result[4].topDept}],
-        	[{v:result[5].deptCode,f:result[5].deptName},{v:result[5].topDept}],
-        	[{v:result[6].deptCode,f:result[6].deptName},{v:result[6].topDept}],
-        	
-        	
-        ]); */
-        
         var option = {
         		width: 900,
         		height:300,

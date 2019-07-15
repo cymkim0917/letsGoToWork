@@ -110,5 +110,7 @@ public interface EmployeeService {
 
 	int checkEmpOffWork(Attendance attend);
 
+	ArrayList<Attendance> selectAttendanceList(int empNo);
+
 
 }

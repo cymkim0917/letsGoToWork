@@ -433,15 +433,16 @@
 	</update>
 	
 	<insert id="insertNoWork" parameterType="Attendance">
-		INSERT INTO ATTENDANCE VALUES(SYSDATE,#{empNo},null,#{endTime},'미체크')
+		INSERT INTO ATTENDANCE VALUES(SYSDATE,#{empNo},null,#{endTime},'출근미체크')
 	</insert>
 	
-	<select id="checkEmpOffWork">
+	<select id="checkEmpOffWork" parameterType="Attendance" resultType="_int">
 		select count(*) 
 		from attendance 
 		where EMPNO=#{empNo} 
 		AND TO_CHAR(ATTENDANCE_DATE,'yyyy-MM-dd')=#{attendanceDate}
-		AND END_TIME != NULL
+		AND END_TIME IS NOT NULL
+	</select>
 	
 	<!-- 휴가 대상자 조회 - 욱 -->
 	 <select id="showHolidayApply" resultType="_int" resultMap="holidayResultSet">
@@ -474,30 +475,36 @@
 	
 	<select id="getAdminHoliday" parameterType="java.util.HashMap" resultMap="holidayResultSet">
 	SELECT * FROM 
-			(SELECT E.EMPNO,E.EMP_NAME,DEPT_NAME,E.ENROLL_DATE ,D.MANAGER_EMPNO,E2.EMP_NAME AS MANAGER_NAME,
-		   HIH_NO, HIH_TYPE,HIH_TOTAL_DATE,HIH_APPLY_DATE, RH.RH_REQUEST_NO, HC.STATUS AS HCSTATUS,HOLIDAY_TYPE,HP_APPLY_DATE,
-           (SELECT MIN(HDH_DATE) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) FIRST_DATE,
-           (SELECT MAX(HDH_DATE) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) LAST_DATE,
-           (SELECT COUNT(*) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) HOLICOUNT
-    FROM EMPLOYEE E
-        JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
-        JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
-        JOIN EMPLOYEE E2 ON (D.MANAGER_EMPNO = E2.EMPNO)
-        JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
-        JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
-        LEFT JOIN HI_HISTORY HH ON(HH.EMPNO = E.EMPNO)
-        LEFT JOIN REQUEST_HOLIDAY RH ON (E.EMPNO = RH.TARGET_EMPNO)
-        LEFT JOIN HOLIDAY_CHECK HC ON (RH.RH_REQUEST_NO = HC.RH_REQUEST_NO)
-	WHERE MANAGER_EMPNO = #{empNo}
-    AND RH.RH_REQUEST_NO IS NOT NULL)
-	WHERE 1=1
-	AND FIRST_DATE BETWEEN TO_DATE(#{holdayTime}) AND LAST_DAY(TO_DATE(#{holdayTime}))
-	<if test="textSearch != 'empty'">
-		AND EMP_NAME LIKE '%' || #{textSearch} || '%'
-	</if>
-	<if test="holidayType != '전체'">
-		AND HOLIDAY_TYPE = #{holidayType}
-	</if>
+				(SELECT E.EMPNO,E.EMP_NAME,DEPT_NAME,E.ENROLL_DATE ,D.MANAGER_EMPNO,E2.EMP_NAME AS MANAGER_NAME,
+			   HIH_NO, HIH_TYPE,HIH_TOTAL_DATE,HIH_APPLY_DATE, RH.RH_REQUEST_NO, HC.STATUS AS HCSTATUS,HOLIDAY_TYPE,HP_APPLY_DATE,
+	           (SELECT MIN(HDH_DATE) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) FIRST_DATE,
+	           (SELECT MAX(HDH_DATE) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) LAST_DATE,
+	           (SELECT COUNT(*) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) HOLICOUNT
+	    FROM EMPLOYEE E
+	        JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+	        JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+	        JOIN EMPLOYEE E2 ON (D.MANAGER_EMPNO = E2.EMPNO)
+	        JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+	        JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+	        LEFT JOIN HI_HISTORY HH ON(HH.EMPNO = E.EMPNO)
+	        LEFT JOIN REQUEST_HOLIDAY RH ON (E.EMPNO = RH.TARGET_EMPNO)
+	        LEFT JOIN HOLIDAY_CHECK HC ON (RH.RH_REQUEST_NO = HC.RH_REQUEST_NO)
+		WHERE MANAGER_EMPNO = #{empNo}
+	    AND RH.RH_REQUEST_NO IS NOT NULL)
+		WHERE 1=1
+		AND FIRST_DATE BETWEEN TO_DATE(#{holdayTime}) AND LAST_DAY(TO_DATE(#{holdayTime}))
+		<if test="textSearch != 'empty'">
+			AND EMP_NAME LIKE '%' || #{textSearch} || '%'
+		</if>
+		<if test="holidayType != '전체'">
+			AND HOLIDAY_TYPE = #{holidayType}
+		</if>
+	</select>
+	
+	<select id="selectAttendanceList" resultMap="attend" parameterType="_int">
+		SELECT *
+		FROM ATTENDANCE
+		WHERE EMPNO=#{empNo}
 	</select>
 	
 </mapper>

@@ -37,6 +37,7 @@
 	}
 </style>
 </head>
+<link rel="shortcut icon" href="${ contextPath }/resources/images/favicon.ico">
 <body>
 	<jsp:include page="../common/menubar.jsp"/>
 	<div class="row wrap">
