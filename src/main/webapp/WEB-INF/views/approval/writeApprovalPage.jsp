@@ -386,7 +386,7 @@
 				        
 				            	<button type="button" class="btn btn-md" id="save">임시저장</button>
 				            	<button type="button" class="btn btn-md btn-default" onclick="history.back(-1);">취소</button>
-				                <button type="button"  id="write" class="btn btn-md btn-primary">기안하기</button>
+				                <button type="submit"  id="write" class="btn btn-md btn-primary">기안하기</button>
 				                <button type="submit" id="submit" style="display:none"></button>
 				            </div>
 				        </div>
@@ -489,7 +489,7 @@
 			var $label = $("<label style='margin-left:5px; margin-right:5px;' class='lab'>");
 			var empNo = $(this).val();
 			var check = 0;
-			$("input[type=hidden]").each(function(){
+			$(".emp").each(function(){
 				if($(this).val() == empNo){
 					check = 1;
 				}
@@ -499,7 +499,7 @@
 			if(check <= 0 ){
 				if($(this).parent().attr("name") == 'circleList'){
                  	$label.append($(this).text());
-                 	$label.append($("<input type='hidden' name='circleEmp' value='" + $(this).val() + "'>"));
+                 	$label.append($("<input type='hidden' class='emp' name='circleEmp' value='" + $(this).val() + "'>"));
                  	$label.append($("<a href='#' onclick='deleteTag(this);' style='color:red;'>x</a>")); 	
                  	
                  	$("#circleEmp").append($label);
@@ -512,24 +512,24 @@
 					var empName = emp[0];
 					var empJob = emp[1].split("/");
 					var empJobName = empJob[1].split(")")[0];
-					console.log($("<input type='hidden' name='approvalEmp' value='" + $(this).val() + "'>"));
+					console.log($("<input type='hidden' class='emp' name='approvalEmp' value='" + $(this).val() + "'>"));
 					console.log("jobNameTd : " + jobNameTd);
 					
 					jobNameTd[approvalCount + 1].append(empJobName);
 					empNameTd[approvalCount].append(empName);
-					$(".signArea").append($("<input type='hidden' name='approvalEmp' value='" + $(this).val() + "'>"));
+					$(".signArea").append($("<input type='hidden' class='emp' name='approvalEmp' value='" + $(this).val() + "'>"));
 					approvalCount++;
 				}else if($(this).parent().attr("name") == 'agreeList'){
 					var emp = $(this).text().split("(");
 					var empName = emp[0];
 					
 					agreeTd[agreeCount + 1].append(empName);
-					$(".signArea").append($("<input type='hidden' name='agreeEmp' value='" + $(this).val() + "'>"));
+					$(".signArea").append($("<input type='hidden' class='emp' name='agreeEmp' value='" + $(this).val() + "'>"));
 					agreeCount++;
 					
 				}else if($(this).parent().attr("name") == 'referenceList'){
 					$label.append($(this).text());
-                 	$label.append($("<input type='hidden' name='referenceEmp' value='" + $(this).val() + "'>"));
+                 	$label.append($("<input type='hidden' class='emp' name='referenceEmp' value='" + $(this).val() + "'>"));
                  	$label.append($("<a href='#' onclick='deleteTag(this);' style='color:red;'>x</a>"))
                  	
                  	$("#refEmpName").append($label);
@@ -545,7 +545,7 @@
 					
 					payAgreeJobNameTd[payAgreeCount + 1].append(empJobName);
 					payAgreeEmpNameTd[payAgreeCount].append(empName);
-					$(".signArea").append($("<input type='hidden' name='payAgreeEmp' value='" + $(this).val() + "'>"));
+					$(".signArea").append($("<input type='hidden' class='emp' name='payAgreeEmp' value='" + $(this).val() + "'>"));
 					payAgreeCount++;
 				}else if($(this).parent().attr("name") == 'applyList'){
 					var emp = $(this).text().split("(");
@@ -557,7 +557,7 @@
 					
 					applyJobNameTd[applyCount + 1].append(empJobName);
 					applyEmpNameTd[applyCount].append(empName);
-					$(".signArea").append($("<input type='hidden' name='applyEmp' value='" + $(this).val() + "'>"));
+					$(".signArea").append($("<input type='hidden' class='emp' name='applyEmp' value='" + $(this).val() + "'>"));
 					applyCount++;
 					
 				}else if($(this).parent().attr("name") == 'proceesList'){
@@ -570,12 +570,12 @@
 					
 					processJobNameTd[processCount + 1].append(empJobName);
 					processEmpNameTd[processCount].append(empName);
-					$(".signArea").append($("<input type='hidden' name='processEmp' value='" + $(this).val() + "'>"));
+					$(".signArea").append($("<input type='hidden' class='emp' name='processEmp' value='" + $(this).val() + "'>"));
 					processCount++;
 					
 				}else if($(this).parent().attr("name") == 'sendList'){
 					$label.append($(this).text());
-                 	$label.append($("<input type='hidden' name='sendEmp' value='" + $(this).val() + "'>"));
+                 	$label.append($("<input type='hidden' class='emp' name='sendEmp' value='" + $(this).val() + "'>"));
                  	$label.append($("<a href='#' onclick='deleteTag(this);' style='color:red;'>x</a>"))
                  	
                  	$("#sendEmpName").append($label);
@@ -833,13 +833,11 @@
 					$("select[name='empList']").children().remove();
 					
 					for(var i = 0; i < data.empList.length; i++) {
-						if(${sessionScope.loginEmp.empNo} != data.empList[i].empNo){
 							console.log(data.empList[i].empName);
 							var $option = $("<option id='" + data.empList[i].empNo + "' value='" + data.empList[i].empNo + "'>");
 							$option.append($("<label>" + data.empList[i].empName + "(" + data.empList[i].deptName + "/ " + data.empList[i].jobName + " )" + "</label>"));
 							
 							$("select[name='empList']").append($option);
-						}
 					}
 				}
 			});
@@ -851,14 +849,12 @@
 					console.log("성공");
 					
 					for(var i = 0; i < data.empList.length; i++) {
-						if(${sessionScope.loginEmp.empNo} != data.empList[i].empNo){
 							console.log(data.empList[i].empName);
 							var $option = $("<option id='" + data.empList[i].empNo + "' value='" + data.empList[i].empNo + "'>");
 							$option.append($("<label>" + data.empList[i].empName + "(" + data.empList[i].deptName + "/ " + data.empList[i].jobName + " )" + "</label>"));
 							
 							$("select[name='empList']").append($option);
 							
-						}
 					} 
 					
 				}

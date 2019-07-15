@@ -165,7 +165,6 @@
 	<script>
 	function selectSignForm(){
 		var signCode = $("input[name='signForm']:checked").val();
-		alert(signCode);
 		
 		$.ajax({
 			url:"selectSignForm.ap",
@@ -173,8 +172,6 @@
 			contentType: "application/x-www-form-urlencoded; charset=UTF-8", 
 			data:{signCode:signCode},
 			success:function(data){
-				alert(data);
-				console.log(data);
 				var appForm = data;
 				$("#signFormArea").html(appForm);
 				$("input[name='signCode']").val(signCode);

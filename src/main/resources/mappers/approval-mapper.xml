@@ -827,8 +827,10 @@
 		JOIN APP_FORM AF ON (AD.AF_NO = AF.AF_NO)
 		JOIN SIGN_FORM SF ON (AF.SIGN_CODE = SF.SIGN_CODE)
         JOIN SECURITY S ON(S.SECURITY_CODE = AF.SECURITY_CODE)
+        JOIN APPROVAL_LIST AL ON(AD.AD_NO = AL.AD_NO)
         WHERE ((AD_STATUS = '완료' OR AD_STATUS = '반려')AND S.JOB_CODE >= #{sort})
         OR ((AD_STATUS = '완료' OR AD_STATUS = '반려') AND AD_WRITER = #{empNo})
+        OR ((AD_STATUS = '완료' OR AD_STATUS = '반려') AND AL.AL_EMPNO = #{empNo})
         ORDER BY AD_END_DATE
 	</select>
 	
@@ -839,8 +841,10 @@
 		JOIN APP_FORM AF ON (AD.AF_NO = AF.AF_NO)
 		JOIN SIGN_FORM SF ON (AF.SIGN_CODE = SF.SIGN_CODE)
         JOIN SECURITY S ON(S.SECURITY_CODE = AF.SECURITY_CODE)
+        JOIN APPROVAL_LIST AL ON(AD.AD_NO = AL.AD_NO)
         WHERE ((AD_STATUS = '완료' OR AD_STATUS = '반려')AND S.JOB_CODE >= #{jobCode})
         OR ((AD_STATUS = '완료' OR AD_STATUS = '반려') AND AD_WRITER = #{empNo})
+        OR ((AD_STATUS = '완료' OR AD_STATUS = '반려') AND AL.AL_EMPNO = #{empNo})
         ORDER BY AD_END_DATE
 	</select>
 	
@@ -939,50 +943,56 @@
 	</select>
 	
 	<!-- 결재 완료 문서 -->
-	<select id="selectFinApprovalDcm" parameterType="java.lang.String" resultType="_int">
+	<select id="selectFinApprovalDcm" parameterType="java.util.HashMap" resultType="_int">
 		SELECT COUNT(DISTINCT AD.AD_NO)
 		FROM APP_DOCUMENT AD
 		JOIN EMPLOYEE E ON(AD.AD_WRITER = E.EMPNO)
 		JOIN APP_FORM AF ON (AD.AF_NO = AF.AF_NO)
 		JOIN SIGN_FORM SF ON (AF.SIGN_CODE = SF.SIGN_CODE)
         JOIN SECURITY S ON(S.SECURITY_CODE = AF.SECURITY_CODE)
-        WHERE AD_STATUS = '완료'
-        AND S.JOB_CODE >= #{jobCode}
+        JOIN APPROVAL_LIST AL ON(AD.AD_NO = AL.AD_NO)
+        WHERE (AD_STATUS = '완료' AND S.JOB_CODE >= #{jobCode})
+        OR (AD_STATUS = '완료' AND AL.AL_EMPNO = #{empNo})
         ORDER BY AD_END_DATE
 	</select>
 	
-	<select id="showFinApprovalDcm" parameterType="java.lang.String" resultMap="appDocument2">
+	<select id="showFinApprovalDcm" parameterType="java.util.HashMap" resultMap="appDocument2">
 		SELECT *
 		FROM APP_DOCUMENT AD
 		JOIN EMPLOYEE E ON(AD.AD_WRITER = E.EMPNO)
 		JOIN APP_FORM AF ON (AD.AF_NO = AF.AF_NO)
 		JOIN SIGN_FORM SF ON (AF.SIGN_CODE = SF.SIGN_CODE)
         JOIN SECURITY S ON(S.SECURITY_CODE = AF.SECURITY_CODE)
-        WHERE AD_STATUS = '완료'
-        AND S.JOB_CODE >= #{jobCode}
+        JOIN APPROVAL_LIST AL ON(AD.AD_NO = AL.AD_NO)
+        WHERE (AD_STATUS = '완료' AND S.JOB_CODE >= #{jobCode})
+        OR (AD_STATUS = '완료' AND AL.AL_EMPNO = #{empNo})
         ORDER BY AD_END_DATE
 	</select>
 	
 	<!-- 반려문서 -->
-	<select id="selectRefuseDcm" parameterType="java.lang.String" resultType="_int">
+	<select id="selectRefuseDcm" parameterType="java.util.HashMap" resultType="_int">
 		SELECT COUNT(*)
 		FROM APP_DOCUMENT AD
 		JOIN EMPLOYEE E ON(AD.AD_WRITER = E.EMPNO)
 		JOIN APP_FORM AF ON (AD.AF_NO = AF.AF_NO)
 		JOIN SIGN_FORM SF ON (AF.SIGN_CODE = SF.SIGN_CODE)
         JOIN SECURITY S ON(S.SECURITY_CODE = AF.SECURITY_CODE)
+        JOIN APPROVAL_LIST AL ON(AD.AD_NO = AL.AD_NO)
         WHERE (AD_STATUS = '반려' AND S.JOB_CODE >= #{jobCode})
+        OR (AD_STATUS = '반려' AND AL.AL_EMPNO = #{empNo})
         ORDER BY AD_END_DATE
 	</select>
 	
-	<select id="showRefuseDcm" parameterType="java.lang.String" resultMap="appDocument2">
+	<select id="showRefuseDcm" parameterType="java.util.HashMap" resultMap="appDocument2">
 		SELECT *
 		FROM APP_DOCUMENT AD
 		JOIN EMPLOYEE E ON(AD.AD_WRITER = E.EMPNO)
 		JOIN APP_FORM AF ON (AD.AF_NO = AF.AF_NO)
 		JOIN SIGN_FORM SF ON (AF.SIGN_CODE = SF.SIGN_CODE)
         JOIN SECURITY S ON(S.SECURITY_CODE = AF.SECURITY_CODE)
+        JOIN APPROVAL_LIST AL ON(AD.AD_NO = AL.AD_NO)
         WHERE (AD_STATUS = '반려' AND S.JOB_CODE >= #{jobCode})
+        OR (AD_STATUS = '반려' AND AL.AL_EMPNO = #{empNo})
         ORDER BY AD_END_DATE
 	</select>
 	

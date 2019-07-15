@@ -48,10 +48,10 @@
 			      <tr>
 			        <td class="head">문서종류</td>
 			        <td>
-						<select class="form-control" id="dcmType" name="afNo" disabled>
+						<select class="form-control" id="dcmType" name="afNo">
 							<option value="">선택</option>
 							<c:forEach var="af" items="${ requestScope.list }">
-								<option value="${ af.afNo }">${ af.afName }</option>
+								<option value="${ af.afNo }" selected>${ af.afName }</option>
 							</c:forEach>
 						</select>
 					</td>
@@ -1222,7 +1222,8 @@
             width:'100%',
             height:'400px',
             filebrowserImageUploadUrl: '${ contextPath }/reources/images', //여기 경로로 파일을 전달하여 업로드 시킨다.
-            defaultLanguage:'kor'
+            defaultLanguage:'kor',
+            extraPlugins: 'tableresize'
         });
          
          
