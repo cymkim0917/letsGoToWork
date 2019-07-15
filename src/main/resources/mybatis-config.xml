@@ -72,4 +72,3 @@
 		<mapper resource="mappers/excelemp-mapper.xml"/>
 	</mappers>
 </configuration>
-
