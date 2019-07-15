@@ -8,6 +8,19 @@
 <link rel="shortcut icon" href="contextPath/resources/images/favicon.ico">
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
 <title>LetsGoToWork</title>
+<style>
+	.contentSelectArea li {
+    font-size: 15px !important;
+    cursor: pointer;
+	}
+	
+	.sidenav li:not(.mailSelect):hover {
+    background: #80aaff !important;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 5px;
+}
+</style>
 </head>
 <body>
 	<jsp:include page="../common/menubar.jsp"/>

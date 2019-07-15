@@ -206,7 +206,148 @@
 	    font-weight: 400;
 	    line-height: 1.428571429;
 	    white-space: nowrap;
-}
+	}
+
+	.table>thead>tr.info>th{
+		background-color:#f3f3f3 !important;
+	}
+	
+	.tabType1 {
+	    width: 100%;
+	    overflow: hidden;
+	    background: #f3f3f3;
+	}
+	
+	ul{
+		list-style:none;
+	}
+	
+	.tabType1 li{
+		float: left;
+	    margin: 5px 8px 0;
+	    padding: 4px 12px;
+	    text-align: center;
+	}
+	
+	.tabType-tax li.on a, .tabType1 li.on a {
+   		font-weight: 700;
+    }
+    
+    .tabType-tax li.on, .tabType1 li.on {
+    	background: #fff;
+	}
+	
+	.setting_title {
+	    position: relative;
+	    padding: 20px 25px 0 23px;
+	    min-width: 733px;
+	    height: 60px;
+	    border-bottom:1px solid #f2f4f3;
+	}
+	
+	.setting_title h3 {
+	    color: #333;
+	    font-size: 16px;
+	}
+	
+	.setting_field {
+    	padding: 30px 25px 0;
+	}
+
+	.pdb_20 {
+    	padding-bottom: 20px!important;	
+	}
+	
+	.tableType02 {
+	    width: 100%;
+	    border-top: 1px solid #cdcdcd;
+	}
+	
+	.layer_box table caption {
+    	display: none;
+	}
+	
+	.tableType02 th.bdr_1 {
+    	border-right: 1px solid #dedede;
+	}
+	
+	.tableType02 th {
+	    padding: 14px 14px;
+	    border-bottom: 1px solid #dedede;
+	    background: #f9f9f9;
+	    color: #333;
+	    font-weight: 400;
+	}
+	
+	.tableType02 .center {
+	    padding-left: 0;
+	    text-align: center;
+	}
+	
+	.tableType02 td {
+	    padding: 12px 0 12px 14px;
+	    border-bottom: 1px solid #dedede;
+	}
+	
+	.tblf {
+	    table-layout: fixed;
+	}
+	
+	.ta_c {
+	    text-align: center!important;
+	}
+	
+	.layer_button {
+    	margin-top: 70px;
+     	line-height: 19px; 
+   		text-align: center;
+	}
+	.layer_button button {
+	    padding: 5px 27px 6px;
+	    color: #444;
+	    letter-spacing: -1px;
+	    border: 1px solid #dadada;
+	    background: #dadada;
+	}
+	
+	.icon.btn_closelayer {
+	    position: absolute;
+	    top: 10px;
+	    right: 10px;
+	    width: 17px;
+	    height: 16px;
+	    background-position: -281px 0;
+	}
+	
+	.tableType02 td.bdr_1 {
+	    border-right: 1px solid #dedede;
+	}
+	
+	.layer_box {
+	    position: fixed;
+	    top: 50%;
+	    left: 50%;
+	    z-index: 1010;
+	    border: 1px solid #8d8d8d;
+	    background: #fff;
+	}
+	
+	caption {
+	    overflow: hidden;
+	    width: 0;
+	    height: 0;
+	    font-size: 0;
+	    line-height: 0;
+	}
+	
+	body, button, input, select, td, textarea, th {
+	    font-size: 14px;
+	    font-family: '맑은 고딕','Malgun Gothic',dotum,sans-serif;
+	    color: #676767;
+	}
+	a{
+		text-decoration:none !important;
+	}
 
 </style>
 </head>
@@ -216,11 +357,23 @@
 		<jsp:include page="../common/sideMenu/employee.jsp"/>
 		
 		<section class="col-sm-10">
-			<h1 class="title">휴가 신청관리</h1>
-			<button type="button" class="btn btn-primary" onclick="location.href='showHolidayList.em'">내 휴가</button>
+			<div class="setting_title">
+				<h3>휴가 현황</h3>
+			</div>
+			
+			<div class="setting_field">
+			<ul class="tabType1">
+                    <li>
+                        <a href="javascript:void(0)" onclick="location.href='showHolidayList.em'">내 휴가</a>
+                    </li>
+                    <li class="on">
+                    	<a href="javascript:void(0)" onclick="location.href='showHolidayAdmin.em'">휴가신청관리</a>
+                    </li>
+            </ul>
+            
+			<!-- <button type="button" class="btn btn-primary" onclick="location.href='showHolidayList.em'">내 휴가</button> -->
 			<!-- <button type="button" class="btn btn-primary" onclick="location.href='showHoliCalender.em'">휴가 캘린더</button> -->
-			<button type="button" class="btn btn-primary" onclick="location.href='showHolidayAdmin.em'">휴가 신청관리</button>
-			<hr>
+			<!-- <button type="button" class="btn btn-primary" onclick="location.href='showHolidayAdmin.em'">휴가 신청관리</button> -->
 			<div class="content">
 				<div class="all_absence after pdt_0 Clearfix">
                         <div class="month pdb_30 ta_l Fl">
@@ -274,9 +427,9 @@
 						        <th>신청일</th>
 						        <th>일수</th>
 						        <th>기간</th>
-						        <td>상태</td>
-						        <td>상세</td>
-						        <td>휴가신청취소</td>
+						        <th>상태</th>
+						        <th>상세</th>
+						        <th>휴가신청취소</th>
 						      </tr>
 					    </thead>
 					    <tbody id="holidayEmpTable">
@@ -293,7 +446,7 @@
 					      	</tr>
 					    </tbody>
 				 	 </table>
-				
+				</div>
 			</div>
 		</section>
 	</div>
@@ -305,15 +458,102 @@
 	  <div class="modal-dialog">
 	
 	    <!-- Modal content-->
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal">&times;</button>
+	    <div class="modal-content" style="width: 700px !important;
+	    								  padding: 25px 30px 32px !important;
+	    								  display: block !important;
+	    								  height:auto !important">
+	    								  
+	    	<div class="modal-header" style="border-bottom:none">
+	        	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	        	<div class="title_layer text_variables" style=" font-size: 16px; color: #2985db;">휴가 신청 상세</div>
+	      	</div>
+	      	<div class="modal-body" style="height:100%;">
+	        	<div class="approve_scroll" style=" height:auto;">
+        			<div class="pdb_20">
+						<table class="tableType02 tblf">
+							<caption>휴가 결재선</caption>
+								<colgroup>
+									<col width="120">
+									<col width="80">
+									<col width="">
+									<col width="">
+									<col width="">
+									<col width="">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="row" rowspan="2" class="bdr_1">결재 진행</th>
+										<th class="bdr_1" rowspan="2">신청</th>
+										<td class="center bdr_1">어드민</td>
+										<td class="center bdr_1"></td>
+										<td class="center bdr_1"></td>
+										<td class="center"></td>
+									</tr>
+									<tr>
+										<td class="center bdr_1"><div class="insa-stamp"><img src="${contextPath}/resources/images/employee/approval.png" alt="결재"></div></td>
+										<td class="center bdr_1"><div class="insa-stamp"></div></td>
+										<td class="center bdr_1"><div class="insa-stamp"></div></td>
+										<td class="center"><div class="insa-stamp"></div></td>
+									</tr>
+								</tbody>
+						</table>
+					</div>
+					<div>
+						<table class="tableType02 tblf">
+							<caption>휴가 상세내용</caption>
+							<colgroup>
+								<col width="120">
+								<col width="">
+								<col width="120">
+								<col width="">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row" class="ta_c body_bold">신청 일시</th>
+									<td>2019-07-15 04:56</td>
+									<th scope="row" class="ta_c body_bold">상태</th>
+									<td>결재 완료</td>
+								</tr>
+								<tr>
+									<th scope="row" class="ta_c body_bold">사용자</th>
+									<td>어드민</td>
+									<th scope="row" class="ta_c body_bold">신청자</th>
+									<td>어드민</td>
+								</tr>
+								<tr>
+									<th scope="row" class="ta_c body_bold">소속</th>
+									<td colspan="3">남궁욱컴퍼니</td>
+								</tr>
+								<tr>
+									<th scope="row" class="ta_c body_bold">종류</th>
+									<td>연차</td>
+									<th scope="row" class="ta_c body_bold">일수</th>
+									<td>2.0</td>
+								</tr>
+								<tr>
+									<th scope="row" class="ta_c body_bold">기간</th>
+									<td colspan="3"><p>2019-07-16 [일차]</p><p>2019-07-26 [일차]</p></td>
+								</tr>
+								<tr>
+									<th scope="row" class="ta_c body_bold">사유</th>
+									<td colspan="3">12</td>
+								</tr>
+								<tr>
+									<th scope="row" class="ta_c body_bold">의견</th>
+									<td colspan="3"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+    			</div>
+    		
 	      </div>
-	      <div class="modal-body">
-	        <p>Some text in the modal.</p>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      <div class="modal-footer" style="border-top:none;">
+	        <div class="layer_button">
+	        	<button id="applyCheckBtn" type="button" onclick="delHoliday(this,'결제승인')" style="display:none">결제승인</button>
+				<button id="applyBtn" type="button" onclick="delHoliday(this)">휴가신청취소</button>
+				<button type="button" onclick="$('.detailModal').click()">닫기</button>
+			</div>
 	      </div>
 	    </div>
 	
@@ -393,7 +633,7 @@
 				$("#holidayEmpTable").append($("<tr>").append($("<td colspan='9'>").text('조회된 결과가 없습니다.')));
 			}else{
 				for(var i=0; i<data.length; i++){
-					var $holidayTr = $("<tr>");
+					var $holidayTr = $("<tr>").attr("id",data[i].empNo);
 					var $nameTd =  $("<td>").text(data[i].empName);
 					var $deptTd = $("<td>").text(data[i].deptName);
 					var $typeTd = $("<td>").text(data[i].holidayType);
@@ -408,10 +648,10 @@
 					}
 					
 					var $hihTypeTd = $("<td>").text("상세").css({"color":"#779ec0","cursor":"pointer"})
-										.attr({"onclick":"holidayDetail(this)","id":data[i].rhRequestNo});;
+										.attr({"onclick":"holidayDetail(this)","id":data[i].rhRequestNo});
 					
 					var $approvalTd = $("<td>").text('휴가신청취소').css({"color":"#779ec0","cursor":"pointer"})
-										.attr({"onclick":"delHoliday(this)","id":data[i].rhRequestNo});
+										.attr({"onclick":"delHoliday(this)","class":data[i].rhRequestNo});
 					
 					$holidayTr.append($nameTd);
 					$holidayTr.append($deptTd);
@@ -429,14 +669,144 @@
 			
 		}
 		
-		function delHoliday(rhNum){
-			console.log(rhNum.id);
+		function delHoliday(rhNum,value){
+			
+			var $checkTd = $("#" + $(rhNum).prop("class"));
+			var empNo = $("#" + $(rhNum).prop("class")).parent().prop("id");
+			console.log($("#" + $(rhNum).prop("class")));
+			console.log("empNo : " + empNo);
+			console.log($checkTd.prev().text());
+			var rhNum = $(rhNum).prop("class");
+			
+			if(value == '결제승인'){
+				appHoliday(empNo, rhNum, 'apply');
+			}else if($checkTd.prev().text() == '반려'){
+				alert("이미 반려된 결제 건입니다");
+			}else if($checkTd.prev().text() == '결제 대기'){
+				if(confirm("휴가문서를 반려 하시겠습니까? 취소 시 사용자의 휴가가 환원(반려)됩니다.")){
+					appHoliday(empNo, rhNum, 'cancle');
+				}
+			}else if($checkTd.prev().text() == '승인'){
+				if(confirm("결재된 휴가문서를 신청 취소하시겠습니까? 취소 시 사용자의 휴가가 환원(반려)됩니다.")){
+				appHoliday(empNo, rhNum, 'reCancle');
+				}
+			}
+			
+			
+		}
+		
+		function appHoliday(empNo, rhNum, status){
+			
+			var holidayInfo = {
+								'empNo':empNo,
+								'rhNum':rhNum,
+								'status':status
+								}
+			
+			$.ajax({
+				url:"holiday/appHoliday",
+				type:"post",
+				data:JSON.stringify(holidayInfo),
+				 dataType : "json",
+				 contentType:"application/json",
+				 success:function(data){
+					 console.log(data);
+					 if(data > 0){
+						 HolidayAdminList();
+						 if($("#myModal").css("display") == block){
+							 $('.detailModal').click();
+						 }
+						 
+						 
+					 }
+				 },
+				 error:function(status){
+					 console.log(status);
+				 }
+				
+			});
 		}
 		
 		function holidayDetail(rhNum){
 			console.log(rhNum.id);
 			
-			$(".detailModal").click();
+			$.ajax({
+				url:"holiday/holidayDetail/" + rhNum.id + "/" + '${sessionScope.loginEmp.empNo}',
+				type:"get",
+				success:function(data){
+					console.log(data);
+					
+					$(".center.bdr_1:first").text(data[0].managerName);
+					
+					$(".insa-stamp:first").empty();
+					
+					if(data[0].hcStatus == '승인'){
+						$(".insa-stamp:first").append($("<img>").attr("src","/lgtw/resources/images/employee/approval.png"));
+						$(".insa-stamp:first").append($("<p>").text(new Date(data[0].hcDate).format('yyyy-MM-dd')));
+					}else if(data[0].hcStatus == '반려'){
+						$(".insa-stamp:first").append($("<img>").attr("src","/lgtw/resources/images/approval/cancel.png").css("max-width","30px"));
+						$(".insa-stamp:first").append($("<p>").text(new Date(data[0].hcDate).format('yyyy-MM-dd')));
+					}
+					
+					var $body = $(".body_bold");
+					
+					for(var i=0; i<$body.length; i++){
+						if(i == 0){
+							$body.eq(i).next().text(new Date(data[0].HP_APPLY_DATE).format("yyyy-MM-dd HH:mm"));
+						}else if(i == 1){
+							if(data[0].hcStatus == null){
+								$body.eq(i).next().text("결제 대기");	
+							}else{
+							$body.eq(i).next().text(data[0].hcStatus);
+							}
+						}else if(i == 2 || i == 3){
+							$body.eq(i).next().text(data[0].empName);
+						}else if(i == 4){
+							$body.eq(i).next().text(data[0].deptName);
+						}else if(i == 5){
+							$body.eq(i).next().text(data[0].HIH_TYPE);
+						}else if(i == 6){
+							var count = 0;
+							for(var v=0; v<data.length; v++){
+								if(data[v].hdhType == '일차'){
+									count = count + 1;
+								}else if(data[v].hdhType == '오전반차' || data[v].hdhType == '오후반차'){
+									count = count + 0.5;
+								}
+							}
+							$body.eq(i).next().text(count + "일");
+							
+						}else if(i == 7){
+							$body.eq(i).next().empty();
+							for(var j=0; j<data.length; j++){
+								var $dateP = $("<p>").text(new Date(data[j].hdhDate).format("yyyy-MM-dd") + "[" + data[j].hdhType + "]");
+								$body.eq(i).next().append($dateP);
+							}
+						}else if(i == 8){
+							$body.eq(i).next().text(data[0].holidayReason);
+						}
+					}
+					
+					
+					$("#applyBtn").attr("class",data[0].rhRequestNo);
+					$("#applyCheckBtn").attr("class",data[0].rhRequestNo);
+					if(data[0].hcStatus == null){
+						$("#applyCheckBtn").css("display","inline");
+					}else{
+						$("#applyCheckBtn").css("display","none");
+					}
+					
+					$(".detailModal").click();
+					
+					
+				},
+				error:function(status){
+					console.log(status);
+				}
+			});
+			
+			
+			
 		}
 		
 		

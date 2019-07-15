@@ -640,6 +640,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public int checkEmpOffWork(Attendance attend) {
 		return empDao.checkEmpOffWork(sqlSession,attend);
 	}
+	
+	//휴가 상세 조회 - 욱
+	@Override
+	public ArrayList<HashMap<String, Object>> holidayDetail(HashMap<String, Object> params) {
+		return empDao.holidayDetail(sqlSession, params);
+	}
+	//휴가 결제 - 욱
+	@Override
+	public int appHoliday(HashMap<String, Object> params) {
+		return empDao.appHoliday(sqlSession, params);
+	}
 
 	@Override
 	public ArrayList<Attendance> selectAttendanceList(int empNo) {

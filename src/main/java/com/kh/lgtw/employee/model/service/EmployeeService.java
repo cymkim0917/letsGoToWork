@@ -97,7 +97,8 @@ public interface EmployeeService {
 	
 	//휴가 신청 - 욱
 	int applyHoliday(HashMap<String, Object> params);
-
+	
+	//휴가 신청 리스트 조회 - 욱
 	ArrayList<HashMap<String, Object>> getAdminHoliday(HashMap<String,Object> parmas);
 
 	int insertLeaveEmp(ArrayList<Employee> list);
@@ -109,6 +110,11 @@ public interface EmployeeService {
 	int insertNoWork(Attendance attend);
 
 	int checkEmpOffWork(Attendance attend);
+	
+	//휴가 상세 조회 - 욱
+	ArrayList<HashMap<String, Object>> holidayDetail(HashMap<String, Object> params);
+	//휴가 결제 - 욱
+	int appHoliday(HashMap<String, Object> params);
 
 	ArrayList<Attendance> selectAttendanceList(int empNo);
 

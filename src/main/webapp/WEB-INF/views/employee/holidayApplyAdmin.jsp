@@ -149,13 +149,6 @@
 	    color: #2c86dc;
 	}
 	
-	
-	
-
-	
-	
-	
-	
 
 </style>
 <body>
