@@ -85,6 +85,21 @@
    
    </resultMap>
    
+   <resultMap type="java.util.HashMap" id="mainPageBoard">
+   	  <id column="CONTENT_NO" property="contentNO"/>
+      <result column="BNO" property="bno"/>
+      <result column="BWRITER"  property="bwriter"/>
+      <result column="BTITLE" property="btitle"/>
+      <result column="BCONTENT" property="bcontent"/>
+      <result column="CREATE_DATE" property="createDate"/>
+      <result column="MODIFY_DATE" property="modifyDate"/>
+      <result column="BCOUNT" property="bcount"/>
+      <result column="STATUS" property="status"/>
+      <result column="ORD" property="ord"/>
+      <result column="EMP_NAME" property="createUserName"/>
+      <result column="BOARD_NAME" property="bname"/>
+   </resultMap>
+   
    
    
    
@@ -323,6 +338,19 @@
 	
 	</select>
 	
+	<select id="selectBoardContent" resultMap="mainPageBoard" parameterType="_int">
+		<![CDATA[
+	   SELECT *
+       FROM (SELECT ROWNUM AS ORD , C.* , E.EMP_NAME
+               FROM BOARD B
+               JOIN CONTENT C ON (B.BNO = C.BNO)
+               JOIN EMPLOYEE E ON (B.CREATE_USER = E.EMPNO)
+               WHERE B.BNO = #{bno}
+               AND C.STATUS = 'N'
+               ORDER BY C.CREATE_DATE)
+        WHERE ORD < '11'
+        ]]>
+	</select>
 	
 	
 	

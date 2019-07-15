@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
-import org.omg.CORBA.Object;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -249,6 +248,14 @@ public class CommunityServiceImpl  implements CommunityService{
 	public ArrayList<HashMap<String, java.lang.Object>> communityPostList(PageInfo pi, int bno) {
 		// TODO Auto-generated method stub
 		return  cd.communityPostList(sqlSession,pi,bno);
+	}
+
+
+
+	@Override
+	public ArrayList<HashMap<String, java.lang.Object>> selectBoardContent(int bno) {
+		// TODO Auto-generated method stub
+		return cd.selectBoardContent(bno, sqlSession);
 	}
 
 

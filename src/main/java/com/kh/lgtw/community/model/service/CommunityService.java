@@ -86,7 +86,9 @@ public interface CommunityService
 
 	/* ArrayList<CommunityPost> CommunityPostPageList(PageInfo pi); */
 
-	ArrayList<HashMap<String, java.lang.Object>> communityPostList(PageInfo pi, int bno); 
+	ArrayList<HashMap<String, java.lang.Object>> communityPostList(PageInfo pi, int bno);
+
+	ArrayList<HashMap<String, java.lang.Object>> selectBoardContent(int bno); 
 
 	
 

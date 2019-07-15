@@ -7,6 +7,8 @@
 <title>LetsGoToWork</title>
 </head>
 <body>
-	<jsp:forward page="WEB-INF/views/main/main.jsp"/>
+	<%-- <jsp:forward page="WEB-INF/views/main/main.jsp"/> --%>
+	<jsp:include page="WEB-INF/views/common/tools.jsp" />
+	<jsp:include page="WEB-INF/views/main/loginMain.jsp"/>
 </body>
 </html>

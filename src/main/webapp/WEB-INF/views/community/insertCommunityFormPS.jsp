@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <title>LetsGoToWork</title>
 	<style>
-		.content{font-size:150%; }
+		/* .content{font-size:150%; } */
 	
 	</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -19,7 +19,7 @@
 		<jsp:include page="../common/sideMenu/community.jsp"/>
 		
 		<section class="col-sm-10">
-			<h1 class="title">글작성</h1> 
+			<h3 class="title">글작성</h3> 
 		
 			<div class="content">
 					
