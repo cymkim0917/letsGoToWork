@@ -13,9 +13,9 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
    <style>
-  	.table{font-size:150%; }
-  
-  	#searcArea{font-size:150%;}
+	/*   	.table{font-size:150%; }
+	  
+	  	#searcArea{font-size:150%;} */
   </style>
 
 </head>
@@ -27,10 +27,7 @@
 		<jsp:include page="../common/sideMenu/community.jsp"/>
 		
 		<section class="col-sm-10">
-			
-			
-			
-			<h1 class="title">게시판  관리</h1> 
+			<h3 class="title">게시판  관리</h3> 
 			<hr>
 			
 			<div class="content" >
@@ -56,8 +53,7 @@
 				
 			
 				
-				<div class="container">
-		  <table class="table">
+		  <table class="table" style="textalign:center; align:center">
 			    <thead>
 			      <tr>
 			        <th>게시판 이름</th>
@@ -84,8 +80,8 @@
 				      	
 				        
 											      	
-				        <td><button name="updateBtn" type="button" class="btn btn-info btn-lg" >수정</button></td>
-				        <td><button type="button" class="btn btn-info btn-lg" name="deleteBtn">삭제</button></td>
+				        <td><button name="updateBtn" type="button" class="btn btn-info btn-xs" >수정</button></td>
+				        <td><button type="button" class="btn btn-danger btn-xs" name="deleteBtn">삭제</button></td>
 				      </tr>
 				       
 				   	 </tbody>
@@ -114,7 +110,6 @@
 						</div>
 					</div> -->
 							
-				</div>
 			 
 			 </div> 
 				

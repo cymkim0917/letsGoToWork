@@ -12,7 +12,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-	 <style>
+	<!--  <style>
   	
   		.table{font-size:150%; }
   
@@ -21,7 +21,7 @@
   		
   		#searcArea{font-size:150%;}
   	
-  	</style>
+  	</style> -->
 </head>
 <body>
 	
@@ -31,11 +31,11 @@
 		<jsp:include page="../common/sideMenu/community.jsp"/>
 		
 		<section class="col-sm-10">
-			<h1 class="title">임시 저장파일 </h1> 
+			<h3 class="title">임시 저장파일 </h3> 
 			
 			<div class="content" >
 			
-				<div id="searcArea" align="center">
+				<!-- <div id="searcArea" align="center">
 			   	<label>검색조건</label>
 			   	<select id="searchCondition" name="searchCondition">
 			   	   
@@ -50,13 +50,12 @@
 			   	
 			   	<button onclick=""> 검색하기 </button> 
 			   	
-			  </div>
+			  </div> -->
 						
 				
 				
 			
 				
-			<div class="container">
 				  <table class="table">
 					    <thead>
 					      <tr>
@@ -82,7 +81,6 @@
 							
 						</div> 
 					 
-			 </div> 
 				
 		</section>
 		

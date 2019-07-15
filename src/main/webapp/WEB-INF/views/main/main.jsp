@@ -16,7 +16,7 @@
 		 		<div class="content" width="100%">
 					<div class="text-left"> 
 		      			<h1 align="center">Welcome</h1>
-		      			<jsp:include page="loginMain.jsp"/>
+		      			<%-- <jsp:include page="loginMain.jsp"/> --%>
 		    		</div>
 				</div>
 		    </div>

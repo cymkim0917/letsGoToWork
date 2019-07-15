@@ -17,7 +17,7 @@
   
   
   
-  	.table{font-size:150%; }
+  	/* .table{font-size:150%; } */
   
   	#searcArea{font-size:150%;}
   </style>
@@ -32,7 +32,7 @@
 		<jsp:include page="../common/sideMenu/community.jsp"/>
 		
 		<section class="col-sm-10">
-			<h1 class="title">게시판 </h1> 
+			<h3 class="title">게시판 </h3> 
 			
 			<div class="content" >
 			
@@ -69,7 +69,6 @@
 				
 			
 				
-				<div class="container">
 		  <table id="communityList" class="table">
 			    <thead>
 			      <tr>
@@ -110,7 +109,6 @@
 					
 				</div>
 			 
-			 </div> 
 				
 		</section>
 		

@@ -636,7 +636,14 @@ public class CommunityController {
 	  
 	  }
 	 
-	
+	@RequestMapping(value = "/community/selectBoardContent", produces = "application/json; charset=utf8")
+	@ResponseBody
+	public ArrayList<HashMap<String, java.lang.Object>> selectBoardContent(@RequestParam int bno){
+		
+		ArrayList<HashMap<String, java.lang.Object>> list = cs.selectBoardContent(bno);
+		
+		return list;
+	}
 	
 	
 	

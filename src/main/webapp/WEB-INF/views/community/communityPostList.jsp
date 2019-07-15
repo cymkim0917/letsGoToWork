@@ -12,7 +12,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <style > 
-	.table{font-size:150%; }
+	/* .table{font-size:150%; } */
 
 
 
@@ -28,7 +28,7 @@
 		<jsp:include page="../common/sideMenu/community.jsp"/>
 		
 		<section class="col-sm-10">
-			<h1 class="title">게시글</h1> 
+			<h3 class="title">게시글</h3> 
 			 	
 			<div class="content">
 			

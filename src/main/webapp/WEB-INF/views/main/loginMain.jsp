@@ -8,6 +8,28 @@
 <title>LetsGoToWork</title>
 
 <style>
+	.head{
+		background:lightgray;
+		text-align:center;
+	}
+	#gotoWork{
+		background:#b0e3ff !important;
+	}
+	#gotoWork:hover{
+		background:white !important;
+		border:1px solid #6b9cff;
+		color:#6b9cff;
+	}
+	
+	#dontWork{
+		background:orangered !important;
+	}
+	
+	#dontWork:hover{
+		background:white !important;
+		color:red;
+	}
+	
 	.page{
 	  width: 300px
 	  display: flex;
@@ -86,25 +108,35 @@
 		#loginInfoArea{
 			float:left;
 		}
+		input{
+			margin:3px;
+		}
 </style>
 </head>
 <body>
-	<section>
+	<container>
 		<c:if test="${ empty loginEmp }">
-			<h1 class="title">로그인페이지 입니다.</h1>
+		<c:set var="contextPath" value="${ pageContext.servletContext.contextPath }" scope="application" />
+		<div align="center" style="padding:120px;">
+			<!-- <h1 class="title">LGTW</h1> -->
+			<img src="${ contextPath }/resources/images/mainImg.png" width="50%" height="50%">
+			<div class="formArea" style="width:500px;">
 			<form id="loginForm" action="login.em" method="post">
 				<table id="loginTable">
 					<tr>
-						<td><input type="text" name="empId" placeholder="아이디를 입력하주세요" class="form-control" value="gora7"/></td>
+						<td><input type="text" name="empId" placeholder="아이디를 입력하주세요" class="form-control input-lg" value="gora7"/></td>
 					</tr>			
 					<tr>
-						<td><input type="password" name="empPwd" placeholder="비밀번호를 입력해주세요" class="form-control" value="1234"/></td>
+						<td><input type="password" name="empPwd" placeholder="비밀번호를 입력해주세요" class="form-control input-lg" value="1234"/><br></td>
 					</tr>
-					<tr>
-						<td><button id="loginBtn" class="btn" type="submit">로그인</button></td>
+					<tr align="center">
+						<td><button id="loginBtn" class="btn btn-info btn-lg" type="submit" style="width:100%;">로그인</button></td>
 					</tr>
 				</table>
+				
 			</form>
+			</div>
+		</div>
 			
 			
 			
@@ -115,20 +147,84 @@
 			</script> -->
 		</c:if>
 		<c:if test="${ !empty loginEmp }">
-			<div id="loginInfoArea">
+		<jsp:include page="../common/menubar.jsp" />
+			<div class="row">
+			<div class="col-sm-1"></div>
+				<div class="col-sm-5" align="center" style="margin-right:10px; margin-top:20px;">
+				<br>
+					<h4>공지사항</h4>
+					<table class="table" >
+				    <thead>
+				      <tr>
+				        <th>게시글 번호</th>
+				        <th>게시글 제목</th>
+				        <th>게시글 작성자</th>
+				        <th>게시글 작성일자</th>
+				      </tr>
+				    </thead>
+				    
+				    <c:forEach var="c" items="${list }">  
+				    <tbody>
+				     
+				      
+				      <tr>
+				        <td ><input type="hidden" name="contentNO" value="${c.contentNO }"> ${c.ord}</td>
+				        <td>${c.btitle}</td>
+				        <td>${c.createUserName}</td>
+						<td>${c.createDate}</td>				        
+				      </tr>
+				   	 </tbody>
+				   	 </c:forEach> 
+				 
+				  </table>
+				</div>
+				
+				<div class="col-sm-5" align="center" style="margin-left:10px; margin-top:20px;">
+					<jsp:include page="../scheduler/schedulerInclude.jsp" />
+				</div>
+				<div class="col-sm-1"></div>
+			</div>
+			<div class="row" style="margin-top:80px;">
+			<div class="col-sm-1"></div>
+				<div class="col-sm-5" align="center">
+					<label>금일업무</label>
+					<table class="table-bordered" style="text-align:center;">
+						<tr>
+							<th width="100px" height="50px" class="head">결재 대기</th>
+							<td width="100px"><a href="${ contextPath }/showWaitDcm.ap" id="wait"></a>건</td>
+							<th width="100px" height="50px" class="head">수신 대기</th>
+							<td width="100px"><a href="${ contextPath }/showWaitReceptionDcm.ap" id="reception"></a>건</td>
+						</tr>
+						<tr>
+							<th width="100px" height="50px" class="head">회람 대기</th>
+							<td width="100px"><a href="${ contextPath }/showWaitCirculationDcm.ap" id="circle"></a>건</td>
+							<th width="100px" height="50px" class="head">새메일</th>
+							<td width="100px">0건</td>
+						</tr>
+					</table>
+				</div>
+				
+				<div class="col-sm-5" style="margin-top:30px;" align="center">
+				<h4>출/퇴근 합시다</h4>
+				<button id="gotoWork" class="btn btn-lg" onclick="goToWork();">출근합시다</button>
+			  	<button id="dontWork" class="btn btn-danger btn-lg" onclick="offWork();">퇴근합시다</button>
+				</div>
+				<div class="col-sm-1"></div>
+			</div>
+			<%-- <div id="loginInfoArea">
 				<h1 align="center">${ loginEmp.empName }님이 로그인한 상태</h1>
 			</div>
 			<!-- 로그인 적용할때 이거 주석 풀고 main에 include제거하기 -->
-			<%-- <jsp:forward page="index.jsp"/> --%> 
+			<jsp:forward page="index.jsp"/> 
 			<div class="page">
-				<button id="gotoWork" class="btn btn-primary btn-lg" onclick="goToWork();">출근합시다</button>
-			  	<button id="dontWork" class="fun-btn" onclick="offWork();">퇴근합시다</button>
-			</div>
+				
+			</div> --%>
 			
 		</c:if>		
-	</section>
+	</container>
 	
 	<script>
+		
 		var xmlHttp;
 	     
 		function srvTime(){
@@ -245,6 +341,42 @@
 	    	  });
 	    	  
 	      }
+	      
+	      $(function(){
+	  		var empNo = ${sessionScope.loginEmp.empNo};
+	  		$.ajax({
+	  			url:"${contextPath}/approval/selectDcmCount",
+	  			type:"get",
+	  			data:{empNo:empNo},
+	  			success:function(data){
+	  				
+	  				if(data.wait != null){
+	  					$("#wait").append(data.wait);
+	  				}
+	  				if(data.reception != null){
+	  					$("#reception").append(data.reception);
+	  				}
+	  				if(data.circle != null){
+	  					/* var $span6 = $("<span class='badge pull-right badge-pill' style='width:30px; margin-left:-28px; margin-top:17px;'>").append(data.circle); */
+	  					$("#circle").append(data.circle);
+	  				}
+
+	  				
+	  			}
+	  		});
+	  		
+	  		var bno = 1;
+	  		$.ajax({
+	  			url:"${contextPath}/community/selectBoardContent",
+	  			type:"get",
+	  			data:{bno:bno},
+	  			success:function(data){
+	  				
+	  				alert(data);
+					console.log(data);
+	  				
+	  			}
+	  	});
 	      
 	</script>
 	

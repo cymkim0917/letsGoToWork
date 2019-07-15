@@ -11,10 +11,10 @@
    
    
    
-   <style>
+<!--    <style>
       .content{font-size:150%; }
    
-   </style>
+   </style> -->
 
 
 </head>
@@ -28,33 +28,29 @@
          
          <div class="content">
             
-                <c:forEach var="c" items="${list }">
                <%-- <c:if test="${c.status eq 'N'}">  --%>
-               <button type="button" class="btn btn-info btn-lg" name="updateBtn" >수정</button>
-               <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">삭제</button>
+               <button type="button" class="btn btn-default btn-md" data-toggle="modal" style="float:right; margin-left:5px; margin-bottom:15px;"  data-target="#myModal">삭제</button>
+               <button type="button" class="btn btn-primary btn-md" style="float:right;" name="updateBtn" >수정</button>
                <%-- </c:if> --%>
-                </c:forEach>
             <div>   
-                  <table class="table table-striped" border="" >   
+                  <table class="table table-striped" style="margin-top:15px;">   
                               
                      <c:forEach var="c" items="${list }">  
                              <input id="bnohidden" type="hidden" name="bno" value="${c.bno }">     
                              <input id="contentNOHidden" type="hidden" name="bno" value="${c.contentNO }">  
                       <thead>
                            <tr>
-                              <th colspan="2"><h2>${c.btitle}</h2></th>
-         
+                              <th><h4><label>제목 : </label>${c.btitle}</h4></th>       
                            </tr>
                                       
                              <tr>
-                              <td width="10%;">첨부파일: <a href="${ contextPath }/communityDownloadFile.co?contentNO=${ c.contentNO }"> ${ ca.originName }</a></td>
-                             
-         
+                          	    <td width="10%;"><label>첨부파일:</label> <a href="${ contextPath }/communityDownloadFile.co?contentNO=${ c.contentNO }"> ${ ca.originName }</a></td>
                              </tr>
                             
                            <tr>
-                  
+                  				
                               <td height="500px">
+                              	<h5><label>내용 : </label></h5>
                                     <div style="margin-left:10px; ">
                                           ${c.bcontent}
                                     </div>
@@ -96,8 +92,8 @@
                
                       
                          <td>${sessionScope.loginEmp.empName}</td>
-                         <td><textarea id="ccontent" style="width:100%; height:auto; "></textarea></td>
-                         <td><button type="button" class="btn btn-info btn-lg" id="addReply">생성</button></td>
+                         <td><textarea id="ccontent" style="width:100%; height:auto; resize:none"></textarea></td>
+                         <td><button type="button" class="btn btn-info btn-md" id="addReply">생성</button></td>
                       
                       </c:if>
                       </tr>
@@ -265,9 +261,9 @@
  			var loginEmpno =${sessionScope.loginEmp.empNo} 
  			
  			var $updateBtn = $("<button>").text("수정")
- 								.attr({"class":"btn btn-info btn-lg","onclick":"updateBtn(this)","id":"updateBtn"});
+ 								.attr({"class":"btn btn-primary btn-md","onclick":"updateBtn(this)","id":"updateBtn"});
  			var $deleteBtn = $("<button>").text("삭제")
- 			                   .attr({"class":"btn btn-info btn-lg","onclick":"sendAndDelete(this)","name":"deleteReply"});
+ 			                   .attr({"class":"btn btn-default btn-md","onclick":"sendAndDelete(this)","name":"deleteReply"});
  			
  	
  			var $updateBtnTd = $("<td>").append($hiddencno).append($hiddencontent).append($updateBtn).append($deleteBtn); 

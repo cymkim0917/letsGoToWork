@@ -80,6 +80,8 @@ public interface CommunityDao {
 
 	ArrayList<HashMap<String, java.lang.Object>> communityPostList(SqlSessionTemplate sqlSession, PageInfo pi, int bno);
 
+	ArrayList<HashMap<String, java.lang.Object>> selectBoardContent(int bno, SqlSessionTemplate sqlSession);
+
 	//게시글 페이징
 	/*
 	 * ArrayList<HashMap<String, java.lang.Object>>

@@ -259,6 +259,12 @@ public class CommunityDaoImpl implements CommunityDao {
 		return null;
 	}
 
+	@Override
+	public ArrayList<HashMap<String, java.lang.Object>> selectBoardContent(int bno, SqlSessionTemplate sqlSession) {
+		// TODO Auto-generated method stub
+		return (ArrayList)sqlSession.selectList("Community.selectBoardContent", bno);
+	}
+
 
 
 	/*
