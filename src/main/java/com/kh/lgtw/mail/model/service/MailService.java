@@ -38,4 +38,8 @@ public interface MailService{
 	int sendMail(Mail mail, Attachment mailAtt);
 
 	int selectMailNo();
+
+	Attachment downloadMailAtt(int no);
+
+	String readOneMail(int mailNo);
 }

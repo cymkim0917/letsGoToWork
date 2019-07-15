@@ -68,6 +68,13 @@ public class MailServiceImpl implements MailService{
 	public Mail selectMailDetail(int mailNo) {
 		return md.selectMailDetail(sqlSession, mailNo); 
 	}
+	
+	// 상세페이지 클릭시 메일 하나 읽음 처리 
+	@Override
+	public String readOneMail(int mailNo) {
+		return md.readOneMail(sqlSession, mailNo);
+	}
+
 
 	// 부재중 설정 추가
 	@Override
@@ -104,7 +111,29 @@ public class MailServiceImpl implements MailService{
 	// 검색 메일 조회 - HashMap으로 
 	@Override
 	public ArrayList<Mail> selectSearchMailList(PageInfo pi, HashMap<String, Object> listCondition) {
-		return md.selectSearchMailList(sqlSession, pi, listCondition);
+		ArrayList<Mail> list = md.selectSearchMailList(sqlSession, pi, listCondition); 
+		
+		// 사원의 메일인경우 사원이름을 같이 불러온다.
+		for(int i = 0; i < list.size(); i++) {
+			Mail mail = list.get(i);
+			HashMap<String, Object> empInfo = null;
+			
+			if(mail.getSendMail().equals(listCondition.get("empMail"))) {
+				// 내가 보낸 메일인 경우 
+				empInfo = md.selectReciveEmpName(sqlSession, mail.getReciveMail());
+			}else if(mail.getReciveMail().equals(listCondition.get("empMail"))){
+				// 내가 받은 메일 인 경우 
+				empInfo = md.selectSendEmpName(sqlSession, mail.getSendMail());
+			}
+			
+			if(empInfo == null) {
+				continue;
+			}
+			mail.setDeptName((String)empInfo.get("deptName"));
+			mail.setEmpName((String)empInfo.get("empName"));
+			mail.setJobName((String)empInfo.get("jobName"));
+		}
+		return list;
 	}
 
 	// 검색 페이징을 위한 조건 리스트 갯수 조회
@@ -124,4 +153,11 @@ public class MailServiceImpl implements MailService{
 	public int selectMailNo() {
 		return md.selectMailNo(sqlSession);
 	}
+
+	// 파일 다운로드 
+	@Override
+	public Attachment downloadMailAtt(int no) {
+		return md.downloadMailAtt(sqlSession, no);
+	}
+
 }

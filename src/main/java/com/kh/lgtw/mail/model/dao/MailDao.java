@@ -45,4 +45,8 @@ public interface MailDao {
 
 	int selectMailNo(SqlSession sqlSession);
 
+	Attachment downloadMailAtt(SqlSession sqlSession, int no);
+
+	String readOneMail(SqlSession sqlSession, int mailNo);
+
 }

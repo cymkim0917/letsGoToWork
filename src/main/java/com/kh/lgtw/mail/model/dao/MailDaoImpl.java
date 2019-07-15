@@ -22,13 +22,13 @@ import com.kh.lgtw.mail.model.vo.Mail;
 @Repository
 public class MailDaoImpl implements MailDao{
 
-	// 전체 이메일 갯수 조회
+	// 페이징 처리를 위한 전체 이메일 갯수 조회
 	@Override
 	public int getMailListCount(SqlSession session) {
 		return session.selectOne("Mail.getMailListCount");
 	}
 
-	// 페이징 처리한 전체 이메일 갯수 조회
+	// 페이징 처리한 전체 메일 리스트 조회
 	@Override
 	public ArrayList<Mail> selectMailList(SqlSession session, PageInfo pi) {
 		
@@ -72,13 +72,13 @@ public class MailDaoImpl implements MailDao{
 	// 메일 상세페이지 조회
 	@Override
 	public Mail selectMailDetail(SqlSession sqlSession, int mailNo) {
-		Mail m = sqlSession.selectOne("Mail.selectMailDetail2", mailNo);
-		int result = sqlSession.update("Mail.updateReadStatus", mailNo);
-		
-		System.out.println(" m : " + m);
-		System.out.println("result : " + result);
-		
-		return m;
+		return sqlSession.selectOne("Mail.selectMailDetail2", mailNo);
+	}
+	
+	// 상세페이지 클릭시 메일 읽기 처리  
+	@Override
+	public String readOneMail(SqlSession sqlSession, int mailNo) {
+		return sqlSession.update("Mail.updateReadStatus", mailNo) + "";
 	}
 
 	// 메일 부재중 추가 
@@ -96,6 +96,7 @@ public class MailDaoImpl implements MailDao{
 	// 메일 보내기
 	@Override
 	public int sendMail(SqlSession sqlSession, Mail mail) {
+		System.out.println("sendMail 작동");
 		return sqlSession.insert("Mail.sendMail", mail);
 	}
 	
@@ -108,17 +109,17 @@ public class MailDaoImpl implements MailDao{
 	// 검색 메일 조회
 	@Override
 	public ArrayList<Mail> selectSearchMailList(SqlSession sqlSession, PageInfo pi, HashMap<String, Object> listCondition) {
+		System.out.println("MailDao에서 selectSearchMailList 시작");
 		int offset = (pi.getCurrentPage() - 1)  * pi.getLimit();
 		RowBounds rowBounds = new RowBounds(offset, pi.getLimit());
-		SqlQuery.getSqlQuery(sqlSession, "Mail.searchList", listCondition);
-		
+		// SqlQuery.getSqlQuery(sqlSession, "Mail.searchList", listCondition);
 		return (ArrayList)sqlSession.selectList("Mail.searchList", listCondition, rowBounds);
 	}
 
 	// 검색 페이징을 위한 리스트 갯수 조회 
 	@Override
 	public int getMailSearchListCount(SqlSession sqlSession, HashMap<String, Object> listCondition) {
-		return sqlSession.selectOne("Mail.getMailSearchListCount");
+		return sqlSession.selectOne("Mail.getMailSearchListCount", listCondition);
 	}
 
 	// s3에서 받아온 정보를 데이터베이스에 insert
@@ -146,4 +147,9 @@ public class MailDaoImpl implements MailDao{
 		return sqlSession.selectOne("Mail.selectMailNo");
 	}
 
+	// 파일 다운로드 
+	@Override
+	public Attachment downloadMailAtt(SqlSession sqlSession, int no) {
+		return sqlSession.selectOne("Mail.selectMailAtt", no);
+	}
 }

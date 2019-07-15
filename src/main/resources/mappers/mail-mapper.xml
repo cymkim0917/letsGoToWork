@@ -72,9 +72,9 @@
 	<select id="selectMailList" parameterType="PageInfo" resultMap="resultMailAttSet">
 		SELECT *
 		FROM MAIL M
-		LEFT JOIN ATTACHMENT AT (M.MAIL_NO = ATT.MAIL_NO) 
-		WHERE DSTATUS = 'N'
-		ORDER BY MAIL_NO DESC
+		LEFT JOIN ATTACHMENT ATT ON(M.MAIL_NO = ATT.MAIL_NO) 
+		WHERE M.DSTATUS = 'N'
+		ORDER BY M.MAIL_NO DESC
 	</select>
 	
 	<!-- 읽음 상태 수정 -->
@@ -95,9 +95,9 @@
 	<select id="selectMailDetail" parameterType="int" resultMap="resultMailAttSet">
 		SELECT *
 		FROM MAIL M
-		LEFT JOIN ATTACHMENT ATT (M.MAIL_NO = ATT.MAIL_NO)
-		WHERE DSTATUS = 'N'
-		AND MAIL_NO = #{ mailNo }
+		LEFT JOIN ATTACHMENT ATT ON(M.MAIL_NO = ATT.MAIL_NO)
+		WHERE M.DSTATUS = 'N'
+		AND M.MAIL_NO = #{ mailNo }
 	</select>
 	
 	<!-- 메일 상세페이지 조회하기 -> 첨부파일 포함해서 조회  -->
@@ -127,15 +127,15 @@
 	
 	<!-- 메일 보내기 DB저장 -->
 	<insert id="sendMail" parameterType="Mail">
-		INSERT INTO MAIL(MAIL_NO, MTITLE, MCONTENT, SEND_MAIL, RECIVE_MAIL, MAIL_TYPE, MSIZE)
-		VALUES (SEQ_MAIL_NO.NEXTVAL, #{ mTitle }, #{ mContent }, #{ sendMail }, #{ reciveMail }, '보낸메일', #{ mSize })
+		INSERT INTO MAIL(MAIL_NO, MTITLE, MCONTENT, SEND_MAIL, RECIVE_MAIL, MAIL_TYPE, MSIZE, RSTATUS)
+		VALUES (SEQ_MAIL_NO.NEXTVAL, #{ mTitle }, #{ mContent }, #{ sendMail }, #{ reciveMail }, '보낸메일', #{ mSize }, 'N')
 	</insert>
 	
 	<!-- 검색과 리스트 카운트 조회 -->
 	<select id="getMailSearchListCount" resultType="_int">
 		SELECT count(*)
 		FROM MAIL M
-		LEFT JOIN ATTACHMENT ATT (M.MAIL_NO = ATT.MAIL_NO)
+		LEFT JOIN ATTACHMENT ATT ON(M.MAIL_NO = ATT.MAIL_NO)
 		WHERE (SEND_MAIL = #{ empMail } 
 		OR RECIVE_MAIL = #{ empMail }) 
 		<choose>
@@ -147,9 +147,9 @@
 		</choose>
 		<choose>
 			<when test="sMail != null and sMail.size != 0"> 
-			<foreach collection="sMail" index="index" item="mail" separator="OR" open="AND">
-				(RECIVE_MAIL = #{ mail } OR SEND_MAIL = #{ mail }) 
-			</foreach>
+				<foreach collection="sMail" index="index" item="mail" separator="OR" open="AND">
+					(RECIVE_MAIL = #{ mail } OR SEND_MAIL = #{ mail }) 
+				</foreach>
 			</when>
 			<when test="sTitle != null">AND MTITLE LIKE '%' || #{ sTitle } || '%'</when>
 			<when test="sContent != null">AND MCONTENT LIKE '%' || #{ sContent } || '%' </when>
@@ -158,14 +158,14 @@
 				AND (RECIVE_MAIL LIKE '%' || #{ sEmail } || '%' OR SEND_MAIL LIKE '%' || #{ sEmail } || '%')
 			</when>
 		</choose>
-		ORDER BY MAIL_NO DESC  
+		ORDER BY M.MAIL_NO DESC  
 	</select>
 	
 	<!-- 검색 메일 조회 - 해쉬맵으로 -->
 	<select id="searchList" resultMap="resultMailAttSet">
 		SELECT *
 		FROM MAIL M
-		LEFT JOIN ATTACHMENT ATT (M.MAIL_NO = ATT.MAIL_NO)
+		LEFT JOIN ATTACHMENT ATT ON(M.MAIL_NO = ATT.MAIL_NO)
 		WHERE (SEND_MAIL = #{ empMail } 
 		OR RECIVE_MAIL = #{ empMail }) 
 		<choose>
@@ -177,9 +177,9 @@
 		</choose>
 		<choose>
 			<when test="sMail != null and sMail.size != 0"> 
-			<foreach collection="sMail" index="index" item="mail" separator="OR" open="AND">
-				(RECIVE_MAIL = #{ mail } OR SEND_MAIL = #{ mail }) 
-			</foreach>
+				<foreach collection="sMail" index="index" item="mail" separator="OR" open="AND">
+					(RECIVE_MAIL = #{ mail } OR SEND_MAIL = #{ mail }) 
+				</foreach>
 			</when>
 			<when test="sTitle != null">AND MTITLE LIKE '%' || #{ sTitle } || '%'</when>
 			<when test="sContent != null">AND MCONTENT LIKE '%' || #{ sContent } || '%' </when>
@@ -188,7 +188,7 @@
 				AND (RECIVE_MAIL LIKE '%' || #{ sEmail } || '%' OR SEND_MAIL LIKE '%' || #{ sEmail } || '%')
 			</when>
 		</choose>
-		ORDER BY MAIL_NO DESC 
+		ORDER BY M.MAIL_NO DESC 
 	</select>
 	
 	<!-- S3에서 불러온 데이터를 DB에 저장 -->
@@ -255,5 +255,12 @@
 		SELECT MAX(MAIL_NO) 
 		FROM MAIL
 		WHERE DSTATUS = 'N' 
+	</select>
+	
+	<!-- 첨부파일 다운로드위해 첨부파일 불러오기  -->
+	<select id="selectMailAtt" resultMap="attachmentSet">
+		SELECT * 
+		FROM ATTACHMENT ATT
+		WHERE MAIL_NO = #{ no }
 	</select>
 </mapper>
