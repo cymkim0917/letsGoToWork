@@ -203,14 +203,27 @@
 	    	  var empNo = ${loginEmp.empNo};
 	    	  var hours = date.getHours();
 	    	  var minutes = date.getMinutes();
-	    	  var workTime = hours+":"+minutes;
+	    	  var year = date.getFullYear();
+	    	    var month = date.getMonth()+1
+	    	    var day = date.getDate();
+	    	    if(month < 10){
+	    	        month = "0"+month;
+	    	    }
+	    	    if(day < 10){
+	    	        day = "0"+day;
+	    	    }
+	    	 
+	    	    var today = year+"-"+month+"-"+day;
+	    	    
+	    	    console.log('퇴근'+today);
 	    	  
-	    	  console.log(empNo)
+	    	  var workTime = hours+":"+minutes;
 	    	  
 	    	  var workArr = new Array();
 	    	  
 	    	  workArr.push(empNo);
 	    	  workArr.push(workTime);
+	    	  workArr.push(today);
 	    	  
 	    	  var object = {
 	    			  workArr:workArr

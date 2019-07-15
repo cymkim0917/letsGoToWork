@@ -100,46 +100,16 @@ public interface EmployeeDao{
 	//휴가 신청 조회 - 욱
 	HashMap<String, Object> showHolidayApply(SqlSession sqlSession, int empNo);
 
+	int insertLeaveEmp(SqlSession sqlSession, ArrayList<Employee> list);
 
-//	Employee loginEmpl(Employee employee, SqlSession sqlSession);
-//
-//	ArrayList<Employee> selectEmpList(SqlSession sqlSession);
-//
-//	Employee selectOneEmp(SqlSession sqlSession, Employee employee);
-//
-//	int updateOneEmp(SqlSession sqlSession, Employee loginUser, Employee employee);
-//
-//	ArrayList<Employee> searchEmp(SqlSession sqlSession, Employee employee);
-//
-//	int reqHoliday(SqlSession sqlSession, Employee loginUser);
-//
-//	Attendace selectAttend(SqlSession sqlSession, Employee loginUser);
-//
-//	int insertEmp(SqlSession sqlSession, Employee employee);
-//
-//	int insertDuty(SqlSession sqlSession);
-//
-//	int updateLeave(SqlSession sqlSession, Employee employee);
-//
-//	ArrayList<Employee> selectLeaveList(SqlSession sqlSession);
+	ArrayList<EmployeeResult> selectLeaveEmpAdmin(SqlSession sqlSession);
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	int insertEmpOffWork(SqlSession sqlSession, Attendance attend);
+
+	int insertNoWork(SqlSession sqlSession, Attendance attend);
+
+	int checkEmpOffWork(SqlSession sqlSession, Attendance attend);
+
 	
 	
 }

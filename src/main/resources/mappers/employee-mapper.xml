@@ -114,6 +114,8 @@
 		<result column="EMPNO" property="empNo"/>
 		<result column="START_TIME" property="startTime"/>
 		<result column="END_TIME" property="endTime"/>
+		<result column="STATUS" property="status"/>
+		
 	</resultMap>
   
 	<!-- 욱 휴가 -->
@@ -376,7 +378,7 @@
 	</select>
 	
 	<insert id="insertEmpWork" parameterType="Attendance">
-		INSERT INTO ATTENDANCE VALUES(SYSDATE,#{empNo},#{startTime},null)
+		INSERT INTO ATTENDANCE VALUES(SYSDATE,#{empNo},#{startTime},null,'출근')
 	</insert>
 	
 	<!-- 휴가추가 - 욱 -->
@@ -405,4 +407,35 @@
 	<!-- <select id="showHolidayApply" parameterType="_int" resultType="">
 		
 	</select> -->
+	<update id="insertLeaveEmp" parameterType="Employee">
+		UPDATE EMPLOYEE SET LEAVE_REASON = #{leaveReason}, STATUS='H', LSTART_DATE=SYSDATE WHERE EMPNO = #{empNo}
+	</update>
+	
+	<select id="selectLeaveEmpAdmin" resultMap="empListResult">
+		SELECT E.EMPNO, E.EMP_ID, E.EMP_NAME, D.DEPT_NAME, J.JOB_NAME, E.LEAVE_REASON
+		FROM EMPLOYEE E
+		LEFT JOIN promotion_history PH ON(E.EMPNO=PH.EMPNO)
+		LEFT JOIN JOB J ON(ph.job_code=J.JOB_CODE)
+		LEFT JOIN DEPT_HISTORY DH ON (E.EMPNO=DH.EMPNO)
+		LEFT JOIN DEPT D ON (DH.DEPT_CODE=D.DEPT_CODE)
+		WHERE E.STATUS='H' AND E.EMP_ID != 'admin'
+        ORDER BY E.LSTART_DATE
+	</select>
+	
+	<update id="insertEmpOffWork" parameterType="Attendance">
+		UPDATE ATTENDANCE SET END_TIME = #{endTime}, STATUS='정상' WHERE EMPNO=#{empNo} AND TO_CHAR(ATTENDANCE_DATE,'yyyy-MM-dd')=#{attendanceDate}
+	</update>
+	
+	<insert id="insertNoWork" parameterType="Attendance">
+		INSERT INTO ATTENDANCE VALUES(SYSDATE,#{empNo},null,#{endTime},'미체크')
+	</insert>
+	
+	<select id="checkEmpOffWork">
+		select count(*) 
+		from attendance 
+		where EMPNO=#{empNo} 
+		AND TO_CHAR(ATTENDANCE_DATE,'yyyy-MM-dd')=#{attendanceDate}
+		AND END_TIME != NULL
+	</select>
+	
 </mapper>

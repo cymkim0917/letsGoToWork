@@ -75,17 +75,162 @@
 	</c:if>
 	<script>
 		// textarea클릭시 안에 내용을 지워주는 코드 
-		$(function(){
+		/* $(function(){
 			$("textarea").click(function(){
 				console.log("텍스트 area선택")
 				$(this).text("");
 			})
-		})
+		}) */
 		
 		// 로그아웃
 		$(".empInfo").click(function(){
-			location.href="${ contextPath }/logout.em";
+		  var empNo = ${loginEmp.empNo};
+  		  var year = date.getFullYear();
+	    	  var month = date.getMonth()+1
+	    	  var day = date.getDate();
+	    	    if(month < 10){
+	    	        month = "0"+month;
+	    	    }
+	    	    if(day < 10){
+	    	        day = "0"+day;
+	    	    }
+	    	 
+	    	    var today = year+"-"+month+"-"+day;
+	    	    
+	    	    console.log(today)
+	    	  
+	    	  var workTime = hours+":"+minutes;
+	    	  
+	    	  var workArr = new Array();
+	    	  
+	    	  workArr.push(empNo);
+	    	  workArr.push(workTime);
+	    	  workArr.push(today);
+	    	  
+	    	  var object = {
+	    			  workArr:workArr
+				}
+	    	  if(hours>=18 && minutes>=0){
+	    	  $.ajax({
+	    		  url:"${contextPath}/employee/offWorkCheck",
+	    		  type:"post",
+	    		  contentType: 'application/json; charset=utf-8',
+	    		  data:JSON.stringify(object),
+	    		  success:function(data){
+	    			  console.log("성공");
+	    			  
+	    			  if(data == '완료'){
+	    				  location.href="${ contextPath }/logout.em";
+	    			  }else{
+	    				 alert(data);
+	    			  }
+		    			  
+	    		  },
+	    		  error:function(data){
+	    			  alert("실패");
+	    		  }
+	    	  });
+	    	  }else{
+	    		  location.href="${ contextPath }/logout.em";
+	    	  }
+			
 		});
+		
+		var xmlHttp;
+	     
+		function srvTime(){
+	         if (window.XMLHttpRequest) {
+	          xmlHttp = new XMLHttpRequest();
+	          xmlHttp.open('HEAD',window.location.href.toString(),false);
+	          xmlHttp.setRequestHeader("Content-Type", "text/html");
+	          xmlHttp.send('');
+	          return xmlHttp.getResponseHeader("Date");
+	    
+	         }else if (window.ActiveXObject) {
+	         xmlHttp = new ActiveXObject('Msxml2.XMLHTTP');
+	         xmlHttp.open('HEAD', window.location.href.toString(), false);
+	         xmlHttp.setRequestHeader("Content-Type", "text/html");
+	         xmlHttp.send('');
+	         return xmlHttp.getResponseHeader("Date");
+	        
+	         }
+	      }
+		
+	      
+	      var st = srvTime();
+	      var date = new Date(st);
+	      
+	      var check=true;
+	      var hours = date.getHours();
+    	  var minutes = date.getMinutes();
+    	  
+    	  var isEmpty = function(${loginEmp.empName}){ 
+    		  if( value == "" || value == null || value == undefined || ( value != null && typeof value == "object" && !Object.keys(value).length ) ){
+    			  return false 
+    			  }else{ 
+    				  return true 
+    				  } 
+    		  };
+    	  
+    	  
+    	  if(isEmpty){
+    		  console.log('조건에 들어옵니까?')
+	    	  if(hours==11 && minutes==47){
+	    		  var empNo = ${loginEmp.empNo};
+	    		  var year = date.getFullYear();
+		    	  var month = date.getMonth()+1
+		    	  var day = date.getDate();
+		    	    if(month < 10){
+		    	        month = "0"+month;
+		    	    }
+		    	    if(day < 10){
+		    	        day = "0"+day;
+		    	    }
+		    	 
+		    	    var today = year+"-"+month+"-"+day;
+		    	    
+		    	    console.log(today)
+		    	  
+		    	  var workTime = hours+":"+minutes;
+		    	  
+		    	  var workArr = new Array();
+		    	  
+		    	  workArr.push(empNo);
+		    	  workArr.push(workTime);
+		    	  workArr.push(today);
+		    	  
+		    	  var object = {
+		    			  workArr:workArr
+					}
+		    	  
+		    	  $.ajax({
+		    		  url:"${contextPath}/employee/workCheck",
+		    		  type:"post",
+		    		  contentType: 'application/json; charset=utf-8',
+		    		  data:JSON.stringify(object),
+		    		  success:function(data){
+		    			  console.log("성공");
+		    			  
+		    			  if(data == '처리'){
+		    				  console.log("처리완료~");
+		    			  }else{
+		    				  if(check){
+				    				check=false;
+				    			  alert(data);
+				    			  }
+		    				  
+		    			  }
+			    			  
+		    		  },
+		    		  error:function(data){
+		    			  alert("실패");
+		    		  }
+		    	  });
+    	  }
+    	  
+    	 }
+		
+		
 	</script>
 </body>
 </html>

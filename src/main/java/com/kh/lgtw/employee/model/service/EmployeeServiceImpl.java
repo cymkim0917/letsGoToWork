@@ -584,87 +584,48 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	
-	//휴가추가 - 욱
 	@Override
 	public int holidayInsertAdmin() {
-		return empDao.holidayInsertAdmin(sqlSession);
+		// TODO Auto-generated method stub
+		return 0;
 	}
-	
-	//휴가 신청 조회 - 욱
+
 	@Override
 	public HashMap<String, Object> showHolidayApply(int empNo) {
-		return empDao.showHolidayApply(sqlSession, empNo);
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	
+	@Override
+	public int insertLeaveEmp(ArrayList<Employee> list) {
+		return empDao.insertLeaveEmp(sqlSession, list);
+	}
+
+	@Override
+	public ArrayList<EmployeeResult> selectLeaveEmpAdmin() {
+		
+		ArrayList<EmployeeResult> list = new ArrayList<EmployeeResult>();
+		
+		list = empDao.selectLeaveEmpAdmin(sqlSession);
+		
+		return list;
+	}
+
+	@Override
+	public int insertEmpOffWork(Attendance attend) {
+		return empDao.insertEmpOffWork(sqlSession, attend);
+	}
+
+	@Override
+	public int insertNoWork(Attendance attend) {
+		return empDao.insertNoWork(sqlSession, attend);
+	}
+
+	@Override
+	public int checkEmpOffWork(Attendance attend) {
+		return empDao.checkEmpOffWork(sqlSession,attend);
+	}
 
 
-
-
-	//	@Override
-//	public Employee loginEmpl(Employee employee) {
-//		// TODO Auto-generated method stub
-//		return empDao.loginEmpl(employee,sqlSession);
-//	}
-//
-//	@Override
-//	public ArrayList<Employee> selectEmlList() {
-//		// TODO Auto-generated method stub
-//		return empDao.selectEmpList(sqlSession);
-//	}
-//
-//	@Override
-//	public Employee selectOneEmp(Employee employee) {
-//		// TODO Auto-generated method stub
-//		return empDao.selectOneEmp(sqlSession, employee);
-//	}
-//
-//	@Override
-//	public int updateOneEmp(Employee loginUser, Employee employee) {
-//		// TODO Auto-generated method stub
-//		return empDao.updateOneEmp(sqlSession, loginUser, employee);
-//	}
-//
-//	@Override
-//	public ArrayList<Employee> searchEmp(Employee employee) {
-//		// TODO Auto-generated method stub
-//		return empDao.searchEmp(sqlSession, employee);
-//	}
-//
-//	@Override
-//	public int reqHoliday(Employee loginUser) {
-//		// TODO Auto-generated method stub
-//		return empDao.reqHoliday(sqlSession, loginUser);
-//	}
-//
-//	@Override
-//	public Attendace selectAttend(Employee loginUser) {
-//		// TODO Auto-generated method stub
-//		return empDao.selectAttend(sqlSession, loginUser);
-//	}
-//
-//	@Override
-//	public int insertEmp(Employee employee) {
-//		// TODO Auto-generated method stub
-//		return empDao.insertEmp(sqlSession, employee);
-//	}
-//
-//	@Override
-//	public int insertDuty() {
-//		// TODO Auto-generated method stub
-//		return empDao.insertDuty(sqlSession);
-//	}
-//
-//	@Override
-//	public int updateLeave(Employee employee) {
-//		// TODO Auto-generated method stub
-//		return empDao.updateLeave(sqlSession, employee);
-//	}
-//
-//	@Override
-//	public ArrayList<Employee> selctLeaveList() {
-//		// TODO Auto-generated method stub
-//		return empDao.selectLeaveList(sqlSession);
-//	}
 
 }

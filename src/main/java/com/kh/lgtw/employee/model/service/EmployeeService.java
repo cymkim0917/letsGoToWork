@@ -87,7 +87,6 @@ public interface EmployeeService {
 
 	int insertEmpWork(Attendance attend);
   
-	int checkEmpWork(int empNo);
 	
 	//휴가 추가 - 욱
 	int holidayInsertAdmin();
@@ -95,28 +94,15 @@ public interface EmployeeService {
 	//휴가신청조회 - 욱
 	HashMap<String, Object> showHolidayApply(int empNo);
 
+	int insertLeaveEmp(ArrayList<Employee> list);
 
+	ArrayList<EmployeeResult> selectLeaveEmpAdmin();
 
-//	Employee loginEmpl(Employee employee);
-//
-//	ArrayList<Employee> selectEmlList();
-//
-//	Employee selectOneEmp(Employee employee);
-//
-//	int updateOneEmp(Employee loginUser, Employee employee);
-//
-//	ArrayList<Employee> searchEmp(Employee employee);
-//
-//	int reqHoliday(Employee loginUser);
-//
-//	Attendace selectAttend(Employee loginUser);
-//
-//	int insertEmp(Employee employee);
-//
-//	int insertDuty();
-//
-//	int updateLeave(Employee employee);
-//
-//	ArrayList<Employee> selctLeaveList();
+	int insertEmpOffWork(Attendance attend);
+
+	int insertNoWork(Attendance attend);
+
+	int checkEmpOffWork(Attendance attend);
+
 
 }
