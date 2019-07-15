@@ -685,7 +685,18 @@ public class EmployeeController {
 	//-------------------------------근태 --------------------------------
 		//근태 현황 페이지
 		@RequestMapping("showAttendStatus.em")
-		public String showAttendStatus() {
+		public String showAttendStatus(Model model, HttpSession session) {
+			
+			Employee loginEmp =(Employee)session.getAttribute("loginEmp");
+			System.out.println(loginEmp.getEmpNo());
+			ArrayList<Attendance> attList = empService.selectAttendanceList(loginEmp.getEmpNo());
+			
+			for(int i =0; i<attList.size(); i++) {
+				System.out.println(attList.get(i));
+			}
+			
+			model.addAttribute("attList", attList);
+			
 			return "employee/attendStatus";
 		}
 		

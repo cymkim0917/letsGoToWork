@@ -12,6 +12,17 @@
 .inout {
 	background:black;
 	color:white;
+  }
+  .contentSelectArea li {
+    font-size: 15px !important;
+    cursor: pointer;
+	}
+	
+	.sidenav li:not(.mailSelect):hover {
+    background: #80aaff !important;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 5px;
 }
 </style>
 </head>

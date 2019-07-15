@@ -137,9 +137,9 @@ public class JavaMailSender extends JavaMailSenderImpl{
 			client.sendRawEmail(rawEmailRequest);
 			System.out.println("첨부파일 메일 전송완료!");
 			
-			// S3스토리지에 보낸 메일 저장 
-			new AwsS3().fileUpload(attachment.getPath());
-			System.out.println("보낸 메일 S3스토리지에 저장 완료 ");
+			// S3스토리지에 보낸 메일 저장 -> subSting으로 자르는 과정에서 에러 발생 
+			// new AwsS3().fileUpload(attachment.getPath());
+			// System.out.println("보낸 메일 S3스토리지에 저장 완료 ");
 			
 		// 메일 전송한다는 로그 남기기 
 		}catch(Exception exception) {

@@ -361,6 +361,35 @@ public class EmployeeDaoImpl implements EmployeeDao{
 	public int checkEmpOffWork(SqlSession sqlSession, Attendance attend) {
 		return sqlSession.selectOne("Employee.checkEmpOffWork",attend);
 	}
+	
+	//휴가 상세 조회
+	@Override
+	public ArrayList<HashMap<String, Object>> holidayDetail(SqlSession sqlSession, HashMap<String, Object> params) {
+		return (ArrayList)sqlSession.selectList("Employee.holidayDetail", params);
+	}
+	
+	//휴가 결제 - 욱
+	@Override
+	public int appHoliday(SqlSession sqlSession, HashMap<String, Object> params) {
+		String status = (String) params.get("status");
+		int result = 0;
+		
+		if(status.equals("cancle")) {
+			result = sqlSession.insert("Employee.appHoliday",params);
+		}else if(status.equals("reCancle")) {
+			result = sqlSession.update("Employee.appHolidayUpdate",params);
+		}else if(status.equals("apply")) {
+			result = sqlSession.insert("Employee.appHolidayInsert",params);
+		}
+		
+		
+		return result;
+	}
+
+	@Override
+	public ArrayList<Attendance> selectAttendanceList(SqlSession sqlSession, int empNo) {
+		return (ArrayList)sqlSession.selectList("Employee.selectAttendanceList", empNo);
+	}
 
 
 

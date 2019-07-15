@@ -117,12 +117,10 @@ pre{
 							<tr>
 								<th>첨부파일</th>
 								<td colspan="3">
-									<span onclick="location.href='${ contextPath }/mail/attDownload'"
-										style="cursor:pointer;">
+									<span onclick="downloadAtt();"	style="cursor:pointer;">
 										<c:out value="${ mail.mailAtt.originName }"/>
 										<c:out value="${ mail.mSize }"/>
-										<input type="hidden" name="" 
-												value='<c:out value="${ mail.mailAtt.attNo }"/>'/>
+										<input type="hidden" name="attNo" value='<c:out value="${ mail.mailAtt.attNo }"/>'/>
 									</span>
 	 								<span class="fileSize">
 	 								</span>
@@ -140,13 +138,37 @@ pre{
 					</table>
 				</div>
 				<div id="reserveArea">		
-					<p>이전, 다음으로 이동하는 버튼 및 목록 페이지로 이동하는 버튼 추가하기</p>
+					<ul class="pager">
+					  <li><a href="">이전</a></li>
+					  <li sylte="cursor:pointer"><a onclick="goList();">목록으로</a></li>
+					  <li><a href="">다음</a></li>
+					</ul>
 				</div>
 			</div>
 		</section>
 	</div>
 	<script>
+		// 다운로드 ajax
+		function downloadAtt(){
+			var attNo = $("[name=attNo]").val();
+			console.log("attNo : " + attNo);
+			
+			$.ajax({
+				url : "${ contextPath }/mail/attDownload",
+				data : {no : attNo},
+				success:function(data){
+					console.log(data);
+					console.log("성공!");
+				}, error:function(data){
+					console.dir("error : " + data);
+				}
+			});
+		}
+		function goList(){
+			window.history.back(location.reload());
+		}
 		// 시간남으면 뒤로가기 버튼 클릭시  리다이렉트 시키는 처리하기
+		// https://blog.urusa.cf/14
 	</script>
 	<jsp:include page="../common/footer.jsp" />
 </body>

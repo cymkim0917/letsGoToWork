@@ -65,6 +65,7 @@
 						<div class="loginEmpInfo">
 							<img src="${ contextPath }/resources/images/user.png" class="empIcon">
 							<span class="empInfo">${ loginEmp.empName }님<%-- ${ loginEmp.empNo } --%></span>
+							<span onclick='location.href="${ contextPath }/logout.em";'>로그아웃</span>
 						</div>
 					</c:if>
 				</div>

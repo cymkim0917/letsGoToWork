@@ -60,12 +60,13 @@
 <body>
 	<jsp:include page="../common/menubar.jsp"/>
 	<c:set var="mappingUrl" value="allList.ma"/>
+	<%-- <c:set var="listType" value="all"/> --%>
 	
 	<div class="row wrap">
 		<jsp:include page="../common/sideMenu/mail.jsp"/>
 		
 		<section class="col-sm-10">
-		<button onclick="location.href='${contextPath}/mail/sendFin'">보내기완료 페이지</button>
+		<%-- <button onclick="location.href='${contextPath}/mail/sendFin'">보내기완료 페이지</button> --%>
 			<div class="content" align="center">
 				<form class="searchArea form-group" align="left" action="${ contextPath }/mail/search">
 					<input type="hidden" name="listType" value="${ pageType }"/>
@@ -104,30 +105,37 @@
 								</td>
 								<td>
 									<c:if test="${ empty mail.empName }">
-										<c:if test="${ mail.mailType eq '보낸메일' }">
+										<c:if test="${ mail.sendMail eq loginEmp.email }">
+											<!-- 보낸메일일때 받는사람을 나타냄 -->
 											<c:out value="${ mail.reciveMail }"/>
 										</c:if>
-										<c:if test="${ mail.mailType eq '받은메일' }">
+										<c:if test="${ mail.reciveMail  eq loginEmp.email }">
+											<!-- 받은 메일일때 보낸 메일을  나타냄 -->
 											<c:out value="${ mail.sendMail }"/>
 										</c:if>
 									</c:if>
 									<c:if test="${ !empty mail.empName }">
 										<c:out value="${ mail.empName } ${ mail.jobName } - ${ mail.deptName }"/><br>
-										<c:if test="${ mail.mailType eq '보낸메일' }">
-											<%-- <c:out value="${ mail.empName } - ${ mail.deptName } ${ mail.jobName }"/><br> --%>
+										<c:if test="${ mail.sendMail eq loginEmp.email }">
 											(<c:out value="${ mail.reciveMail }"/>)
 										</c:if>
-										<c:if test="${ mail.mailType eq '받은메일' }">
+										<c:if test="${ mail.reciveMail  eq loginEmp.email }">
 											(<c:out value="${ mail.sendMail }"/>)
 										</c:if>
 									</c:if>
 								</td>
-								<td><c:out value="${ mail.mailType }"/></td>
 								<td>
-								${ !empty mail.mailAtt }
+									<c:if test="${ mail.sendMail eq loginEmp.email }">
+										보낸메일
+									</c:if>
+									<c:if test="${ mail.reciveMail eq loginEmp.email }">
+										받은메일
+									</c:if>
+								</td>
+								<td>
 									<c:if test="${ !empty mail.mailAtt }"> 
-										<span>첨부파일
-											<img src="${ contextPath }/resources/images/mail/attachment.png"/ width="40px;">
+										<span stype="text-align:center">
+											<img src="${ contextPath }/resources/images/mail/attachment.png" width="40px;">
 										</span>
 									</c:if>
 									<c:out value="${ mail.mTitle }"/>
@@ -143,37 +151,39 @@
 					</div>
 					<div class="paging">
 						<ul class="pagination">
-							<c:if test="${ pi.startPage > 1 }">
-								<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.startPage - pi.buttonCount }"><<</a></li>
-							</c:if>
-							<c:if test="${ pi.startPage <= 1 }">
-								<li><a href="#"><<</a></li>
-							</c:if>
-							<c:if test="${ 1 != pi.currentPage }">
-								<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.currentPage - 1}"><</a></li>
-							</c:if>
-							<c:if test="${ 1 == pi.currentPage }">
-								<li><a href="#"><</a></li>
-							</c:if>
-							<c:forEach var="pageNum" begin="${ pi.startPage }" end="${ pi.endPage }" step="1">
-								<c:if test="${ pageNum == pi.currentPage }">
-									<li class="active"><a>${ pageNum }</a></li>
+							<c:if test="${ !empty pi }">
+								<c:if test="${ pi.startPage > 1 }">
+									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.startPage - pi.buttonCount }"><<</a></li>
 								</c:if>
-								<c:if test="${ pageNum != pi.currentPage }">
-									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pageNum }">${ pageNum }</a></li>
+								<c:if test="${ pi.startPage <= 1 }">
+									<li><a href="#"><<</a></li>
 								</c:if>
-							</c:forEach>
-							<c:if test="${ pi.currentPage != pi.maxPage }">
-								<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.currentPage + 1 }">></a></li>
-							</c:if>
-							<c:if test="${ pi.currentPage == pi.maxPage }">
-								<li><a href="#">></a></li>
-							</c:if>
-							<c:if test="${ pi.endPage != pi.maxPage }">
-								<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.endPage + 1 }">>></a></li>
-							</c:if>
-							<c:if test="${ pi.endPage == pi.maxPage }">
-								<li><a href="#">>></a></li>
+								<c:if test="${ 1 != pi.currentPage }">
+									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.currentPage - 1}"><</a></li>
+								</c:if>
+								<c:if test="${ 1 == pi.currentPage }">
+									<li><a href="#"><</a></li>
+								</c:if>
+								<c:forEach var="pageNum" begin="${ pi.startPage }" end="${ pi.endPage }" step="1">
+									<c:if test="${ pageNum == pi.currentPage }">
+										<li class="active"><a>${ pageNum }</a></li>
+									</c:if>
+									<c:if test="${ pageNum != pi.currentPage }">
+										<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pageNum }">${ pageNum }</a></li>
+									</c:if>
+								</c:forEach>
+								<c:if test="${ pi.currentPage != pi.maxPage }">
+									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.currentPage + 1 }">></a></li>
+								</c:if>
+								<c:if test="${ pi.currentPage == pi.maxPage }">
+									<li><a href="#">></a></li>
+								</c:if>
+								<c:if test="${ pi.endPage != pi.maxPage }">
+									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.endPage + 1 }">>></a></li>
+								</c:if>
+								<c:if test="${ pi.endPage == pi.maxPage }">
+									<li><a href="#">>></a></li>
+								</c:if>
 							</c:if>
 						</ul>
 					</div>
@@ -186,6 +196,15 @@
 		$(".listTable").find("tr:not(:nth-child(1)) td:not(:nth-child(1))").click(function(){
 			var mailNo = $(this).parent().find("td:nth-child(1) > [name=mailNo]").val();
 			location.href='${ contextPath }/mail/detail.ma?mailNo=' + mailNo;
+			
+			$.ajax({
+				url : '${contextPath}/mail/readDetail.ma?mailNo=' + mailNo,
+				success :function(data){
+					console.log("성공, 결과 : " + data);
+				}, complete : function(){
+					console.log("complete ");
+				}
+			});
 		});
 		
 		// 체크박스 전체 선택 및 해제 
