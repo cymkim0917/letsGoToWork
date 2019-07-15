@@ -386,6 +386,11 @@ public class EmployeeDaoImpl implements EmployeeDao{
 		return result;
 	}
 
+	@Override
+	public ArrayList<Attendance> selectAttendanceList(SqlSession sqlSession, int empNo) {
+		return (ArrayList)sqlSession.selectList("Employee.selectAttendanceList", empNo);
+	}
+
 
 
 }

@@ -122,6 +122,8 @@ public interface EmployeeDao{
 	//휴가 결제 - 욱
 	int appHoliday(SqlSession sqlSession, HashMap<String, Object> params);
 
+	ArrayList<Attendance> selectAttendanceList(SqlSession sqlSession, int empNo);
+
 	
 	
 }

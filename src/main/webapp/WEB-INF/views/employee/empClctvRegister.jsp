@@ -18,6 +18,7 @@
 	}
 
 </style>
+<link rel="shortcut icon" href="${ contextPath }/resources/images/favicon.ico">
 </head>
 <body>
 	<jsp:include page="../common/menubar.jsp"/>

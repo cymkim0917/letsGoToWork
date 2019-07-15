@@ -116,5 +116,7 @@ public interface EmployeeService {
 	//휴가 결제 - 욱
 	int appHoliday(HashMap<String, Object> params);
 
+	ArrayList<Attendance> selectAttendanceList(int empNo);
+
 
 }

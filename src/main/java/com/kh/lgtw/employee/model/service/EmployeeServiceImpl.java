@@ -652,6 +652,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return empDao.appHoliday(sqlSession, params);
 	}
 
+	@Override
+	public ArrayList<Attendance> selectAttendanceList(int empNo) {
+		ArrayList<Attendance> list = new ArrayList<Attendance>();
+		
+		list = empDao.selectAttendanceList(sqlSession, empNo);
+		
+		return list;
+	}
+
 
 
 }
