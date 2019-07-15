@@ -13,8 +13,8 @@
 		<table id="empScheduler">
 			<thead>
 				<tr style="margin-bottom:3px;">
-					<th colspan="2" style="text-align:center"><b>개인일정</b></th>
-					<th><button data-toggle="modal" data-target="#empSchedulerModal" onclick="resetColorBtn()">+</button></th>
+					<th colspan="2" style="text-align:center" id="empTitle"><b>개인일정</b></th>
+					<th><button class="btn-xs btn-primary" data-toggle="modal" data-target="#empSchedulerModal" onclick="resetColorBtn()">+</button></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -29,8 +29,8 @@
 		<table id="groupScheduler">
 			<thead>
 				<tr>
-					<th colspan="2" style="text-align:center"><b>공유일정</b></th>
-					<th><button data-toggle="modal" data-target="#createGroupScr" onclick="selectEmp()">+</button></th>
+					<th colspan="2" style="text-align:center" id="groupTitle"><b>공유일정</b></th>
+					<th><button class="btn-xs btn-primary" data-toggle="modal" data-target="#createGroupScr" onclick="selectEmp()">+</button></th>
 				</tr>
 			</thead>
 			<tbody>
