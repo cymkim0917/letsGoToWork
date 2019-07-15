@@ -2,7 +2,9 @@ package com.kh.lgtw.mail.controller;
 
 import static com.kh.lgtw.common.CommonUtils.getServerTime;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,17 +13,17 @@ import java.util.Map;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.annotation.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.kh.lgtw.approval.model.vo.PageInfo;
 import com.kh.lgtw.common.Pagination;
+import com.kh.lgtw.common.model.vo.Attachment;
 import com.kh.lgtw.employee.model.service.EmployeeService;
 import com.kh.lgtw.employee.model.vo.Employee;
 import com.kh.lgtw.mail.aws.AwsS3;
@@ -42,7 +45,6 @@ import com.kh.lgtw.mail.aws.JavaMailSender;
 import com.kh.lgtw.mail.model.service.MailService;
 import com.kh.lgtw.mail.model.vo.Absence;
 import com.kh.lgtw.mail.model.vo.Mail;
-import com.kh.lgtw.mail.model.vo.Sender;
 
 @Controller
 //@RestController
@@ -73,6 +75,16 @@ public class MailController {
 		return "mail/sendMailForm";
 	}
 	
+	// 메일 전송 완료 
+	@RequestMapping("mail/sendFin")
+	public String sendFin(int mailNo, Model model) {
+
+		Mail mailDetail = ms.selectMailDetail(mailNo);
+		model.addAttribute("mailDetail", mailDetail);
+
+		return "mail/sendMailFin";
+	}
+	
 	// 메일 상세페이지
 	@RequestMapping("mail/detail.ma")
 	public String mailDetail(int mailNo, Model model) {
@@ -80,36 +92,12 @@ public class MailController {
 		Mail mDetail = ms.selectMailDetail(mailNo);
 		System.out.println("mDetail : " + mDetail);
 		model.addAttribute("mail", mDetail);
+		
+		
+		
 		return "mail/mailDetail";
 	}
 	 
-	// 전체 메일함 조회
-	@RequestMapping("allList.ma") // HomeController를 여기로 리다이렉트 시키기 
-	public String selectMailList(HttpServletRequest request, Model model) {
-		
-		// 페이징 처리 
-		int currentPage = 1;
-		if(request.getParameter("currentPage") != null) {
-			currentPage = Integer.parseInt(request.getParameter("currentPage"));
-		}
-		
-		int listCount = ms.getMailListCount();
-		
-		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
-		
-		ArrayList<Mail> list = ms.selectMailList(pi);
-
-		if(list != null) {
-			model.addAttribute("list", list);
-			model.addAttribute("pi", pi);
-			
-			return "mail/mailAllList"; 
-		}else {
-			model.addAttribute("msg", "리스트 조회에 실패!");
-			
-			return "common/errorPage";
-		}
-	}
 	
 	// 메일상태처리
 	@RequestMapping(value="mail/updateStatus",  produces="application/json; charset=utf8")
@@ -131,98 +119,86 @@ public class MailController {
 	}	
 	
 	// 메일보내기
+	// 프로세스 
+	// DB에 저장하고 내부메일일 경우 -> 바로 리턴하고 아니면 전송 실행!
 	@RequestMapping(value="/mail/send", method=RequestMethod.POST, headers="Content-Type=multipart/form-data")
 	public String sendMail(Mail mail, Model model, HttpServletRequest request,
 					@RequestParam(name="mailAttachment", required=false) MultipartFile mailAttachment) {
-		System.out.println("controller에서 받은 mail : " + mail);
-		System.out.println("controller에서 받은 mailAttachment : " + (mailAttachment.getOriginalFilename()).equals(""));
+		boolean existAtt = !(mailAttachment.getOriginalFilename()).equals("");
+		String mailDomain = mail.getReciveMail()
+						.substring(mail.getReciveMail().indexOf('@'));
+
+		String filePath = "", root = "", changeName ="", originFileName ="", ext ="";
+		Attachment mailAtt = new Attachment();
+		int mailNo = 0;
+		// 데이터에베이스에 정보 저장
+		if(existAtt) { // 첨부파일이 존재하는 메일  
+			// 첨부파일 저장 처리
+			root = request.getSession().getServletContext().getRealPath("resources");
+
+			// 파일 저장 위치 
+			filePath = root + "\\uploadFiles\\mail\\sendFiles";
+
+			originFileName = mailAttachment.getOriginalFilename();
+			ext = originFileName.substring(originFileName.lastIndexOf("."));
+
+			// 파일이름 : 보내는 사람 메일-서버시간 
+			changeName = mail.getSendMail() + "_" + getServerTime();
+
+			mailAtt.setOriginName(originFileName);
+			mailAtt.setChangeName(changeName);
+			mailAtt.setFilePath(filePath);
+			mail.setmSize((int) mailAttachment.getSize());  // mail의 파일 사이즈 지정해주기 원래는 long형
+
+			System.out.println("Controller mailAttachment : " + mailAttachment);
+			try {
+				// 파일 저장 및 DB에 저장
+				mailAttachment.transferTo(new File(filePath + "\\" + changeName + ext));
+				ms.sendMail(mail, mailAtt);
+				mailNo = ms.selectMailNo();
+			} catch (IllegalStateException | IOException e) {
+				new File(filePath + "\\" + changeName + ext).delete(); 
+				model.addAttribute("msg", "데이터베이스에 첨부파일을 포함한 메일 저장 실패!!");
+				return "common/errorPage";		
+			}
+		}else {
+			// 첨부파일이 존재하지 않는 메일
+			ms.sendMail(mail);
+			mailNo = ms.selectMailNo();
+		}
 		
-		// 전송 메시지 정보를 sender 객체에 담는다.  -> 내가 정의한 VO와 다른 형태이므로 하나씩 옮겨준다.
-		// sender클래스는 하나의 메일을 여러명에게 전송하는 형태로 구성되어 있다.
-		Sender sender = new Sender();
-		List<String> toList = new ArrayList<>();
-		toList.add(mail.getReciveMail());
-		sender.setTo(toList);
-		sender.setFrom(mail.getSendMail());
-		sender.setSubject(mail.getmTitle());
-		sender.setContent(mail.getmContent());
+		if(mailDomain.equals("@lgtw.ga")) {
+			System.out.println("내부 전송 메일이니 종료!");
+			return "redirect:/mail/sendFin?mailNo=" + mailNo;
+		}
 		
-		// SimpleMailMessage라고해서 mail API에서 제공하는 메시지 포멧에 데이터를 넣어준다.
 		simpleMailMessage = new SimpleMailMessage();	
-		simpleMailMessage.setFrom(sender.getFrom());
-		simpleMailMessage.setTo(sender.getTo().get(0));
-		simpleMailMessage.setSubject(sender.getSubject());
-		simpleMailMessage.setText(sender.getContent());
+		simpleMailMessage.setFrom(mail.getSendMail());
+		simpleMailMessage.setTo(mail.getReciveMail());
+		simpleMailMessage.setSubject(mail.getmTitle());
+		simpleMailMessage.setText(mail.getmContent());
 		
 		System.out.println("simpleMailMessage : " + simpleMailMessage);
-		System.out.println("mailSender " + mailSender);
 
 		// 전송요청 
-		if(!(mailAttachment.getOriginalFilename()).equals("")) { // 첨부파일이 존재하면
+		if(existAtt) { // 첨부파일이 존재하면
 			System.out.println("mailAttachment : " + mailAttachment);
-			mail.setmSize((int) mailAttachment.getSize());  // mail의 파일 사이즈 지정해주기 원래는 long형
 			
-			// 첨부파일 저장 처리
-			String root = request.getSession().getServletContext().getRealPath("resources");
-			
-			// 파일 저장 위치 
-			String filePath = root + "\\uploadFiles\\mail\\sendFiles";
-			
-			String originFileName = mailAttachment.getOriginalFilename();
-			String ext = originFileName.substring(originFileName.lastIndexOf("."));
-			
-			// System.currentTimeMillis()는 서버 시간 -> getServerTime
-			String changeName = mail.getSendMail() + "_" + getServerTime();
-			
-			
-			System.out.println("첨부파일 있는 메일 전송 시작!");
 			File attachment;
 			try {
-				mailAttachment.transferTo(new File(filePath + "\\" + changeName + ext));
+				// mulitpart형식이 아닌 일반 file형태로 변환
 				attachment = new File(filePath + "\\" + changeName + ext);
 				mailSender.send(simpleMailMessage, attachment);
-			} catch (IllegalStateException | IOException e) {
-				// new File(filePath + "\\" + changeName + ext).delete(); 
-				model.addAttribute("msg", "파일 첨부 실패!");
+			} catch (IllegalStateException e) {
+				new File(filePath + "\\" + changeName + ext).delete(); 
+				model.addAttribute("msg", "첨부파일을 포함한 외부메일 발송 실패!");
 				return "common/errorPage";		
 			}
 		}else { // 첨부파일이 존재하지 않으면
-			System.out.println("첨부파일 없는 메일 전송시작!");
+			System.out.println("첨부파일 없는 외부메일 전송시작!");
 			mailSender.send(simpleMailMessage);
 		}
-		// 메일 전송 메소드 호출 
-		// sendMailMessage(sender); // 아래에 있는 메소드로 테스트 하는 방식  // 에러남
-		System.out.println("JavaMailSender를 이용한 메일 발송 완료!");
-		
-		// 전송이 완료되었을 때 데이터 베이스에 정보 저장 
-		ms.sendMail(mail);
-		
-		/*-------------------------------------------------------------------------------*/
-		// s3테스트를 위한 코드들 
-		// 메일 전송이 완료되면 저장들어온 메일리스트를 불러온다.
-		// 버킷 리스트 가져오기 
-		
-		return "redirect:/mail";
-	}
-	
-	// 메일 보내기의 메소드  // aws가 아닌 일반적으로 mailAPI에서 첨부파일을 전송하는 방식
-	public void sendMailMessage(Sender sender) {   // 매개변수로 첨부파일 받기   // 테스트 해보고 다르면 메소드 두개 만들기 
-		// 첨부파일 메일 전송 
-		// MessageSenderImpl에 존재하는 send메소드 호출
-		System.out.println("mailsender.send시작");
-		mailSender.send(new MimeMessagePreparator() {
-			
-			@Override
-			public void prepare(MimeMessage mimeMessage) throws Exception {
-				System.out.println("prepare 시작");
-				MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
-				helper.addTo(sender.getTo().get(0));
-				helper.setFrom(sender.getFrom());
-				// helper.addAttachment(attachmentFilename, file); // 첨부파일 추가하기 // 파일 추가해서 검토하기
-				helper.setSubject(sender.getSubject());
-				helper.setText(sender.getContent(), false);   // false뭔지 확인하기 
-			}
-		});
+		return "redirect:/mail/sendFin?mailNo=" + mailNo;
 	}
 	
 	// 예약메일 보내기
@@ -338,18 +314,6 @@ public class MailController {
 		return "";
 	}
 	
-	// 서명 추가
-	@RequestMapping("put/sign.ma")
-	public String insertSign() {
-		return "";
-	}
-	
-	// 서명정보 조회 
-	@RequestMapping("sign.ma")
-	public String selectSignList() {
-		return "";
-	}
-	
 	// s3 버킷으로 들어오 메시지를 DB에 넣어주는 메소드
 	@RequestMapping("mail/s3")
 	public String runS3Method() {
@@ -408,4 +372,91 @@ public class MailController {
 		// 리스트 조회
 		return "redirect:/allList.ma";
 	}
+	
+	// 첨부파일 다운로드하기
+	@RequestMapping("mail/attDownload")
+	public String mailAttDownload(@RequestParam int no, HttpServletRequest request, HttpServletResponse response) {
+		// attNo를 받아서 DB에서 조회해서 일을 불러온다. 
+	   Contract file = as.downloadFile(no);
+	   
+	   //폴더에서 파일을 읽어들일 스트림 생성
+	   BufferedInputStream buf = null;
+	   
+	   //클라이언트로 내보낼 출력스트림 생성
+	   ServletOutputStream downOut = null;
+	   try {
+	      downOut = response.getOutputStream();
+	      
+	      File downFile = new File(file.getFilePath() + "/" + file.getChangeName());
+	      
+	      response.setContentType("text/plain; charset=UTF-8");
+	      
+	      //한글 파일명에 대한 인코딩 처리
+	      //강제적으로 다운로드 처리
+	      response.setHeader("Content-Disposition", "contract; filename=\"" + 
+	               new String(file.getOriginName().getBytes("UTF-8"), "ISO-8859-1") + "\""); 
+	      
+	      response.setContentLength((int)downFile.length());
+	      
+	      FileInputStream fin = new FileInputStream(downFile);
+	      
+	      buf = new BufferedInputStream(fin);
+	      
+	      int readBytes = 0;
+	      
+	      while((readBytes = buf.read()) != -1) {
+	         downOut.write(readBytes);
+	      }
+	      
+	      downOut.close();
+	      buf.close();
+	   } catch (IOException e) {
+	      e.printStackTrace();
+	   }
+		return "";
+	}
+	
+	
+	
+	//----------------------------------------------------------------------------------------
+	// 전체 메일함 조회
+	@RequestMapping("allList.ma") 
+	public String selectMailList(HttpServletRequest request, Model model) {
+		
+		// 페이징 처리 
+		int currentPage = 1;
+		if(request.getParameter("currentPage") != null) {
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
+		
+		int listCount = ms.getMailListCount();
+		
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+		
+		ArrayList<Mail> list = ms.selectMailList(pi);
+
+		if(list != null) {
+			model.addAttribute("list", list);
+			model.addAttribute("pi", pi);
+			System.out.println("list : " + list);
+			return "mail/mailAllList"; 
+		}else {
+			model.addAttribute("msg", "리스트 조회에 실패!");
+			
+			return "common/errorPage";
+		}
+	}
+	
+	// 서명 추가
+	@RequestMapping("put/sign.ma")
+	public String insertSign() {
+		return "";
+	}
+	
+	// 서명정보 조회 
+	@RequestMapping("sign.ma")
+	public String selectSignList() {
+		return "";
+	}
 }
+

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.mail.Message;
 
 import com.kh.lgtw.approval.model.vo.PageInfo;
+import com.kh.lgtw.common.model.vo.Attachment;
 import com.kh.lgtw.mail.model.exception.StatusTypeException;
 import com.kh.lgtw.mail.model.vo.Absence;
 import com.kh.lgtw.mail.model.vo.ListCondition;
@@ -34,4 +35,7 @@ public interface MailService{
 
 	int insertReciveMail(Mail reciveMail);
 
+	int sendMail(Mail mail, Attachment mailAtt);
+
+	int selectMailNo();
 }

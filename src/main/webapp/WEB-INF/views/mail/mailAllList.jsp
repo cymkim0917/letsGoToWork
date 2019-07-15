@@ -65,7 +65,7 @@
 		<jsp:include page="../common/sideMenu/mail.jsp"/>
 		
 		<section class="col-sm-10">
-		<br>
+		<button onclick="location.href='${contextPath}/mail/sendFin'">보내기완료 페이지</button>
 			<div class="content" align="center">
 				<form class="searchArea form-group" align="left" action="${ contextPath }/mail/search">
 					<input type="hidden" name="listType" value="${ pageType }"/>
@@ -112,18 +112,26 @@
 										</c:if>
 									</c:if>
 									<c:if test="${ !empty mail.empName }">
+										<c:out value="${ mail.empName } ${ mail.jobName } - ${ mail.deptName }"/><br>
 										<c:if test="${ mail.mailType eq '보낸메일' }">
-											<c:out value="${ mail.empName } - ${ mail.deptName } ${ mail.jobName }"/><br>
+											<%-- <c:out value="${ mail.empName } - ${ mail.deptName } ${ mail.jobName }"/><br> --%>
 											(<c:out value="${ mail.reciveMail }"/>)
 										</c:if>
 										<c:if test="${ mail.mailType eq '받은메일' }">
-											<c:out value="${ mail.empName } - ${ mail.deptName } ${ mail.jobName }"/><br>
 											(<c:out value="${ mail.sendMail }"/>)
 										</c:if>
 									</c:if>
 								</td>
 								<td><c:out value="${ mail.mailType }"/></td>
-								<td><c:out value="${ mail.mTitle }"/></td>
+								<td>
+								${ !empty mail.mailAtt }
+									<c:if test="${ !empty mail.mailAtt }"> 
+										<span>첨부파일
+											<img src="${ contextPath }/resources/images/mail/attachment.png"/ width="40px;">
+										</span>
+									</c:if>
+									<c:out value="${ mail.mTitle }"/>
+								</td>
 								<td><c:out value="${ mail.sendDate }"/></td>							
 							</tr>
 						</c:forEach>

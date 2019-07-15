@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import com.kh.lgtw.approval.model.vo.PageInfo;
@@ -291,32 +292,76 @@ public class EmployeeDaoImpl implements EmployeeDao{
 	
 	//휴가 신청 조회 - 욱
 	@Override
-	public HashMap<String, Object> showHolidayApply(SqlSession sqlSession, int empNo) {
-		return sqlSession.selectOne("Employee.showHolidayApply",empNo);
+	public ArrayList<HashMap<String, Object>>  showHolidayApply(SqlSession sqlSession, int empNo) {
+		return (ArrayList) sqlSession.selectList("Employee.showHolidayApply",empNo);
 	}
 
 	@Override
 	public int insertEmpWork(SqlSession sqlSession, Attendance attend) {
 		return sqlSession.insert("Employee.insertEmpWork", attend);
 	}
+	
+	//휴가 신청 - 욱
+	@Override
+	public int applyHoliday(SqlSession sqlSession, HashMap<String, Object> params) {
+		
+		sqlSession.insert("Employee.applyHoliday", params);
+		
+		ArrayList<Object> DateList = (ArrayList<Object>) params.get("holidayDate");
+		ArrayList<Object> TimeList = (ArrayList<Object>) params.get("holidayTime");
+		
+		int result = 0;
+		
+		for(int i=0; i<DateList.size(); i++) {
+			params.put("holidayDate", DateList.get(i));
+			params.put("holidayTime", TimeList.get(i));
+			result += sqlSession.insert("Employee.applyHolidayDate",params);
+		}
+		
+		return result;
+	}
+	//휴가 관리자 승인 리스트 조회 - 욱
+	@Override
+	public ArrayList<HashMap<String, Object>> getAdminHoliday(SqlSession sqlSession, HashMap<String,Object> parmas) {
+		ArrayList list = (ArrayList) sqlSession.selectList("Employee.getAdminHoliday", parmas);
+		return list;
+	}
+	
+
+	@Override
+	public int insertLeaveEmp(SqlSession sqlSession, ArrayList<Employee> list) {
+		int result = 0;
+		
+		for(int i =0; i<list.size(); i++) {
+			result += sqlSession.update("Employee.insertLeaveEmp",list.get(i));
+		}
+		
+		System.out.println("결과 출력 : " + result);
+		
+		return result;
+	}
+
+	@Override
+	public ArrayList<EmployeeResult> selectLeaveEmpAdmin(SqlSession sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("Employee.selectLeaveEmpAdmin");
+	}
+
+	@Override
+	public int insertEmpOffWork(SqlSession sqlSession, Attendance attend) {
+		return sqlSession.update("Employee.insertEmpOffWork", attend);
+	}
+
+	@Override
+	public int insertNoWork(SqlSession sqlSession, Attendance attend) {
+		return sqlSession.insert("Employee.insertNoWork",attend);
+	}
+
+	@Override
+	public int checkEmpOffWork(SqlSession sqlSession, Attendance attend) {
+		return sqlSession.selectOne("Employee.checkEmpOffWork",attend);
+	}
 
 
-//	@Override
-//	public int insertDuty(SqlSession sqlSession) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public int updateLeave(SqlSession sqlSession, Employee employee) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public ArrayList<Employee> selectLeaveList(SqlSession sqlSession) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 
 }

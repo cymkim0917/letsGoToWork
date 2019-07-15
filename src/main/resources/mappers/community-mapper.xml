@@ -100,7 +100,7 @@
    <select id="selectPostList" resultMap="communityPostResultSet" parameterType="_int">
      SELECT ROWNUM AS ORD , C.* , E.EMP_NAME
        FROM BOARD B
-        JOIN CONTENT C ON (B.BNO = C.BNO)
+       JOIN CONTENT C ON (B.BNO = C.BNO)
        JOIN EMPLOYEE E ON (B.CREATE_USER = E.EMPNO)
        WHERE B.BNO = #{bno}
         AND C.STATUS = 'N'
@@ -307,12 +307,17 @@
 	
 	</select>
 	
-	<select id="CommunityPostPageList" resultMap="communityPostResultSet">
-	    SELECT *
-		FROM BOARD B
-		JOIN CONTENT C ON(B.BNO = C.BNO)
-		WHERE C.STATUS = 'N'
-		ORDER BY CONTENT_NO DESC
+	<select id="CommunityPostPageList" resultMap="communityPostResultSet" parameterType="_int">
+	    
+	
+		SELECT ROWNUM AS ORD , C.* , E.EMP_NAME
+        FROM BOARD B
+        JOIN CONTENT C ON (B.BNO = C.BNO)
+        JOIN EMPLOYEE E ON (B.CREATE_USER = E.EMPNO)
+        WHERE B.BNO = #{bno}
+        AND C.STATUS = 'N'
+        ORDER BY CONTENT_NO DESC
+ 
 	
 	
 	

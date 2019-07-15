@@ -57,67 +57,28 @@
 					<a href="#" onclick="showModal()">휴직자 추가</a> &nbsp;&nbsp; <a href="#" onclick="deleteManager();">휴직자 삭제</a> 
 				</div>
 				<br>
-				<form action="insertEmpQuick.em" method="post">
-				<table class="table">
-				    <thead>
-					      <tr class="info">
-					      	<th><input type="checkbox" class="chk" name="checkAll" id="th_checkAll"></th>
-					        <th>이름</th>
-					        <th>ID</th>
-					        <th>비밀번호</th>
-					        <th>사내전화</th>
-					        <th>휴대전화</th>
-					        <th>소속</th>
-					        <th>직급</th>
-					        <th>상태</th>
-					      </tr>
-				    </thead>
-				    <tbody>
-				      	<tr>
-				      		<td></td>
-				      		<td><input type="text" size="10" name="empName"  placeholder="이름 입력"></td>
-				      		<td><input type="text" size="10" name="empId"  placeholder="ID 입력"></td>
-				      		<td><input type="password" size="10" name="empPwd"  placeholder="비밀번호 입력"></td>
-				      		<td><input type="text" size="10" name="officeTel"  placeholder="사내전화 입력"></td>
-				      		<td><input type="text" size="13" name="empPhone"  placeholder="휴대전화 입력"></td>
-				      		<th>
-					        </th>
-					        <th>
-					        </th>
-				      		<td><button type="submit" class="btn btn-primary">저장</button></td>
-				      	</tr>
-				    </tbody>
-			 	 </table>
-			 	 </form>
-			 	 <form action="deleteEmpList.em" method="post">
-			 	 	<table class="table" id="empTable">
-			 	 		<c:forEach var="item" items="${list }">
-			 	 			<tr>
-				 	 			<td><input type="checkbox" class="chk" name="empNo" value="${item.empNo }"></td>
-				 	 			<td><c:out value="${item.empName }"/></td>
-				 	 			<td><c:out value="${item.empId }"/></td>
-				 	 			<td>********</td>
-				 	 			<td><c:out value="${item.officeTel }"/></td>
-				 	 			<td><c:out value="${item.empPhone }"/></td>
-				 	 			<td><c:out value="${item.deptName }"/></td>
-				 	 			<td><c:out value="${item.jobName }"/></td>
-				 	 			<td>
-				 	 				<c:choose>
-				 	 					<c:when test="${item.status eq 'Y' }">
-				 	 						정상
-				 	 					</c:when>
-				 	 					<c:when test="${item.status eq 'H' }">
-				 	 						휴직
-				 	 					</c:when>
-				 	 				</c:choose>
-				 	 			</td>
-			 	 			</tr>
-			 	 		</c:forEach>
-			 	 	</table>
-			 	 	<div style="margin-left:1%; margin-top:-1%;">
-						<input type="submit" class="btn btn-primary" value="삭제">
-					</div>
-			 	 </form>
+				<form>
+					<table id="resultTable" class="table">
+						<tr class="info">
+							<th><input type="checkbox" id="checkAll"></th>
+							<th>소속</th>
+							<th>이름</th>
+							<td>아이디</td>
+							<th>직급</th>
+							<th>휴직사유</th>
+						</tr>
+						<c:forEach var="emp" items="${list }">
+							<tr>
+								<td><input type="checkbox" name="check" value="${emp.empNo }"></td>
+								<td><c:out value="${emp.deptName }"></c:out></td>
+								<td><c:out value="${emp.empName }"></c:out></td>
+								<td><c:out value="${emp.empId }"></c:out></td>
+								<td><c:out value="${emp.jobName }"></c:out></td>
+								<td><c:out value="${emp.leaveReason }"></c:out></td>
+							</tr>
+						</c:forEach>
+					</table>
+				</form>
 			 	 	<br>
 			 	 	
 			 	 	<!-- 페이징 -->
@@ -400,7 +361,7 @@
 		    contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(object),
 			success:function(data){
-				alert(data + "휴직자가 추가되었습니다.");
+				alert(data + "명의 휴직자가 추가되었습니다.");
 				window.location.reload();
 			},
 			error:function(data){

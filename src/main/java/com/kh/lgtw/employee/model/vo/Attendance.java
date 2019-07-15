@@ -7,15 +7,17 @@ public class Attendance {
 	private int empNo;
 	private String startTime;
 	private String endTime;
+	private String status;
 	
 	public Attendance() {}
-	
-	public Attendance(Date attendanceDate, int empNo, String startTime, String endTime) {
+
+	public Attendance(Date attendanceDate, int empNo, String startTime, String endTime, String status) {
 		super();
 		this.attendanceDate = attendanceDate;
 		this.empNo = empNo;
 		this.startTime = startTime;
 		this.endTime = endTime;
+		this.status = status;
 	}
 
 	public Date getAttendanceDate() {
@@ -50,10 +52,18 @@ public class Attendance {
 		this.endTime = endTime;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "Attendance [attendanceDate=" + attendanceDate + ", empNo=" + empNo + ", startTime=" + startTime
-				+ ", endTime=" + endTime + "]";
+				+ ", endTime=" + endTime + ", status=" + status + "]";
 	}
 	
 }

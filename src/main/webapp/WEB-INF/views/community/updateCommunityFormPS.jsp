@@ -53,12 +53,12 @@
 	
 								  </tr> 
 								  
-								  <tr>
+								 <!--  <tr>
 										<th width="10%;">첨부파일:</th>
 								  		<td><input type="file" name="uploadfile"></td>
 	  
 								  </tr>
-								   		
+		 -->						   		
 								  	
 								</tbody>
 
