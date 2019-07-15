@@ -18,6 +18,7 @@
 <script src='${ contextPath }/resources/schedulerPackages/timegrid/main.js'></script>
 <script src='${ contextPath }/resources/schedulerPackages/list/main.js'></script>
 <script src="${ contextPath }/resources/schedulerPackages/core/locales-all.js"></script>
+<link href="${contextPath}/resources/vender/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
@@ -207,10 +208,6 @@
   .modal-footer{
   	text-align: center !important;
   } 
-  .modal-footer button{
-  	background:lightgray;
-  	border:1px solid black;
-  }
   .modal-body td{
   	padding-top:5px;
   }
@@ -225,12 +222,21 @@
   .inout {
   	background:black;
   	color:white;
-  	
+  }
+  
+  .UDinout {
+  	background:black;
+  	color:white;
   }
   body {
   	padding-right:0 !important;
   }
-  
+  #empTitle, #groupTitle{
+  	font-size: 1.3em;
+  }
+  #empScheduler td, #groupScheduler td {
+  	padding-top: 5px;
+  }
 </style>
 </head>
 <body>
@@ -278,8 +284,8 @@
 			        </div>
 			        
 			        <div class="modal-footer">
-			          <button type="submit" class="btn" onclick="return createEmpSC()">생성</button>
-			          <button type="reset" class="btn" data-dismiss="modal">취소</button>
+			          <button type="submit" class="btn-sm btn-info" onclick="return createEmpSC()">생성</button>
+			          <button type="reset" class="btn-sm btn-bagic" data-dismiss="modal">취소</button>
 			        </div>
 			      </div>
 			    </div>
@@ -326,9 +332,9 @@
 				        </div>
 				      </form>
 			        <div class="modal-footer">
-			          <button type="button" class="btn" onclick="updateEmpScr()">수정</button>
-			          <button type="button" class="btn" onclick="deleteEmpScr()">삭제</button>
-			          <button type="reset" class="btn" data-dismiss="modal">취소</button>
+			          <button type="button" class="btn-sm btn-info" onclick="updateEmpScr()">수정</button>
+			          <button type="button" class="btn-sm btn-danger" onclick="deleteEmpScr()">삭제</button>
+			          <button type="reset" class="btn-sm btn-basic" data-dismiss="modal">취소</button>
 			        </div>
 			      </div>
 			    </div>
@@ -391,8 +397,8 @@
 			        </div>
 			        
 			        <div class="modal-footer">
-			          <button type="button" class="btn" onclick="return insertSchedule()">생성</button>
-			          <button type="reset" class="btn" data-dismiss="modal">취소</button>
+			          <button type="button" class="btn-sm btn-info" onclick="return insertSchedule()">생성</button>
+			          <button type="reset" class="btn-sm btn-bagic" data-dismiss="modal">취소</button>
 			        </div>
 			        
 			      </div>
@@ -410,7 +416,7 @@
 			      <div class="modal-content">
 			        <div class="modal-header">
 			          <button type="button" class="close" data-dismiss="modal">&times;</button>
-			          <h4 class="modal-title" align="center" id="dtscTitle"><b>`보기</b></h4>
+			          <h4 class="modal-title" align="center" id="dtscTitle"><b>보기</b></h4>
 			          <h4 class="modal-title" align="center" id="udscTitle" style="display:none"><b>일정 수정</b></h4>
 			        </div>
 			        
@@ -453,10 +459,10 @@
 			        </div>
 			        
 			        <div class="modal-footer" id="dtscBtnArea">
-			          <button type="button" class="btn dtscBtn" onclick="updateSchedule()">수정</button>
-			          <button type="submit" class="btn dtscBtn">삭제</button>
-			          <button type="button" class="btn udscBtn" style="display:none" onclick="return complateUdSchedule()">완료</button>
-			          <button type="reset" class="btn udscBtn" style="display:none" data-dismiss="modal" onclick="changeDtscF()">취소</button>
+			          <button type="button" class="btn-sm btn-info dtscBtn" onclick="updateSchedule()">수정</button>
+			          <button type="submit" class="btn-sm btn-danger dtscBtn">삭제</button>
+			          <button type="button" class="btn-sm btn-info udscBtn" style="display:none" onclick="return complateUdSchedule()">완료</button>
+			          <button type="reset" class="btn-sm btn-basic udscBtn" style="display:none" data-dismiss="modal" onclick="changeDtscF()">취소</button>
 			        </div>
 			        
 			      </div>
@@ -515,7 +521,7 @@
 					      	<div class="col-sm-5 signForm" id="circle">
 					      		<div class="row">
 						      		<div>
-						      			<div class="col-sm-2" style="padding-top:80px;">
+						      			<div class="col-sm-2">
 								      		<button class="btn inout" name="setInputCircle" type="button"><b>></b></button>
 								      		<br><br>
 								      		<button class="btn inout" name="setOutputCircle" type="button"><b><</b></button>
@@ -546,8 +552,8 @@
 					      	</div>
 					     </div>
 					     <div class="modal-footer">
-					     	<button type="button" onclick="insertGscr();" class="btn btn-primary" data-dismiss="modal">확인</button>
-					        <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+					     	<button type="button" onclick="insertGscr();" class="btn btn-info" data-dismiss="modal">확인</button>
+					        <button type="button" class="btn btn-basic" data-dismiss="modal">취소</button>
 					      </div>
 					  </div>
 				   </div>
@@ -639,9 +645,9 @@
 					      	</div>
 					     </div>
 					     <div class="modal-footer">
-					     	<button type="button" onclick="updateGscr()" class="btn btn-primary" data-dismiss="modal">수정</button>
-					     	<button type="button" onclick="deleteGscr()" class="btn btn-primary" data-dismiss="modal">삭제</button>
-					        <button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
+					     	<button type="button" onclick="updateGscr()" class="btn-sm btn-info" data-dismiss="modal">수정</button>
+					     	<button type="button" onclick="deleteGscr()" class="btn-sm btn-danger" data-dismiss="modal">삭제</button>
+					        <button type="button" class="btn-sm btn-basic" data-dismiss="modal">취소</button>
 					      </div>
 					  </div>
 				   </div>
@@ -804,7 +810,7 @@
   					var $groupScheduler = $("#groupScheduler");
   	
       				for(var key in data.empScList){
-      					var $empTr = $("<tr id='empTr'>");
+      					var $empTr = $("<tr id='empTr' class='listTr'>");
       					var $colTd = $("<td colspan='2'>");
       					var $hiddenNo = $("<input type='hidden' value='" + data.empScList[key].schedulerNo + "' class='hiddenNo'>");
       					var $colBtn = $("<button style='width:5px; height:16px;' class='colorBtn'>");
@@ -834,7 +840,7 @@
       				}
       				
       				for(var key in data.gpScList){
-      					var $gmTr = $("<tr>");
+      					var $gmTr = $("<tr class='listTr'>");
       					var $colTd = $("<td colspan='2'>");
       					var $hiddenNo = $("<input type='hidden' value='" + data.gpScList[key].schedulerNo + "' class='hiddenNo'>");
       					var $colBtn = $("<button style='width:5px; height:16px;' class='gScrColorBtn'>");

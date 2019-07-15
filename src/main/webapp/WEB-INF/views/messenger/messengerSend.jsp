@@ -8,6 +8,12 @@
 <link rel="shortcut icon" href="contextPath/resources/images/favicon.ico">
 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
 <title>LetsGoToWork</title>
+<style>
+.inout {
+	background:black;
+	color:white;
+}
+</style>
 </head>
 <body>
 	<jsp:include page="../common/menubar.jsp"/>
@@ -80,9 +86,9 @@
 					      	<div class="col-sm-5 signForm" id="circle">
 					      		<div class="row">
 						      		<div>
-						      			<div class="col-sm-2">
+						      			<div class="col-sm-2" style="padding-top:170px;">
 								      		<button class="btn inout" name="inputCircle" type="button">></button>
-								      		<button class="btn inout" name="outputCircle" type="button"><</button>
+								      		<button class="btn inout" name="outputCircle" type="button" style="margin-top:20px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">수신자</label>

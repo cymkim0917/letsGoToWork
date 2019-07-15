@@ -28,7 +28,11 @@
 	} 
 	/* 접근성 탭 포커스 스타일 */ 
 	.file-focus { outline: 1px dotted #d2310e; }
-
+	.inout {
+		background:black;
+		color:white;
+		padding-top:80px;
+	}
 
 </style>
 </head>
@@ -115,9 +119,9 @@
 					      	<div class="col-sm-5 signForm" id="circle" style="display:none;">
 					      		<div class="row">
 						      		<div>
-						      			<div class="col-sm-2">
+						      			<div class="col-sm-2" style="padding-top:170px;">
 								      		<button class="btn inout" name="inputCircle" type="button">></button>
-								      		<button class="btn inout" name="outputCircle" type="button"><</button>
+								      		<button class="btn inout" name="outputCircle" type="button" style="margin-top:20px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">회람</label>
@@ -140,8 +144,8 @@
 						      	<div class="row">
 						      		<div>
 						      			<div class="col-sm-2">
-								      		<button class="btn inout" name="inputApproval" type="button">></button>
-								      		<button class="btn inout" name="outputApproval" type="button"><</button>
+								      		<button class="btn inout" name="inputApproval" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputApproval" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">결재</label>
@@ -162,8 +166,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2">
-								      		<button class="btn inout" name="inputAgree" type="button">></button>
-								      		<button class="btn inout" name="outputAgree" type="button"><</button>
+								      		<button class="btn inout" name="inputAgree" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputAgree" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">	
 						      				<label class="col-sm-12">합의</label>
@@ -184,8 +188,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2" style="display:table-cell; vertical-align:center; top:50%;">
-								      		<button class="btn inout" name="inputRef" type="button">></button>
-								      		<button class="btn inout" name="outputRef" type="button"><</button>
+								      		<button class="btn inout" name="inputRef" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputRef" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">참조</label>
@@ -211,8 +215,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2">
-								      		<button class="btn inout" name="inputApproval" type="button">></button>
-								      		<button class="btn inout" name="outputApproval" type="button"><</button>
+								      		<button class="btn inout" name="inputApproval" type="button" style="margin-top:30px;">></button>
+								      		<button class="btn inout" name="outputApproval" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">결재</label>
@@ -234,8 +238,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2">
-								      		<button class="btn inout" name="inputPa" type="button">></button>
-								      		<button class="btn inout" name="outputPa" type="button"><</button>
+								      		<button class="btn inout" name="inputPa" type="button" style="margin-top:30px;">></button>
+								      		<button class="btn inout" name="outputPa" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">재무합의</label>
@@ -256,8 +260,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2">
-								      		<button class="btn inout" name="inputAgree" type="button">></button>
-								      		<button class="btn inout" name="outputAgree" type="button"><</button>
+								      		<button class="btn inout" name="inputAgree" type="button" style="margin-top:30px;">></button>
+								      		<button class="btn inout" name="outputAgree" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">	
 						      				<label class="col-sm-12">합의</label>
@@ -278,8 +282,8 @@
 						      	<div class="row">
 						      		<div>
 						      			<div class="col-sm-2" style="display:table-cell; vertical-align:center; top:50%;">
-								      		<button class="btn inout" name="inputRef" type="button">></button>
-								      		<button class="btn inout" name="outputRef" type="button"><</button>
+								      		<button class="btn inout" name="inputRef" type="button" style="margin-top:30px;">></button>
+								      		<button class="btn inout" name="outputRef" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">참조</label>
@@ -304,8 +308,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2" style="display:table-cell; vertical-align:center; top:50%;">
-								      		<button class="btn inout" name="inputApply" type="button">></button>
-								      		<button class="btn inout" name="outputApply" type="button"><</button>
+								      		<button class="btn inout" name="inputApply" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputApply" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">신청</label>
@@ -326,8 +330,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2" style="display:table-cell; vertical-align:center; top:50%;">
-								      		<button class="btn inout" name="inputPro" type="button">></button>
-								      		<button class="btn inout" name="outputPro" type="button"><</button>
+								      		<button class="btn inout" name="inputPro" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputPro" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">처리</label>
@@ -348,8 +352,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2" style="display:table-cell; vertical-align:center; top:50%;">
-								      		<button class="btn inout" name="inputRef" type="button">></button>
-								      		<button class="btn inout" name="outputRef" type="button"><</button>
+								      		<button class="btn inout" name="inputRef" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputRef" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">참조</label>
@@ -374,8 +378,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2">
-								      		<button class="btn inout" name="inputApproval" type="button">></button>
-								      		<button class="btn inout" name="outputApproval" type="button"><</button>
+								      		<button class="btn inout" name="inputApproval" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputApproval" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">결재</label>
@@ -396,8 +400,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2" style="display:table-cell; vertical-align:center; top:50%;">
-								      		<button class="btn inout" name="inputRef" type="button">></button>
-								      		<button class="btn inout" name="outputRef" type="button"><</button>
+								      		<button class="btn inout" name="inputRef" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputRef" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">참조</label>
@@ -418,8 +422,8 @@
 					      		<div class="row">
 						      		<div>
 						      			<div class="col-sm-2" style="display:table-cell; vertical-align:center; top:50%;">
-								      		<button class="btn inout" name="inputSend" type="button">></button>
-								      		<button class="btn inout" name="outputSend" type="button"><</button>
+								      		<button class="btn inout" name="inputSend" type="button" style="margin-top:40px;">></button>
+								      		<button class="btn inout" name="outputSend" type="button" style="margin-top:5px;"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">수신</label>
