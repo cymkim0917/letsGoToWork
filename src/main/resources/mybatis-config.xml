@@ -41,6 +41,7 @@
 		<typeAlias type="com.kh.lgtw.employee.model.vo.PromotionHistory" alias="PromotionHistory"/>
 		<typeAlias type="com.kh.lgtw.employee.model.vo.EmployeeResult" alias="EmployeeResult"/>
 		<typeAlias type="com.kh.lgtw.common.model.vo.Attachment" alias="Attachment"/>
+		<typeAlias type="com.kh.lgtw.employee.model.vo.Attendance" alias="Attendance"/>
 		
 		<!-- Mail VO -->
 		<typeAlias type="com.kh.lgtw.mail.model.vo.CommonMail" alias="CommonMail"/>

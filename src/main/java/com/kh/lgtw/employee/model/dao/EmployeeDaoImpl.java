@@ -328,23 +328,40 @@ public class EmployeeDaoImpl implements EmployeeDao{
 	}
 	
 
+	@Override
+	public int insertLeaveEmp(SqlSession sqlSession, ArrayList<Employee> list) {
+		int result = 0;
+		
+		for(int i =0; i<list.size(); i++) {
+			result += sqlSession.update("Employee.insertLeaveEmp",list.get(i));
+		}
+		
+		System.out.println("결과 출력 : " + result);
+		
+		return result;
+	}
 
-//	@Override
-//	public int insertDuty(SqlSession sqlSession) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public int updateLeave(SqlSession sqlSession, Employee employee) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public ArrayList<Employee> selectLeaveList(SqlSession sqlSession) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public ArrayList<EmployeeResult> selectLeaveEmpAdmin(SqlSession sqlSession) {
+		
+		return (ArrayList)sqlSession.selectList("Employee.selectLeaveEmpAdmin");
+	}
+
+	@Override
+	public int insertEmpOffWork(SqlSession sqlSession, Attendance attend) {
+		return sqlSession.update("Employee.insertEmpOffWork", attend);
+	}
+
+	@Override
+	public int insertNoWork(SqlSession sqlSession, Attendance attend) {
+		return sqlSession.insert("Employee.insertNoWork",attend);
+	}
+
+	@Override
+	public int checkEmpOffWork(SqlSession sqlSession, Attendance attend) {
+		return sqlSession.selectOne("Employee.checkEmpOffWork",attend);
+	}
+
+
 
 }

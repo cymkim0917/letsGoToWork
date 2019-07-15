@@ -538,7 +538,10 @@ public class EmployeeController {
 				System.out.println(list.get(i));
 			}
 			
-			return "";
+			int result = empService.insertLeaveEmp(list);
+			
+			
+			return result+"";
 		}
 		
 		
@@ -579,115 +582,16 @@ public class EmployeeController {
 			
 			return result+"";
 		}
-		
-		@RequestMapping(value="/employee/goToWork",produces="application/text; charset=utf8")
-		@ResponseBody
-		public String goToWork(@RequestBody Map<String, Object> map) throws ParseException {
-			System.out.println("넘어가니~"+map.get("workArr"));
-			ArrayList<Object> info = (ArrayList)map.get("workArr");
-			String status = "";
+
+		@RequestMapping("showLeaveEmpAdmin.em")
+		public String showLeaveEmpAdmin(Model model) {
 			
-			Attendance attend = new Attendance();
+			ArrayList<EmployeeResult> list = empService.selectLeaveEmpAdmin();
 			
-			int empNo = Integer.parseInt(info.get(0).toString());
-			String workTime = info.get(1).toString();
-			String today = info.get(2).toString();
+			model.addAttribute("list", list);
 			
-			String[] timeArr = workTime.split(":");
-			
-			Date sysdate = Date.valueOf(today);
-			
-			
-			int[] lateCheck = new int[2];
-			
-			for(int i = 0; i<timeArr.length; i++) {
-				lateCheck[i]=Integer.parseInt(timeArr[i]);
-			}
-			
-			System.out.println(lateCheck[0]+1);
-			System.out.println(lateCheck[1]+1);
-			
-			attend.setEmpNo(empNo);
-			attend.setStartTime(workTime);
-			attend.setAttendanceDate(sysdate);
-			
-			
-			System.out.println(empNo+5);
-			System.out.println("우어크 타임:"+workTime);
-			
-			int checkWork = empService.checkEmpWork(attend);
-			
-			if(checkWork==0) {
-				
-				int work = empService.insertEmpWork(attend);
-				if(lateCheck[0]>=9 && lateCheck[1]>0) {
-					status="지각입니다.";
-					System.out.println("지각");
-				}else {
-					status="노 지각입니다.";
-					System.out.println("노지각");
-				}
-			}else {
-				status="이미 처리되었습니다.";
-				System.out.println("이미처리");
-			}
-			
-			
-			return status;
+			return "employee/leaveEmpAdmin";
 		}
-		
-		@RequestMapping(value="/employee/offWork",produces="application/text; charset=utf8")
-		@ResponseBody
-		public String offWork(@RequestBody Map<String, Object> map) throws ParseException {
-			System.out.println("넘어가니~"+map.get("workArr"));
-			ArrayList<Object> info = (ArrayList)map.get("workArr");
-			String status = "";
-			
-			Attendance attend = new Attendance();
-			
-			int empNo = Integer.parseInt(info.get(0).toString());
-			String workTime = info.get(1).toString();
-			String today = info.get(2).toString();
-			
-			String[] timeArr = workTime.split(":");
-			
-			Date sysdate = Date.valueOf(today);
-			
-			
-			int[] lateCheck = new int[2];
-			
-			for(int i = 0; i<timeArr.length; i++) {
-				lateCheck[i]=Integer.parseInt(timeArr[i]);
-			}
-			
-			System.out.println(lateCheck[0]+1);
-			System.out.println(lateCheck[1]+1);
-			
-			attend.setEmpNo(empNo);
-			attend.setEndTime(workTime);
-			attend.setAttendanceDate(sysdate);
-			
-			int checkWork = empService.checkEmpWork(attend);
-			
-			if(checkWork==1) {
-				
-				int work = empService.insertEmpWork(attend);
-				if(lateCheck[0]>=9 && lateCheck[1]>0) {
-					status="지각입니다.";
-					System.out.println("지각");
-				}else {
-					status="노 지각입니다.";
-					System.out.println("노지각");
-				}
-			}else {
-				status="이미 처리되었습니다.";
-				System.out.println("이미처리");
-			}
-			
-			
-			return status;
-		}
-		
 		
 	// ------------------------조직도--------------------------
 	
@@ -798,16 +702,6 @@ public class EmployeeController {
 			return "employee/attendTotalAdmin";
 		}
 		
-		//근태현황 ATTENDANCE
-		@RequestMapping("selectAttend.em")
-		public String selectAttend(HttpServletRequest request, Model model) {
-			Employee loginUser =(Employee)request.getSession().getAttribute("loginUser");
-			
-			//Attendace attend = emplService.selectAttend(loginUser);
-			
-			return "";
-		}
-		
 		//근태수정내역
 		@RequestMapping("updateAttendList.em")
 		public String updateAttendList(HttpServletRequest request, Model model) {
@@ -821,12 +715,214 @@ public class EmployeeController {
 		}
 		
 		
-		@RequestMapping("showLeaveEmpAdmin.em")
-		public String showLeaveEmpAdmin() {
+		@RequestMapping(value="/employee/goToWork",produces="application/text; charset=utf8")
+		@ResponseBody
+		public String goToWork(@RequestBody Map<String, Object> map) throws ParseException {
+			System.out.println("넘어가니~"+map.get("workArr"));
+			ArrayList<Object> info = (ArrayList)map.get("workArr");
+			String status = "";
+			
+			Attendance attend = new Attendance();
+			
+			int empNo = Integer.parseInt(info.get(0).toString());
+			String workTime = info.get(1).toString();
+			String today = info.get(2).toString();
+			
+			String[] timeArr = workTime.split(":");
+			
+			Date sysdate = Date.valueOf(today);
 			
 			
-			return "employee/leaveEmpAdmin";
+			int[] lateCheck = new int[2];
+			
+			for(int i = 0; i<timeArr.length; i++) {
+				lateCheck[i]=Integer.parseInt(timeArr[i]);
+			}
+			
+			System.out.println(lateCheck[0]+1);
+			System.out.println(lateCheck[1]+1);
+			
+			attend.setEmpNo(empNo);
+			attend.setStartTime(workTime);
+			attend.setAttendanceDate(sysdate);
+			
+			
+			System.out.println(empNo+5);
+			System.out.println("우어크 타임:"+workTime);
+			
+			int checkWork = empService.checkEmpWork(attend);
+			
+			if(checkWork==0) {
+				
+				int work = empService.insertEmpWork(attend);
+				if(lateCheck[0]>=9 && lateCheck[1]>0) {
+					status="지각입니다.";
+					System.out.println("지각");
+				}else {
+					status="노 지각입니다.";
+					System.out.println("노지각");
+				}
+			}else {
+				status="이미 처리되었습니다.";
+				System.out.println("이미처리");
+			}
+			
+			
+			return status;
 		}
+		
+		@RequestMapping(value="/employee/offWork",produces="application/text; charset=utf8")
+		@ResponseBody
+		public String offWork(@RequestBody Map<String, Object> map) throws ParseException {
+			System.out.println("넘어가니~"+map.get("workArr"));
+			ArrayList<Object> info = (ArrayList)map.get("workArr");
+			String status = "";
+			
+			Attendance attend = new Attendance();
+			
+			int empNo = Integer.parseInt(info.get(0).toString());
+			String workTime = info.get(1).toString();
+			String today = info.get(2).toString();
+			
+			String[] timeArr = workTime.split(":");
+			
+			Date sysdate = Date.valueOf(today);
+			
+			
+			int[] lateCheck = new int[2];
+			
+			for(int i = 0; i<timeArr.length; i++) {
+				lateCheck[i]=Integer.parseInt(timeArr[i]);
+			}
+			
+			System.out.println(lateCheck[0]+1);
+			System.out.println(lateCheck[1]+1);
+			
+			attend.setEmpNo(empNo);
+			attend.setEndTime(workTime);
+			attend.setAttendanceDate(sysdate);
+			
+			int checkWork = empService.checkEmpWork(attend);
+			
+			if(checkWork==1) {
+				
+				//int work = empService.insertEmpWork(attend);
+				
+				if(lateCheck[0]>=18 && lateCheck[1]>0) {
+					status="퇴근입니다.";
+					int offWork = empService.insertEmpOffWork(attend);
+					
+				}else {
+					status="퇴근시간이 아닙니다.";
+				}
+			}else {
+				if(lateCheck[0]>=18 && lateCheck[1]>0) {
+					status="퇴근입니다(출근 미체크).";
+					int noWork = empService.insertNoWork(attend);
+					
+				}else {
+					status="퇴근시간이 아닙니다(출근 미체크).";
+				}
+			}
+			
+			
+			return status;
+		}
+		
+		@RequestMapping(value="/employee/workCheck",produces="application/text; charset=utf8")
+		@ResponseBody
+		public String workCheck(@RequestBody Map<String, Object> map) throws ParseException {
+			System.out.println("넘어가니~"+map.get("workArr"));
+			ArrayList<Object> info = (ArrayList)map.get("workArr");
+			String status = "";
+			
+			Attendance attend = new Attendance();
+			
+			int empNo = Integer.parseInt(info.get(0).toString());
+			String workTime = info.get(1).toString();
+			String today = info.get(2).toString();
+			
+			String[] timeArr = workTime.split(":");
+			
+			Date sysdate = Date.valueOf(today);
+			
+			
+			int[] lateCheck = new int[2];
+			
+			for(int i = 0; i<timeArr.length; i++) {
+				lateCheck[i]=Integer.parseInt(timeArr[i]);
+			}
+			
+			System.out.println(lateCheck[0]+1);
+			System.out.println(lateCheck[1]+1);
+			
+			attend.setEmpNo(empNo);
+			attend.setStartTime(workTime);
+			attend.setAttendanceDate(sysdate);
+			
+			
+			System.out.println(empNo+5);
+			System.out.println("우어크 타임:"+workTime);
+			
+			int checkWork = empService.checkEmpWork(attend);
+			
+			if(checkWork==0) {
+				status="지각 1분전 출근 체크 하세요.";
+				
+			}else {
+				status="처리";
+			}
+			
+			return status;
+		}
+		
+		@RequestMapping(value="/employee/offWorkCheck",produces="application/text; charset=utf8")
+		@ResponseBody
+		public String offWorkCheck(@RequestBody Map<String, Object> map) throws ParseException {
+			System.out.println("넘어가니~"+map.get("workArr"));
+			ArrayList<Object> info = (ArrayList)map.get("workArr");
+			String status = "";
+			
+			Attendance attend = new Attendance();
+			
+			int empNo = Integer.parseInt(info.get(0).toString());
+			String workTime = info.get(1).toString();
+			String today = info.get(2).toString();
+			
+			String[] timeArr = workTime.split(":");
+			
+			Date sysdate = Date.valueOf(today);
+			
+			
+			int[] lateCheck = new int[2];
+			
+			for(int i = 0; i<timeArr.length; i++) {
+				lateCheck[i]=Integer.parseInt(timeArr[i]);
+			}
+			
+			System.out.println(lateCheck[0]+1);
+			System.out.println(lateCheck[1]+1);
+			
+			attend.setEmpNo(empNo);
+			attend.setStartTime(workTime);
+			attend.setAttendanceDate(sysdate);
+			
+			
+			System.out.println(empNo+5);
+			System.out.println("우어크 타임:"+workTime);
+			
+			int checkOffWork = empService.checkEmpOffWork(attend);
+			
+			if(checkOffWork==0) {
+				status="퇴근체크를 하세요.";
+				
+			}else {
+				status="완료";
+			}
+			
+			return status;
+		}
+	
 	
 	// --------------------엑셀 파트-----------------
 	//엑셀 직원 업로드
