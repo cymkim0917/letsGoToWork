@@ -2,7 +2,9 @@ package com.kh.lgtw.mail.controller;
 
 import static com.kh.lgtw.common.CommonUtils.getServerTime;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +13,12 @@ import java.util.Map;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.http.annotation.Contract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -87,36 +92,12 @@ public class MailController {
 		Mail mDetail = ms.selectMailDetail(mailNo);
 		System.out.println("mDetail : " + mDetail);
 		model.addAttribute("mail", mDetail);
+		
+		
+		
 		return "mail/mailDetail";
 	}
 	 
-	// 전체 메일함 조회
-	@RequestMapping("allList.ma") // HomeController를 여기로 리다이렉트 시키기 
-	public String selectMailList(HttpServletRequest request, Model model) {
-		
-		// 페이징 처리 
-		int currentPage = 1;
-		if(request.getParameter("currentPage") != null) {
-			currentPage = Integer.parseInt(request.getParameter("currentPage"));
-		}
-		
-		int listCount = ms.getMailListCount();
-		
-		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
-		
-		ArrayList<Mail> list = ms.selectMailList(pi);
-
-		if(list != null) {
-			model.addAttribute("list", list);
-			model.addAttribute("pi", pi);
-			
-			return "mail/mailAllList"; 
-		}else {
-			model.addAttribute("msg", "리스트 조회에 실패!");
-			
-			return "common/errorPage";
-		}
-	}
 	
 	// 메일상태처리
 	@RequestMapping(value="mail/updateStatus",  produces="application/json; charset=utf8")
@@ -143,11 +124,6 @@ public class MailController {
 	@RequestMapping(value="/mail/send", method=RequestMethod.POST, headers="Content-Type=multipart/form-data")
 	public String sendMail(Mail mail, Model model, HttpServletRequest request,
 					@RequestParam(name="mailAttachment", required=false) MultipartFile mailAttachment) {
-		System.out.println("controller에서 받은 mail : " + mail);
-		System.out.println("controller에서 받은 mailAttachment : " + (mailAttachment.getOriginalFilename()).equals(""));
-		
-		System.out.println("controller에서 받은 mailAttachment : " + !(mailAttachment.getOriginalFilename()).equals(""));
-		System.out.println("mailAttachment : " + mailAttachment);
 		boolean existAtt = !(mailAttachment.getOriginalFilename()).equals("");
 		String mailDomain = mail.getReciveMail()
 						.substring(mail.getReciveMail().indexOf('@'));
@@ -172,8 +148,11 @@ public class MailController {
 			mailAtt.setOriginName(originFileName);
 			mailAtt.setChangeName(changeName);
 			mailAtt.setFilePath(filePath);
+			mail.setmSize((int) mailAttachment.getSize());  // mail의 파일 사이즈 지정해주기 원래는 long형
 
+			System.out.println("Controller mailAttachment : " + mailAttachment);
 			try {
+				// 파일 저장 및 DB에 저장
 				mailAttachment.transferTo(new File(filePath + "\\" + changeName + ext));
 				ms.sendMail(mail, mailAtt);
 				mailNo = ms.selectMailNo();
@@ -204,7 +183,6 @@ public class MailController {
 		// 전송요청 
 		if(existAtt) { // 첨부파일이 존재하면
 			System.out.println("mailAttachment : " + mailAttachment);
-			mail.setmSize((int) mailAttachment.getSize());  // mail의 파일 사이즈 지정해주기 원래는 long형
 			
 			File attachment;
 			try {
@@ -336,18 +314,6 @@ public class MailController {
 		return "";
 	}
 	
-	// 서명 추가
-	@RequestMapping("put/sign.ma")
-	public String insertSign() {
-		return "";
-	}
-	
-	// 서명정보 조회 
-	@RequestMapping("sign.ma")
-	public String selectSignList() {
-		return "";
-	}
-	
 	// s3 버킷으로 들어오 메시지를 DB에 넣어주는 메소드
 	@RequestMapping("mail/s3")
 	public String runS3Method() {
@@ -409,8 +375,88 @@ public class MailController {
 	
 	// 첨부파일 다운로드하기
 	@RequestMapping("mail/attDownload")
-	public String mailAttDownload() {
+	public String mailAttDownload(@RequestParam int no, HttpServletRequest request, HttpServletResponse response) {
+		// attNo를 받아서 DB에서 조회해서 일을 불러온다. 
+	   Contract file = as.downloadFile(no);
+	   
+	   //폴더에서 파일을 읽어들일 스트림 생성
+	   BufferedInputStream buf = null;
+	   
+	   //클라이언트로 내보낼 출력스트림 생성
+	   ServletOutputStream downOut = null;
+	   try {
+	      downOut = response.getOutputStream();
+	      
+	      File downFile = new File(file.getFilePath() + "/" + file.getChangeName());
+	      
+	      response.setContentType("text/plain; charset=UTF-8");
+	      
+	      //한글 파일명에 대한 인코딩 처리
+	      //강제적으로 다운로드 처리
+	      response.setHeader("Content-Disposition", "contract; filename=\"" + 
+	               new String(file.getOriginName().getBytes("UTF-8"), "ISO-8859-1") + "\""); 
+	      
+	      response.setContentLength((int)downFile.length());
+	      
+	      FileInputStream fin = new FileInputStream(downFile);
+	      
+	      buf = new BufferedInputStream(fin);
+	      
+	      int readBytes = 0;
+	      
+	      while((readBytes = buf.read()) != -1) {
+	         downOut.write(readBytes);
+	      }
+	      
+	      downOut.close();
+	      buf.close();
+	   } catch (IOException e) {
+	      e.printStackTrace();
+	   }
+		return "";
+	}
+	
+	
+	
+	//----------------------------------------------------------------------------------------
+	// 전체 메일함 조회
+	@RequestMapping("allList.ma") 
+	public String selectMailList(HttpServletRequest request, Model model) {
+		
+		// 페이징 처리 
+		int currentPage = 1;
+		if(request.getParameter("currentPage") != null) {
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
+		
+		int listCount = ms.getMailListCount();
+		
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+		
+		ArrayList<Mail> list = ms.selectMailList(pi);
 
+		if(list != null) {
+			model.addAttribute("list", list);
+			model.addAttribute("pi", pi);
+			System.out.println("list : " + list);
+			return "mail/mailAllList"; 
+		}else {
+			model.addAttribute("msg", "리스트 조회에 실패!");
+			
+			return "common/errorPage";
+		}
+	}
+	
+	// 서명 추가
+	@RequestMapping("put/sign.ma")
+	public String insertSign() {
+		return "";
+	}
+	
+	// 서명정보 조회 
+	@RequestMapping("sign.ma")
+	public String selectSignList() {
 		return "";
 	}
 }
+

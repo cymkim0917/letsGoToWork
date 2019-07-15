@@ -64,14 +64,15 @@
 	<!-- 페이징-리스트 갯수 조회 -->
 	<select id="getMailListCount" resultType="_int">
 		SELECT COUNT(*)
-		FROM MAIL
+		FROM MAIL 
 		WHERE DSTATUS = 'N' 
 	</select>
 	
 	<!-- 메일 리스트 조회 -->
-	<select id="selectMailList" parameterType="PageInfo" resultMap="resultMailSet">
+	<select id="selectMailList" parameterType="PageInfo" resultMap="resultMailAttSet">
 		SELECT *
-		FROM MAIL 
+		FROM MAIL M
+		LEFT JOIN ATTACHMENT AT (M.MAIL_NO = ATT.MAIL_NO) 
 		WHERE DSTATUS = 'N'
 		ORDER BY MAIL_NO DESC
 	</select>
@@ -91,9 +92,10 @@
 	</update>
 	
 	<!-- 메일 상세 페이지 조회 -->
-	<select id="selectMailDetail" parameterType="int" resultMap="resultMailSet">
+	<select id="selectMailDetail" parameterType="int" resultMap="resultMailAttSet">
 		SELECT *
-		FROM MAIL
+		FROM MAIL M
+		LEFT JOIN ATTACHMENT ATT (M.MAIL_NO = ATT.MAIL_NO)
 		WHERE DSTATUS = 'N'
 		AND MAIL_NO = #{ mailNo }
 	</select>
@@ -132,7 +134,8 @@
 	<!-- 검색과 리스트 카운트 조회 -->
 	<select id="getMailSearchListCount" resultType="_int">
 		SELECT count(*)
-		FROM MAIL 
+		FROM MAIL M
+		LEFT JOIN ATTACHMENT ATT (M.MAIL_NO = ATT.MAIL_NO)
 		WHERE (SEND_MAIL = #{ empMail } 
 		OR RECIVE_MAIL = #{ empMail }) 
 		<choose>
@@ -159,9 +162,10 @@
 	</select>
 	
 	<!-- 검색 메일 조회 - 해쉬맵으로 -->
-	<select id="searchList" resultMap="resultMailSet">
+	<select id="searchList" resultMap="resultMailAttSet">
 		SELECT *
-		FROM MAIL 
+		FROM MAIL M
+		LEFT JOIN ATTACHMENT ATT (M.MAIL_NO = ATT.MAIL_NO)
 		WHERE (SEND_MAIL = #{ empMail } 
 		OR RECIVE_MAIL = #{ empMail }) 
 		<choose>

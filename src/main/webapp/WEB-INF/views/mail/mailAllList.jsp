@@ -112,18 +112,26 @@
 										</c:if>
 									</c:if>
 									<c:if test="${ !empty mail.empName }">
+										<c:out value="${ mail.empName } ${ mail.jobName } - ${ mail.deptName }"/><br>
 										<c:if test="${ mail.mailType eq '보낸메일' }">
-											<c:out value="${ mail.empName } - ${ mail.deptName } ${ mail.jobName }"/><br>
+											<%-- <c:out value="${ mail.empName } - ${ mail.deptName } ${ mail.jobName }"/><br> --%>
 											(<c:out value="${ mail.reciveMail }"/>)
 										</c:if>
 										<c:if test="${ mail.mailType eq '받은메일' }">
-											<c:out value="${ mail.empName } - ${ mail.deptName } ${ mail.jobName }"/><br>
 											(<c:out value="${ mail.sendMail }"/>)
 										</c:if>
 									</c:if>
 								</td>
 								<td><c:out value="${ mail.mailType }"/></td>
-								<td><c:out value="${ mail.mTitle }"/></td>
+								<td>
+								${ !empty mail.mailAtt }
+									<c:if test="${ !empty mail.mailAtt }"> 
+										<span>첨부파일
+											<img src="${ contextPath }/resources/images/mail/attachment.png"/ width="40px;">
+										</span>
+									</c:if>
+									<c:out value="${ mail.mTitle }"/>
+								</td>
 								<td><c:out value="${ mail.sendDate }"/></td>							
 							</tr>
 						</c:forEach>

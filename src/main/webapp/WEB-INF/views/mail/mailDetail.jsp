@@ -113,18 +113,22 @@ pre{
 							<th>받는사람</th>
 							<td><c:out value="${ mail.reciveMail }"/></td>
 						</tr>
-						<tr>
-							<th>첨부파일</th>
-							<td colspan="3">
-								첨부파일 이름이 나와야 하는데 아직은 알할거임....
-								<%-- <c:out var="attName" value="${ mail.mailAtt.originName }"/> --%>
- 								<span class="fileSize">
- 								<!-- 첨부파일 사이즈 추가하기  -->
- 									<%-- <c:out var="mailSize" value="${ mail.mSize }"/>  --%>
- 								</span>
- 								<span onclick="location.href='${ contextPath }/mail/attDownload'">다운로드받기</span>
-							</td>
-						</tr>
+						<c:if test="${ !empty mail.mailAtt }">
+							<tr>
+								<th>첨부파일</th>
+								<td colspan="3">
+									<span onclick="location.href='${ contextPath }/mail/attDownload'"
+										style="cursor:pointer;">
+										<c:out value="${ mail.mailAtt.originName }"/>
+										<c:out value="${ mail.mSize }"/>
+										<input type="hidden" name="" 
+												value='<c:out value="${ mail.mailAtt.attNo }"/>'/>
+									</span>
+	 								<span class="fileSize">
+	 								</span>
+								</td>
+							</tr>
+						</c:if>
 						<tr>
 							<th>내용</th>
 							<td colspan="3" id="contentArea">
@@ -135,8 +139,8 @@ pre{
 						</tr>
 					</table>
 				</div>
-				<div id="reserveArea">	
-					
+				<div id="reserveArea">		
+					<p>이전, 다음으로 이동하는 버튼 및 목록 페이지로 이동하는 버튼 추가하기</p>
 				</div>
 			</div>
 		</section>

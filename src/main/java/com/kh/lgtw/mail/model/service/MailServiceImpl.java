@@ -66,7 +66,7 @@ public class MailServiceImpl implements MailService{
 	// 메일 상세 페이지 조회
 	@Override
 	public Mail selectMailDetail(int mailNo) {
-		return md.selectMailDetail(sqlSession, mailNo);
+		return md.selectMailDetail(sqlSession, mailNo); 
 	}
 
 	// 부재중 설정 추가
