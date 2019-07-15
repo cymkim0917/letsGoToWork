@@ -117,6 +117,8 @@ public interface EmployeeDao{
 
 	int checkEmpOffWork(SqlSession sqlSession, Attendance attend);
 
+	ArrayList<Attendance> selectAttendanceList(SqlSession sqlSession, int empNo);
+
 	
 	
 }
