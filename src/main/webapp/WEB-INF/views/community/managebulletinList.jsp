@@ -80,7 +80,7 @@
 				        <td>${b.boardType }</td>
 				        <td>${b.createUserName }</td>
 				        <td>${b.createDate }</td> 
-				        <td>${b.postcount}</td>
+				        <td>${b.postcount} 개</td>
 				      	
 				        
 											      	
