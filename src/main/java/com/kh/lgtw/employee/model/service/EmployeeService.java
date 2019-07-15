@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -92,7 +93,12 @@ public interface EmployeeService {
 	int holidayInsertAdmin();
 	
 	//휴가신청조회 - 욱
-	HashMap<String, Object> showHolidayApply(int empNo);
+	ArrayList<HashMap<String, Object>> showHolidayApply(int empNo);
+	
+	//휴가 신청 - 욱
+	int applyHoliday(HashMap<String, Object> params);
+
+	ArrayList<HashMap<String, Object>> getAdminHoliday(HashMap<String,Object> parmas);
 
 	int insertLeaveEmp(ArrayList<Employee> list);
 

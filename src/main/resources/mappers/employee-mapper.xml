@@ -119,7 +119,7 @@
 	</resultMap>
   
 	<!-- 욱 휴가 -->
-	<!-- <resultMap type="java.util.HashMap" id="holidayResultSet">
+	 <resultMap type="java.util.HashMap" id="holidayResultSet">
 		<id column="EMPNO" property="empNo"/>
 		<result column="EMP_NAME" property="empName"/>
 		<result column="DEPT_NAME" property="deptName"/>
@@ -129,7 +129,15 @@
 		<result column="HIH_NO" property="hihNo"/>
 		<result column="HIH_TOTAL_DATE" property="hihTotalDate"/>
 		<result column="HIH_APPLY_DATE" property="hihApplyDate"/>
-	</resultMap> -->
+		<result column="RH_REQUEST_NO" property="rhRequestNo"/>
+		<result column="HDH_DATE" property="hdhDate"/>
+		<result column="HCSTATUS" property="hcStatus"/>
+		<result column="HDH_TYPE" property="hdhType"/>
+		<result column="HOLIDAY_TYPE" property="holidayType"/>
+		<result column="FIRST_DATE" property="firstDate"/>
+		<result column="LAST_DATE" property="lastDate"/>
+		<result column="HOLICOUNT" property="holiCount"/>
+	</resultMap>
 	
 
 	<!-- 로그인시 사원 객체 조회 -->
@@ -404,9 +412,7 @@
 		]]>
 		AND E.STATUS = 'Y')
 	</insert>
-	<!-- <select id="showHolidayApply" parameterType="_int" resultType="">
-		
-	</select> -->
+
 	<update id="insertLeaveEmp" parameterType="Employee">
 		UPDATE EMPLOYEE SET LEAVE_REASON = #{leaveReason}, STATUS='H', LSTART_DATE=SYSDATE WHERE EMPNO = #{empNo}
 	</update>
@@ -436,6 +442,62 @@
 		where EMPNO=#{empNo} 
 		AND TO_CHAR(ATTENDANCE_DATE,'yyyy-MM-dd')=#{attendanceDate}
 		AND END_TIME != NULL
+	
+	<!-- 휴가 대상자 조회 - 욱 -->
+	 <select id="showHolidayApply" resultType="_int" resultMap="holidayResultSet">
+	SELECT E.EMPNO,E.EMP_NAME,DEPT_NAME,E.ENROLL_DATE ,D.MANAGER_EMPNO,E2.EMP_NAME AS MANAGER_NAME,
+		   HIH_NO, HIH_TYPE,HIH_TOTAL_DATE,HIH_APPLY_DATE, RH.RH_REQUEST_NO, HDH_DATE, HC.STATUS AS HCSTATUS, HDH_TYPE,HOLIDAY_TYPE
+    FROM EMPLOYEE E
+        JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+        JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+        LEFT JOIN EMPLOYEE E2 ON (D.MANAGER_EMPNO = E2.EMPNO)
+        JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+        JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+        LEFT JOIN HI_HISTORY HH ON(HH.EMPNO = E.EMPNO)
+        LEFT JOIN REQUEST_HOLIDAY RH ON (E.EMPNO = RH.TARGET_EMPNO)
+        LEFT JOIN HD_HISTORY HDH ON (RH.RH_REQUEST_NO = HDH.RH_REQUEST_NO)
+        LEFT JOIN HOLIDAY_CHECK HC ON (HDH.RH_REQUEST_NO = HC.RH_REQUEST_NO)
+	WHERE E.EMPNO = #{empNo}
+	AND E.STATUS = 'Y'
+	AND TO_CHAR(HIH_APPLY_DATE,'YYYY') = TO_CHAR(SYSDATE,'YYYY')
+	</select>
+	
+	<insert id="applyHoliday" parameterType="java.util.HashMap">
+		INSERT INTO REQUEST_HOLIDAY
+		VALUES(SEQ_RH_REQUEST_NO.NEXTVAL, #{holidayType}, #{holidayContent}, #{empNo}, SYSDATE,'Y')
+	</insert>
+	
+	<insert id="applyHolidayDate" parameterType="java.util.HashMap">
+		INSERT INTO HD_HISTORY
+		VALUES(SEQ_HDH_NO.NEXTVAL, #{holidayDate}, SEQ_RH_REQUEST_NO.CURRVAL,#{holidayTime})
+	</insert>
+	
+	<select id="getAdminHoliday" parameterType="java.util.HashMap" resultMap="holidayResultSet">
+	SELECT * FROM 
+			(SELECT E.EMPNO,E.EMP_NAME,DEPT_NAME,E.ENROLL_DATE ,D.MANAGER_EMPNO,E2.EMP_NAME AS MANAGER_NAME,
+		   HIH_NO, HIH_TYPE,HIH_TOTAL_DATE,HIH_APPLY_DATE, RH.RH_REQUEST_NO, HC.STATUS AS HCSTATUS,HOLIDAY_TYPE,HP_APPLY_DATE,
+           (SELECT MIN(HDH_DATE) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) FIRST_DATE,
+           (SELECT MAX(HDH_DATE) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) LAST_DATE,
+           (SELECT COUNT(*) FROM HD_HISTORY WHERE RH_REQUEST_NO = RH.RH_REQUEST_NO) HOLICOUNT
+    FROM EMPLOYEE E
+        JOIN DEPT_HISTORY DH ON(E.EMPNO = DH.EMPNO)
+        JOIN DEPT D ON (D.DEPT_CODE = DH.DEPT_CODE)
+        JOIN EMPLOYEE E2 ON (D.MANAGER_EMPNO = E2.EMPNO)
+        JOIN PROMOTION_HISTORY PH ON(PH.EMPNO = E.EMPNO)
+        JOIN JOB J ON(J.JOB_CODE = PH.JOB_CODE)
+        LEFT JOIN HI_HISTORY HH ON(HH.EMPNO = E.EMPNO)
+        LEFT JOIN REQUEST_HOLIDAY RH ON (E.EMPNO = RH.TARGET_EMPNO)
+        LEFT JOIN HOLIDAY_CHECK HC ON (RH.RH_REQUEST_NO = HC.RH_REQUEST_NO)
+	WHERE MANAGER_EMPNO = #{empNo}
+    AND RH.RH_REQUEST_NO IS NOT NULL)
+	WHERE 1=1
+	AND FIRST_DATE BETWEEN TO_DATE(#{holdayTime}) AND LAST_DAY(TO_DATE(#{holdayTime}))
+	<if test="textSearch != 'empty'">
+		AND EMP_NAME LIKE '%' || #{textSearch} || '%'
+	</if>
+	<if test="holidayType != '전체'">
+		AND HOLIDAY_TYPE = #{holidayType}
+	</if>
 	</select>
 	
 </mapper>

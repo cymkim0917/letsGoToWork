@@ -22,6 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -591,10 +592,29 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public HashMap<String, Object> showHolidayApply(int empNo) {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<HashMap<String, Object>>  showHolidayApply(int empNo) {
+		return empDao.showHolidayApply(sqlSession, empNo);
 	}
+	
+	//휴가 신청 - 욱
+	@Override
+	public int applyHoliday(HashMap<String, Object> params) {
+		 return empDao.applyHoliday(sqlSession, params);
+	}
+
+	@Override
+	public int checkEmpWork(int empNo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	//휴가 관리자 승인 리스트 - 욱
+	@Override
+	public ArrayList<HashMap<String, Object>> getAdminHoliday(HashMap<String,Object> parmas) {
+		return empDao.getAdminHoliday(sqlSession, parmas);
+	}
+	
+
+	
 
 	@Override
 	public int insertLeaveEmp(ArrayList<Employee> list) {
