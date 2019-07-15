@@ -152,13 +152,13 @@ public interface ApprovalService {
 
 	ArrayList<HashMap<String, Object>> showWriteDcm(PageInfo pi);
 
-	int selectFinApprovaldDcm(String jobCode);
+	int selectFinApprovaldDcm(String jobCode, Employee e);
 
-	ArrayList<HashMap<String, Object>> showFinApprovaldDcm(PageInfo pi, String jobCode);
+	ArrayList<HashMap<String, Object>> showFinApprovaldDcm(PageInfo pi, String jobCode, Employee e);
 
-	int selectRefuseDcm(String jobCode);
+	int selectRefuseDcm(String jobCode, Employee e);
 
-	ArrayList<HashMap<String, Object>> showRefuseDcm(PageInfo pi, String jobCode);
+	ArrayList<HashMap<String, Object>> showRefuseDcm(PageInfo pi, String jobCode, Employee e);
 
 	HashMap<String, Object> selectDcmCount(int empNo);
 

@@ -351,14 +351,14 @@ public class ApprovalController {
 		
 		String jobCode = as.selectEmpJobCode(e);
 		
-		int listCount = as.selectFinApprovaldDcm(jobCode);
+		int listCount = as.selectFinApprovaldDcm(jobCode, e);
 		
 		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
 	
 		pi.setEmpNo(e.getEmpNo());
 		pi.setSfCode("circle");
 
-		ArrayList<HashMap<String, Object>> list = as.showFinApprovaldDcm(pi, jobCode);
+		ArrayList<HashMap<String, Object>> list = as.showFinApprovaldDcm(pi, jobCode, e);
 		ArrayList<HashMap<String, Object>> formList = as.selectFormList();
 		System.out.println(list);
 		
@@ -441,14 +441,14 @@ public class ApprovalController {
 		
 		String jobCode = as.selectEmpJobCode(e);
 		
-		int listCount = as.selectRefuseDcm(jobCode);
+		int listCount = as.selectRefuseDcm(jobCode, e);
 		
 		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
 	
 		pi.setEmpNo(e.getEmpNo());
 		pi.setSfCode("circle");
 
-		ArrayList<HashMap<String, Object>> list = as.showRefuseDcm(pi, jobCode);
+		ArrayList<HashMap<String, Object>> list = as.showRefuseDcm(pi, jobCode, e);
 		ArrayList<HashMap<String, Object>> formList = as.selectFormList();
 		System.out.println(list);
 		
@@ -837,7 +837,7 @@ public class ApprovalController {
 		
 		int result = as.updateAgree(map);
 
-		return result + "";
+		return "성공";
 	}
 	
 	// 문서 합의결재

@@ -183,17 +183,17 @@ public interface ApprovalDao {
 
 	String selectSendEmp(SqlSession session, HashMap<String, Object> map);
 
-	int selectFinApprovaldDcm(SqlSession session, String jobCode);
+	int selectFinApprovaldDcm(SqlSession session, String jobCode, Employee e);
 
-	ArrayList<HashMap<String, Object>> showFinApprovaldDcm(PageInfo pi, String jobCode, SqlSession session);
+	ArrayList<HashMap<String, Object>> showFinApprovaldDcm(PageInfo pi, String jobCode, Employee e, SqlSession session);
 
 	int selectWriteDcm(SqlSession session, Employee e);
 
 	ArrayList<HashMap<String, Object>> showWriteDcm(SqlSession session, PageInfo pi);
 
-	int selectRefuseDcm(SqlSession session, String jobCode);
+	int selectRefuseDcm(SqlSession session, String jobCode, Employee e);
 
-	ArrayList<HashMap<String, Object>> showRefuseDcm(PageInfo pi, String jobCode, SqlSession session);
+	ArrayList<HashMap<String, Object>> showRefuseDcm(PageInfo pi, String jobCode, Employee e, SqlSession session);
 
 	int countAllDcm(SqlSession session);
 

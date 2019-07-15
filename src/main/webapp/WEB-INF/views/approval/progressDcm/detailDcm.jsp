@@ -637,7 +637,7 @@
                                     			</td>
                                     		</c:if>
                                     		<c:if test="${ requestScope.appList.apply[i.index].alEmpNo != sessionScope.loginEmp.empNo }">
-	                                    		<c:if test="${ requestScope.appList.payAgree[i.index].alStatus == '대기' }">
+	                                    		<c:if test="${ requestScope.appList.apply[i.index].alStatus == '대기' }">
 	                                    			<td><font color="red">결재대기</font></td>
 	                                    		</c:if>
 	                                    		<c:if test="${ requestScope.appList.apply[i.index].alStatus == '결재' }">
@@ -939,7 +939,7 @@
 	</div>
 	
 	<script>		
-		setTimeout(function(){objWin.print();objWin.close();}, 1000);
+		/* setTimeout(function(){objWin.print();objWin.close();}, 1000); */
 
 	
 		function adCopy(adNo){

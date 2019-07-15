@@ -860,14 +860,14 @@ public class ApprovalServiceImpl implements ApprovalService{
 	}
 	//완료문서 (결재)
 	@Override
-	public int selectFinApprovaldDcm(String jobCode) {
+	public int selectFinApprovaldDcm(String jobCode, Employee e) {
 		// TODO Auto-generated method stub
-		return ad.selectFinApprovaldDcm(session, jobCode);
+		return ad.selectFinApprovaldDcm(session, jobCode, e);
 	}
 	@Override
-	public ArrayList<HashMap<String, Object>> showFinApprovaldDcm(PageInfo pi, String jobCode) {
+	public ArrayList<HashMap<String, Object>> showFinApprovaldDcm(PageInfo pi, String jobCode, Employee e) {
 		// TODO Auto-generated method stub
-		return ad.showFinApprovaldDcm(pi, jobCode, session);
+		return ad.showFinApprovaldDcm(pi, jobCode, e, session);
 	}
 	
 	//기안한 완료문서
@@ -882,14 +882,14 @@ public class ApprovalServiceImpl implements ApprovalService{
 		return ad.showWriteDcm(session, pi);
 	}
 	@Override
-	public int selectRefuseDcm(String jobCode) {
+	public int selectRefuseDcm(String jobCode, Employee e) {
 		// TODO Auto-generated method stub
-		return ad.selectRefuseDcm(session, jobCode);
+		return ad.selectRefuseDcm(session, jobCode, e);
 	}
 	@Override
-	public ArrayList<HashMap<String, Object>> showRefuseDcm(PageInfo pi, String jobCode) {
+	public ArrayList<HashMap<String, Object>> showRefuseDcm(PageInfo pi, String jobCode, Employee e) {
 		// TODO Auto-generated method stub
-		return ad.showRefuseDcm(pi, jobCode, session);
+		return ad.showRefuseDcm(pi, jobCode, e, session);
 	}
 	@Override
 	public HashMap<String, Object> selectDcmCount(int empNo) {

@@ -205,18 +205,26 @@ public class ApprovalDaoImpl implements ApprovalDao{
 	}
 	//반려문서
 	@Override
-	public int selectRefuseDcm(SqlSession session, String jobCode) {
+	public int selectRefuseDcm(SqlSession session, String jobCode, Employee e) {
 		// TODO Auto-generated method stub
-		return session.selectOne("Approval.selectRefuseDcm", jobCode);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("jobCoce", jobCode);
+		map.put("empNo", e.getEmpNo());
+		
+		return session.selectOne("Approval.selectRefuseDcm", map);
 	}
 
 	@Override
-	public ArrayList<HashMap<String, Object>> showRefuseDcm(PageInfo pi, String jobCode, SqlSession session) {
+	public ArrayList<HashMap<String, Object>> showRefuseDcm(PageInfo pi, String jobCode, Employee e, SqlSession session) {
 		int offset = (pi.getCurrentPage() - 1) * pi.getLimit();
 		
 		RowBounds rowBounds = new RowBounds(offset, pi.getLimit());
 		
-		return (ArrayList)session.selectList("Approval.showRefuseDcm", jobCode, rowBounds);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("jobCoce", jobCode);
+		map.put("empNo", e.getEmpNo());
+		
+		return (ArrayList)session.selectList("Approval.showRefuseDcm", map, rowBounds);
 	}
 	//임시저장문서
 	@Override
@@ -1071,19 +1079,27 @@ public class ApprovalDaoImpl implements ApprovalDao{
 	}
 	//완료 결재문서
 	@Override
-	public int selectFinApprovaldDcm(SqlSession session, String jobCode) {
+	public int selectFinApprovaldDcm(SqlSession session, String jobCode, Employee e) {
 		// TODO Auto-generated method stub
-		return session.selectOne("Approval.selectFinApprovalDcm", jobCode);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("jobCoce", jobCode);
+		map.put("empNo", e.getEmpNo());
+		
+		return session.selectOne("Approval.selectFinApprovalDcm", map);
 	}
 
 	@Override
-	public ArrayList<HashMap<String, Object>> showFinApprovaldDcm(PageInfo pi, String jobCode, SqlSession session) {
+	public ArrayList<HashMap<String, Object>> showFinApprovaldDcm(PageInfo pi, String jobCode, Employee e, SqlSession session) {
 		// TODO Auto-generated method stub
 		int offset = (pi.getCurrentPage() - 1) * pi.getLimit();
 		
 		RowBounds rowBounds = new RowBounds(offset, pi.getLimit());
 		
-		return (ArrayList)session.selectList("Approval.showFinApprovalDcm", jobCode, rowBounds);
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("jobCoce", jobCode);
+		map.put("empNo", e.getEmpNo());
+		
+		return (ArrayList)session.selectList("Approval.showFinApprovalDcm", map, rowBounds);
 	}
 	// 완료 기안한 문서
 	@Override

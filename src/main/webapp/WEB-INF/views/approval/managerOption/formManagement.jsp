@@ -213,7 +213,7 @@
 					contentType:"application/json;charset=UTF-8",
 					type:"post",
 					success:function(data){
-						alert(data);
+						alert("성공적으로 변경되었습니다.");
 						window.location.reload(true);
 					}
 				});
