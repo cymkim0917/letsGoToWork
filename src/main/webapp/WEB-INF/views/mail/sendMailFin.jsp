@@ -35,9 +35,15 @@
 						<th>제목</th>
 						<td>${ mailDetail.mTitle }</td>
 					</tr>
+					<c:if test="${ !empty mailDetail.mailAtt }">
+						<tr>
+							<th>첨부파일</th>
+							<td><c:out value="${ mailDetail.mailAtt.originName }"/></td>
+						</tr>
+					</c:if>
 				</table>
 				<div id="btnArea" align="center">
-					<button onclick="loctaion.href='${contextPath}/allList.ma'">메일 홈</button>
+					<button onclick="location.href='${contextPath}/allList.ma'">메일 홈</button>
 					<button onclick="location.href='#'">보낸 메일함</button>
 				</div>
 			</div> <!-- content -->

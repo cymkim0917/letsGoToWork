@@ -76,7 +76,8 @@
 						<tr>
 							<th>보내는 사람</th>
 							<td colspan="2">
-								<input type="email" class="form-control" name="sendMail" value="${ loginEmp.email }" readOnly/>
+								<input type="email" class="form-control" name="sendMail" value="${ loginEmp.email }"/>
+								<%-- <input type="email" class="form-control" name="sendMail" value="${ loginEmp.email }" readOnly/> --%>
 							</td>
 						</tr>
 						<tr>

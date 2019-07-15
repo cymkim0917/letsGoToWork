@@ -62,11 +62,44 @@ public class MailController {
 	@RequestMapping("mail.ma")
 	public String mailHome() {
 		return "redirect:allList.ma";
-	}	
+	}
 	
 	@RequestMapping("/mail")
 	public String mailHome2() {
 		return "redirect:allList.ma";
+	}
+	
+	// 전체 메일함 조회
+	@RequestMapping("allList.ma") 
+	public String selectMailList(HttpServletRequest request, HashMap<String, Object> listCondition, Model model) {
+		// 페이징 처리 
+		int currentPage = 1;
+		if(request.getParameter("currentPage") != null) {
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
+		
+		// 로그인 회원 메일 조회
+		String empMail = ((Employee)request.getSession().getAttribute("loginEmp")).getEmail();
+		listCondition.put("empMail", empMail);
+		
+		// int listCount = ms.getMailListCount();
+		int listCount = ms.getMailSearchListCount(listCondition);
+		
+		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+		
+		// 조건 처리 안되어 있는 리스트 조회 
+		// ArrayList<Mail> list = ms.selectMailList(pi);
+		ArrayList<Mail> list = ms.selectSearchMailList(pi, listCondition);
+
+		if(list != null) {
+			model.addAttribute("list", list);
+			model.addAttribute("pi", pi);
+			return "mail/mailAllList"; 
+		}else {
+			model.addAttribute("msg", "리스트 조회에 실패!");
+			
+			return "common/errorPage";
+		}
 	}
 	
 	// 메일쓰기페이지
@@ -93,9 +126,13 @@ public class MailController {
 		System.out.println("mDetail : " + mDetail);
 		model.addAttribute("mail", mDetail);
 		
-		
-		
 		return "mail/mailDetail";
+	}
+	
+	// 읽음 처리 수정하기 
+	@RequestMapping("mail/readDetail.ma")
+	public String readOneMail(int mailNo) {
+		return ms.readOneMail(mailNo);
 	}
 	 
 	
@@ -140,7 +177,11 @@ public class MailController {
 			filePath = root + "\\uploadFiles\\mail\\sendFiles";
 
 			originFileName = mailAttachment.getOriginalFilename();
-			ext = originFileName.substring(originFileName.lastIndexOf("."));
+			System.out.println("ext : " + originFileName.lastIndexOf("."));
+			// 확장자가 없는 파일일경우 -1이 나온다. 
+			if(originFileName.indexOf(".") > 0) {
+				ext = originFileName.substring(originFileName.lastIndexOf("."));
+			}
 
 			// 파일이름 : 보내는 사람 메일-서버시간 
 			changeName = mail.getSendMail() + "_" + getServerTime();
@@ -227,8 +268,13 @@ public class MailController {
 		// 이름으로 검색했을 때 사원 메일 검색
 		List<String> sMail = null;
 		if(listCondition.get("sName") != null) {
-			sMail = es.selectEmpEamilForName((String)listCondition.get("sName"));
-			listCondition.put("sMail", sMail);
+			try {
+				sMail = es.selectEmpEamilForName((String)listCondition.get("sName"));
+				listCondition.put("sMail", sMail);
+			}catch(Exception e) {
+				System.out.println("이름으로 검색했을 때 오류가 발생합니다.");
+				System.out.println("error : " + e.getMessage());
+			}
 		}
 		System.out.println("sMail : " + sMail);
 		System.out.println("listConition : " + listCondition);
@@ -375,9 +421,12 @@ public class MailController {
 	
 	// 첨부파일 다운로드하기
 	@RequestMapping("mail/attDownload")
-	public String mailAttDownload(@RequestParam int no, HttpServletRequest request, HttpServletResponse response) {
-		// attNo를 받아서 DB에서 조회해서 일을 불러온다. 
-	   Contract file = as.downloadFile(no);
+	public String mailAttDownload(HttpServletRequest request, HttpServletResponse response) {
+		// attNo를 받아서 DB에서 조회해서 일을 불러온다.
+		System.out.println("들어오나 ");
+		System.out.println("request : " + request.getParameter("no"));
+		Attachment mailAtt = ms.downloadMailAtt(36);
+	   // Contract file = as.downloadFile(no);
 	   
 	   //폴더에서 파일을 읽어들일 스트림 생성
 	   BufferedInputStream buf = null;
@@ -387,14 +436,14 @@ public class MailController {
 	   try {
 	      downOut = response.getOutputStream();
 	      
-	      File downFile = new File(file.getFilePath() + "/" + file.getChangeName());
+	      File downFile = new File(mailAtt.getFilePath() + "/" + mailAtt.getChangeName());
 	      
 	      response.setContentType("text/plain; charset=UTF-8");
 	      
 	      //한글 파일명에 대한 인코딩 처리
 	      //강제적으로 다운로드 처리
 	      response.setHeader("Content-Disposition", "contract; filename=\"" + 
-	               new String(file.getOriginName().getBytes("UTF-8"), "ISO-8859-1") + "\""); 
+	               new String(mailAtt.getOriginName().getBytes("UTF-8"), "ISO-8859-1") + "\""); 
 	      
 	      response.setContentLength((int)downFile.length());
 	      
@@ -413,40 +462,12 @@ public class MailController {
 	   } catch (IOException e) {
 	      e.printStackTrace();
 	   }
-		return "";
+		return "mail/mailDetail";
 	}
 	
 	
 	
 	//----------------------------------------------------------------------------------------
-	// 전체 메일함 조회
-	@RequestMapping("allList.ma") 
-	public String selectMailList(HttpServletRequest request, Model model) {
-		
-		// 페이징 처리 
-		int currentPage = 1;
-		if(request.getParameter("currentPage") != null) {
-			currentPage = Integer.parseInt(request.getParameter("currentPage"));
-		}
-		
-		int listCount = ms.getMailListCount();
-		
-		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
-		
-		ArrayList<Mail> list = ms.selectMailList(pi);
-
-		if(list != null) {
-			model.addAttribute("list", list);
-			model.addAttribute("pi", pi);
-			System.out.println("list : " + list);
-			return "mail/mailAllList"; 
-		}else {
-			model.addAttribute("msg", "리스트 조회에 실패!");
-			
-			return "common/errorPage";
-		}
-	}
-	
 	// 서명 추가
 	@RequestMapping("put/sign.ma")
 	public String insertSign() {
