@@ -116,6 +116,11 @@ public interface EmployeeDao{
 	int insertNoWork(SqlSession sqlSession, Attendance attend);
 
 	int checkEmpOffWork(SqlSession sqlSession, Attendance attend);
+	
+	//휴가 상세 조회 - 욱
+	ArrayList<HashMap<String, Object>> holidayDetail(SqlSession sqlSession, HashMap<String, Object> params);
+	//휴가 결제 - 욱
+	int appHoliday(SqlSession sqlSession, HashMap<String, Object> params);
 
 	
 	

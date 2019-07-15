@@ -19,6 +19,60 @@
 		width:10%;
 	}
 	
+   .tabType1 li.on a {
+    	font-weight: 700;
+	}
+	
+	.tabType-tax, .tabType1 {
+	    width: 100%;
+	    overflow: hidden;
+	    background: #f3f3f3;
+	}
+	
+	.setting_field {
+	    padding: 30px 25px 0;
+	}
+	
+	.tabType1 li.on {
+	    background: #fff;
+	}
+	
+	.tabType1 li {
+	    float: left;
+	    margin: 5px 8px 0;
+	    padding: 4px 12px;
+	    text-align: center;
+	}
+	
+	dl, li, menu, ol, ul {
+	    list-style: none;
+	}
+	
+	.setting_title {
+	    position: relative;
+	    padding: 20px 25px 0 23px;
+	    min-width: 733px;
+	    height: 60px;
+	    border-bottom: 1px solid #f2f4f3;
+	}
+	
+	h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    margin: 10px 0;
+	}
+	
+	.setting_title h3 {
+	    color: #333;
+	    font-size: 16px;
+	}
+	a{
+		text-decoration:none !important;
+	}
+	
+	.table>thead>tr.info>th{
+		background-color:#f3f3f3 !important;
+	}
+			
 </style>
 </head>
 <body>
@@ -26,10 +80,23 @@
 	<div class="row wrap">
 		<jsp:include page="../common/sideMenu/employee.jsp"/>
 		<section class="col-sm-10">
-			<h1 class="title">휴가 현황</h1>
-			<button type="button" class="btn btn-primary" onclick="location.href='showHolidayList.em'">내 휴가</button>
+			<div class="setting_title">
+				<h3>휴가 현황</h3>
+			</div>
+			
+			<div class="setting_field">
+			<ul class="tabType1">
+                    <li class="on">
+                        <a href="javascript:void(0)" onclick="location.href='showHolidayList.em'">내 휴가</a>
+                    </li>
+                    <li>
+                    	<a href="javascript:void(0)" onclick="location.href='showHolidayAdmin.em'">휴가신청관리</a>
+                    </li>
+            </ul>
+            </div>
+			<!-- <button type="button" class="btn btn-primary" onclick="location.href='showHolidayList.em'">내 휴가</button> -->
 			<!-- <button type="button" class="btn btn-primary" onclick="location.href='showHoliCalender.em'">휴가 캘린더</button> -->
-			<button type="button" class="btn btn-primary" onclick="location.href='showHolidayAdmin.em'">휴가 신청관리</button>
+			<!-- <button type="button" class="btn btn-primary" onclick="location.href='showHolidayAdmin.em'">휴가 신청관리</button> -->
 			<hr>
 			<div class="content">
 				<div id="holidayArea">
@@ -77,8 +144,8 @@
 						        <th>휴가 종류</th>
 						        <th>일수</th>
 						        <th>기간</th>
-						        <td>상태</td>
-						        <td>상세</td>
+						        <th>상태</th>
+						        <th>상세</th>
 						      </tr>
 					    </thead>
 					    <tbody>

@@ -602,11 +602,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		 return empDao.applyHoliday(sqlSession, params);
 	}
 
-	@Override
-	public int checkEmpWork(int empNo) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 	//휴가 관리자 승인 리스트 - 욱
 	@Override
 	public ArrayList<HashMap<String, Object>> getAdminHoliday(HashMap<String,Object> parmas) {
@@ -644,6 +639,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public int checkEmpOffWork(Attendance attend) {
 		return empDao.checkEmpOffWork(sqlSession,attend);
+	}
+	
+	//휴가 상세 조회 - 욱
+	@Override
+	public ArrayList<HashMap<String, Object>> holidayDetail(HashMap<String, Object> params) {
+		return empDao.holidayDetail(sqlSession, params);
+	}
+	//휴가 결제 - 욱
+	@Override
+	public int appHoliday(HashMap<String, Object> params) {
+		return empDao.appHoliday(sqlSession, params);
 	}
 
 
