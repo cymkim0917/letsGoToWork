@@ -184,12 +184,12 @@
 		
 		<section class="col-sm-10">
 		<br>
-			<form id="holidayApply" style="margin-left:15px;">
+			<form action="applyHoliday.em" method="post" id="holidayApply" style="margin-left:15px;">
 				<fieldset style="border:0 none">
 					<span class="detail_select">
                 		<a href="javascript:void(0)" onclick="formSubmit()">기안하기</a>
            		 	</span>
-				</fieldset>
+				</fieldset>                    
 			</form>
 			
 			<div class="content">
@@ -204,13 +204,29 @@
 							</colgroup>
 								<tbody>
 									<tr>
+										<c:set var="holidayCount" value="0" />
+											<c:forEach var="i" items="${hmap}">
+												<c:if test="${ i.hcStatus eq '승인' && i.hdhType eq '일차' && i.HIH_TYPE eq '연차'}">
+													<c:set var="holidayCount" value="${holidayCount + 1 }" />
+												</c:if>
+												<c:if test="${ i.hcStatus eq '승인' && (i.hdhType eq '오후반차' || i.hdhType eq '오전반차') && i.HIH_TYPE eq '연차'}">
+													<c:set var="holidayCount" value="${holidayCount + 0.5 }" />
+												</c:if>
+											</c:forEach>
+											
 										<th scope="row">현황</th>
 										<td colspan="3">
-											생성 : <span></span>일
+											생성 : <span><c:out value="${ hmap.get(0).hihTotalDate }" /></span>일
 											<span class="mgr mgl">/</span>
-											사용 : <span></span>일
+											사용 : <span>
+											<c:if test="${hmap.get(0).requestNo eq null }">
+											<c:out value="${ holidayCount }" />
+											</c:if>
+											</span>일
 											<span class="mgr mgl">/</span>
-											잔여 : <span></span>일
+											잔여 : <span>
+														<c:out value="${ hmap.get(0).hihTotalDate - holidayCount }" />
+											</span>일
 
 										</td>
 									</tr>
@@ -225,7 +241,7 @@
 									<tr>
 										<th scope="row">신청</th>
 										<td>
-											<span>강형석</span>
+											<span><c:out value="${ hmap.get(0).managerName}"></c:out></span>
 										</td>
 									</tr>
 									<tr>
@@ -266,13 +282,13 @@
 											<label>
 												<select title="선택" id="vacation_type">
 													<option value="">휴가 종류 선택</option>
-													<option value="10">연차</option>
-													<option value="21">훈련</option>
-													<option value="22">교육</option>
-													<option value="23">경조사</option>
-													<option value="24">병가</option>
-													<option value="25">출산</option>
-													<option value="26">무급</option>
+													<option value="연차">연차</option>
+													<option value="훈련">훈련</option>
+													<option value="교육">교육</option>
+													<option value="경조사">경조사</option>
+													<option value="병가">병가</option>
+													<option value="출산">출산</option>
+													<option value="무급">무급</option>
 												</select>
 											</label>
 										</td>
@@ -298,7 +314,7 @@
 		var nDate;
 		$(function(){
 			//var nDate = new Date();
-			
+			console.log('${hmap}');
 			nDate = new Date();
 			showCalendar();
 			
@@ -422,9 +438,11 @@
 						if(MakeDay(nDate.getDay()) == '토' || MakeDay(nDate.getDay()) == '일'){
 							$("#tbody_selector").prepend($("<td style='border: 1px solid rgb(222, 222, 222);'>")
 												.attr({"class":"holiday","data-type":nDate.getFullYear() + "" + nDate.getMonth() + "" + nDate.getDate()}));
+												
 						}else{
 							$("#tbody_selector").prepend($("<td style='border: 1px solid rgb(222, 222, 222);'>")
-									.attr({"onclick":"selectDate(this)","data-type":nDate.getFullYear() + "" + nDate.getMonth() + "" + nDate.getDate()}));
+									.attr({"onclick":"selectDate(this)","data-type":nDate.getFullYear() + "" + nDate.getMonth() + "" + nDate.getDate(),
+										   "data-time":nDate.getTime()}));
 						}
 					}else{
 						if(MakeDay(nDate.getDay()) == '토' || MakeDay(nDate.getDay()) == '일'){
@@ -432,7 +450,8 @@
 												.attr({"class":"holiday","data-type":nDate.getFullYear() + "" + nDate.getMonth() + "" + nDate.getDate()}));
 						}else{
 							$("#tbody_selector").append($("<td style='border: 1px solid rgb(222, 222, 222);'>")
-									.attr({"onclick":"selectDate(this)","data-type":nDate.getFullYear() + "" + nDate.getMonth() + "" + nDate.getDate()}));
+									.attr({"onclick":"selectDate(this)","data-type":nDate.getFullYear() + "" + nDate.getMonth() + "" + nDate.getDate(),
+										   "data-time":nDate.getTime()}));
 						}
 					}
 				}
@@ -506,14 +525,99 @@
 		
 		
 		function formSubmit(){
-			$("#tbody_selector").children().children();
 			
-			console.log($("#tbody_selector").children().children());
+			var chooseDay = $("#tbody_selector").children().children().parent();
+			var chooseTime = $("#tbody_selector").children().children();
+			var holidayType = $("#vacation_type").val();
+			var holidayContent = $("#vacation_content").val();
 			
-			$("#holidayApply").append();
+			if($("#vacation_content").val() == ""){
+				alert("사유를 입력하세요");
+			}else if($("#vacation_type").val() == ""){
+				alert("휴가 타입을 입력하세요");
+			}else if(chooseDay.length <= 0){
+				alert("휴가 일자를 선택하세요")
+			}else{
 			
+			for(var i=0; i<chooseDay.length; i++){
+				var date = new Date(chooseDay.eq(i).data("time"));
+				$("#holidayApply").append($("<input name='holidayDate' type='hidden'>").val(date.format("yyyyMMdd")));
+				var timeName;
+				if(chooseTime.eq(i).attr("class").split("_")[0] == 'all'){
+					timeName = '일차';
+				}else if(chooseTime.eq(i).attr("class").split("_")[0] == 'am'){
+					timeName = '오전반차';
+				}else{
+					timeName = '오후반차';
+				}
+				$("#holidayApply").append($("<input name='holidayTime' type='hidden'>").val(timeName));
+				
+			}
+			$("#holidayApply").append($("<input type='hidden' name='holidayType'>").val(holidayType));
+			$("#holidayApply").append($("<input type='hidden' name='holidayContent'>").val(holidayContent));
 			
+			$("#holidayApply").submit();
+			
+			}
 		}
+		
+		
+		
+		Date.prototype.format = function (f) {
+		    if (!this.valueOf()) return " ";
+
+		    var weekKorName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+
+		    var weekKorShortName = ["일", "월", "화", "수", "목", "금", "토"];
+
+		    var weekEngName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+		    var weekEngShortName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+		    var d = this;
+
+		    return f.replace(/(yyyy|yy|MM|dd|KS|KL|ES|EL|HH|hh|mm|ss|a\/p)/gi, function ($1) {
+
+		        switch ($1) {
+
+		            case "yyyy": return d.getFullYear(); // 년 (4자리)
+
+		            case "yy": return (d.getFullYear() % 1000).zf(2); // 년 (2자리)
+
+		            case "MM": return (d.getMonth() + 1).zf(2); // 월 (2자리)
+
+		            case "dd": return d.getDate().zf(2); // 일 (2자리)
+
+		            case "KS": return weekKorShortName[d.getDay()]; // 요일 (짧은 한글)
+
+		            case "KL": return weekKorName[d.getDay()]; // 요일 (긴 한글)
+
+		            case "ES": return weekEngShortName[d.getDay()]; // 요일 (짧은 영어)
+
+		            case "EL": return weekEngName[d.getDay()]; // 요일 (긴 영어)
+
+		            case "HH": return d.getHours().zf(2); // 시간 (24시간 기준, 2자리)
+
+		            case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2); // 시간 (12시간 기준, 2자리)
+
+		            case "mm": return d.getMinutes().zf(2); // 분 (2자리)
+
+		            case "ss": return d.getSeconds().zf(2); // 초 (2자리)
+
+		            case "a/p": return d.getHours() < 12 ? "오전" : "오후"; // 오전/오후 구분
+
+		            default: return $1;
+
+		        }
+
+		    });
+
+		};
+
+		String.prototype.string = function (len) { var s = '', i = 0; while (i++ < len) { s += this; } return s; };
+
+		String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
+		Number.prototype.zf = function (len) { return this.toString().zf(len); };
 	
 	</script>
 </body>

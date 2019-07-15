@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.http.ResponseEntity;
 
 import com.kh.lgtw.approval.model.vo.PageInfo;
 import com.kh.lgtw.common.model.vo.Attachment;
@@ -98,48 +99,24 @@ public interface EmployeeDao{
 	int holidayInsertAdmin(SqlSession sqlSession);
 	
 	//휴가 신청 조회 - 욱
-	HashMap<String, Object> showHolidayApply(SqlSession sqlSession, int empNo);
+	ArrayList<HashMap<String, Object>> showHolidayApply(SqlSession sqlSession, int empNo);
+	
+	//휴가 신청 - 욱
+	int applyHoliday(SqlSession sqlSession, HashMap<String, Object> params);
 
+	int insertLeaveEmp(SqlSession sqlSession, ArrayList<Employee> list);
+  
+	ArrayList<HashMap<String, Object>> getAdminHoliday(SqlSession sqlSession, HashMap<String,Object> parmas);
+	
 
-//	Employee loginEmpl(Employee employee, SqlSession sqlSession);
-//
-//	ArrayList<Employee> selectEmpList(SqlSession sqlSession);
-//
-//	Employee selectOneEmp(SqlSession sqlSession, Employee employee);
-//
-//	int updateOneEmp(SqlSession sqlSession, Employee loginUser, Employee employee);
-//
-//	ArrayList<Employee> searchEmp(SqlSession sqlSession, Employee employee);
-//
-//	int reqHoliday(SqlSession sqlSession, Employee loginUser);
-//
-//	Attendace selectAttend(SqlSession sqlSession, Employee loginUser);
-//
-//	int insertEmp(SqlSession sqlSession, Employee employee);
-//
-//	int insertDuty(SqlSession sqlSession);
-//
-//	int updateLeave(SqlSession sqlSession, Employee employee);
-//
-//	ArrayList<Employee> selectLeaveList(SqlSession sqlSession);
+	ArrayList<EmployeeResult> selectLeaveEmpAdmin(SqlSession sqlSession);
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	int insertEmpOffWork(SqlSession sqlSession, Attendance attend);
+
+	int insertNoWork(SqlSession sqlSession, Attendance attend);
+
+	int checkEmpOffWork(SqlSession sqlSession, Attendance attend);
+
 	
 	
 }

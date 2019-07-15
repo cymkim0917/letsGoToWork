@@ -216,13 +216,15 @@ public class CommunityController {
 		
 		
 		
-		/* model.addAttribute("list", list); */
+		 model.addAttribute("list", list); 
+		 model.addAttribute("pi", pi);
 			
 		
 		System.out.println("currentPage :" +currentPage);
 		System.out.println("listcount 값:" +listCount);
 		System.out.println("bno 값:" + bno);
 		System.out.println("CommunityPost=" + list);
+		System.out.println("po값 출력:" +pi);
 
 		return "community/communityPostList";
 	}

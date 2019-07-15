@@ -242,7 +242,7 @@ public class CommunityDaoImpl implements CommunityDao {
 		
 		RowBounds rowBounds = new RowBounds(offset, pi.getLimit());
 		
-		list = (ArrayList) sqlSession.selectList("Community.CommunityPostPageList", null, rowBounds);
+		list = (ArrayList) sqlSession.selectList("Community.CommunityPostPageList", bno, rowBounds);
 		
 		System.out.println("페이징처리된 결과 : " + list);
 		

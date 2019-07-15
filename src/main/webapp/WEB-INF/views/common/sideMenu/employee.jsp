@@ -11,7 +11,6 @@
 	.list{
 		font-size:15px !important;
 		cursor:pointer;
-		color:white
 	}
 </style>
 
