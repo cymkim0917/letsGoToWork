@@ -55,8 +55,8 @@
 	<div class="row wrap">
 		<jsp:include page="../common/sideMenu/employee.jsp"/>
 		
-		<c:set var="deptList" value="${hmap.deptList }"/>
-		<c:set var="jobList" value="${hmap.jobList }"/>
+			<c:set var="deptList" value="${hmap.deptList }"/>
+			<c:set var="jobList" value="${hmap.jobList }"/>
 		
 		<section class="col-sm-10">
 			<h1 class="title">직원목록</h1>
@@ -70,7 +70,7 @@
 									<select name="deptName">
 										<option value="all">부서 전체</option>
 										<c:forEach var="dept" items="${deptList }" varStatus="status">
-											<option value="${dept.deptName }"><c:out value="${dept.deptName }"/></option>
+											<option value="${dept.deptCode }"><c:out value="${dept.deptName }"/></option>
 										</c:forEach>
 									</select>
 								</td>
@@ -105,7 +105,7 @@
 										<c:if test="${attach.originName eq 'users.jpg' }">
 								  			<img src="${contextPath }/resources/images/profile/users.jpg" width="150px;" height="200px;">
 										</c:if>
-										<c:if test="${!attach.originName eq 'users.jpg'}">
+										<c:if test="${attach.originName ne 'users.jpg'}">
 											<img src="${contextPath }/resources/images/profile/${attach.changeName }.jpg">
 										</c:if>
 									</c:if>					  	

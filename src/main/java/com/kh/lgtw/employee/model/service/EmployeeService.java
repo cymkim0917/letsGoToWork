@@ -127,6 +127,10 @@ public interface EmployeeService {
 
 	int insertDeptHead(ArrayList<EmployeeResult> list);
 
+	int getSearchEmpAdminCount(EmployeeResult employee);
+
+	ArrayList<EmployeeResult> searchEmpUserAdmin(PageInfo pi, EmployeeResult employee);
+  
 	HashMap<String, Object> getHolidayList(Integer empNo);
 
 

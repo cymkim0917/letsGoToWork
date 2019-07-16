@@ -448,6 +448,16 @@ public class EmployeeDaoImpl implements EmployeeDao{
 		return hmap;
 	}
 
+	@Override
+	public int getSearchEmpAdminCount(SqlSession sqlSession, EmployeeResult employee) {
+		return sqlSession.selectOne("Employee.searchEmpAdminCount",employee);
+	}
+
+	@Override
+	public ArrayList<EmployeeResult> searchEmpUserAdmin(SqlSession sqlSession, PageInfo pi, EmployeeResult employee) {
+		return (ArrayList)sqlSession.selectList("Employee.searchEmpAdmin", employee);
+	}
+
 
 
 }

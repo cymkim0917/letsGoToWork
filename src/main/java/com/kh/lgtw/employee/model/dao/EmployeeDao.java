@@ -135,6 +135,10 @@ public interface EmployeeDao{
 	//내 휴가 조회 - 욱
 	HashMap<String, Object> getHolidayList(SqlSession sqlSession, Integer empNo);
 
+	int getSearchEmpAdminCount(SqlSession sqlSession, EmployeeResult employee);
+
+	ArrayList<EmployeeResult> searchEmpUserAdmin(SqlSession sqlSession, PageInfo pi, EmployeeResult employee);
+
 	
 	
 }

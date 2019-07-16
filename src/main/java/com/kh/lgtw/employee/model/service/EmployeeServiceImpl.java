@@ -819,6 +819,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return empDao.getHolidayList(sqlSession,empNo);
 	}
 
+	@Override
+	public int getSearchEmpAdminCount(EmployeeResult employee) {
+		return empDao.getSearchEmpAdminCount(sqlSession, employee);
+	}
+
+	@Override
+	public ArrayList<EmployeeResult> searchEmpUserAdmin(PageInfo pi, EmployeeResult employee) {
+		return empDao.searchEmpUserAdmin(sqlSession, pi, employee);
+	}
+
 
 
 }

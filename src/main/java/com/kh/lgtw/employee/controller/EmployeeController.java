@@ -112,6 +112,10 @@ public class EmployeeController {
 			ArrayList<Attachment> attach = empService.selectAttachList();
 			HashMap<String, Object> hmap = empService.selectJopDeptAdmin();
 			
+			for(int i =0; i<list.size(); i++) {
+				System.out.println(list.get(i));
+			}
+			
 			model.addAttribute("hmap", hmap);
 			model.addAttribute("empList",list);
 			model.addAttribute("attachList", attach);
@@ -267,9 +271,10 @@ public class EmployeeController {
 		@RequestMapping("searchEmpUser.em")
 		public String searchEmployee(EmployeeResult employee, Model model, HttpServletRequest request) {
 			System.out.println("검색 출력 :" + employee);
-			System.out.println("부서"+employee.getDeptName());
+			System.out.println("부서"+employee.getDeptCode());
 			System.out.println("직급"+employee.getJobName());
 			System.out.println("이름"+employee.getEmpName().equals(""));
+			
 			
 			if(employee.getEmpName().equals("")) {
 				employee.setEmpName(null);
@@ -285,6 +290,7 @@ public class EmployeeController {
 			}
 			
 			int listCount = empService.getSearchEmpCount(employee);
+			
 			
 			if(listCount == 0) {
 				
@@ -311,6 +317,47 @@ public class EmployeeController {
 			
 			return "employee/employeeList";
 		}
+		
+		//사원 검색
+				@RequestMapping("searchEmpUserAdmin.em")
+				public String searchEmpUserAdmin(EmployeeResult employee, Model model, HttpServletRequest request) {
+					System.out.println("검색 출력 :" + employee);
+					System.out.println("부서"+employee.getDeptCode());
+					
+					
+					int currentPage = 1;
+					
+					if(request.getParameter("currentPage") != null) {
+						currentPage = Integer.parseInt(request.getParameter("currentPage"));
+					}
+					
+					int listCount = empService.getSearchEmpAdminCount(employee);
+					
+					
+					if(listCount == 0) {
+						
+						model.addAttribute("msg","조건에 맞는 직원이 없습니다.");
+						model.addAttribute("url","showEmployeeList.em");
+						
+						return "employee/checkPwd";
+					}
+					
+					System.out.println("리스트 카운트" + listCount);
+					
+					PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+					
+					ArrayList<EmployeeResult> list = empService.searchEmpUserAdmin(pi, employee);
+					HashMap<String, Object> hmap = empService.selectJopDeptAdmin();
+					
+					System.out.println("검색 리스트 출력"+list);
+					
+					model.addAttribute("hmap", hmap);
+					model.addAttribute("list",list);
+					model.addAttribute("pi",pi);
+					
+					
+					return "employee/employeeAdmin";
+				}
 		
 		//사원 한명 추가 
 		@RequestMapping("insertOneEmpl.em")
@@ -403,12 +450,13 @@ public class EmployeeController {
 			}
 			System.out.println("employee확인 "+employee);
 			
-			if(employee.getEmpPwd().equals("")) {
+			if(employee.getEmpPwd()==null) {
 				model.addAttribute("msg","현재 비밀번호를 입력해주세요.");
 				model.addAttribute("url","showMyPage.em");
 				return "employee/checkPwd";
 			}
 			
+			employee.setStatus("Y");
 			
 			int pwdCheck = empService.updatePwdCheck(employee);
 			
@@ -494,13 +542,19 @@ public class EmployeeController {
 			
 			int[] emprr = new int[srr.length];
 			int result = 0;
+			int result2 = 0;
 			
 			for(int i = 0; i<srr.length; i++) {
 				emprr[i]=Integer.parseInt(srr[i]);
 				result = empService.deleteEmpList(emprr[i]);
+				result2++;
 			}
 			
-			return "redirect:showEmployeeAdmin.em";
+			
+			model.addAttribute("msg",result2+"명이 삭제되었습니다..");
+			model.addAttribute("url","redirect:showEmployeeAdmin.em");
+			
+			return "employee/checkPwd";
 		}
 		//휴직자 추가
 		@RequestMapping(value="/employee/insertLeaveEmp", produces="application/text; charset=utf8")
@@ -682,13 +736,6 @@ public class EmployeeController {
 			return "employee/deptClctvRegister";
 		}
 		
-		//조직도등록
-		@RequestMapping("insertDept.em")
-		public String insertDept(Model model) {
-			return "";
-		}
-		
-	
 	
 	//------------------------휴가 ---------------------------------------
 
@@ -1033,13 +1080,12 @@ public class EmployeeController {
 			
 			
 			ModelAndView view = new ModelAndView();
-			
-			
-			view.setViewName("redirect:showEmpClctvRegister.em");
+			view.setViewName("employee/checkPwd");
+			view.addObject("msg", "직원 입력이 완료되었습니다.");
+			view.addObject("url","showEmpClctvRegister.em");
 			
 			return view;
 		}
-	
 	
 	
 		//DB에 있는 직원 다운로드
@@ -1065,13 +1111,12 @@ public class EmployeeController {
 				list = empService.xlsxEmpUpdate(request, excelFile);
 			}
 			
-			
 			ModelAndView view = new ModelAndView();
-			
-			view.setViewName("redirect:showUpdateEmpClctv.em");
+			view.setViewName("employee/checkPwd");
+			view.addObject("msg", "직원 정보 수정이 완료되었습니다.");
+			view.addObject("url","showUpdateEmpClctv.em");
 			
 			return view;
-			
 		}
 		
 		//샘플 엑셀 다운로드
@@ -1201,7 +1246,7 @@ public class EmployeeController {
 			empService.deptExcelList(response);
 		}
 		
-		//직원 일괄 수정
+		//조직도 일괄 수정
 				@RequestMapping("deptUpdateExcelUpload.em")
 				public ModelAndView deptUpdateExcelUpload(MultipartHttpServletRequest request) {
 					MultipartFile excelFile = request.getFile("excelFile");
@@ -1218,8 +1263,9 @@ public class EmployeeController {
 					
 					
 					ModelAndView view = new ModelAndView();
-					
-					view.setViewName("redirect:showUpdateEmpClctv.em");
+					view.setViewName("employee/checkPwd");
+					view.addObject("msg", "조직도 수정이 완료되었습니다.");
+					view.addObject("url","showdeptGroupAdmin.em");
 					
 					return view;
 					
