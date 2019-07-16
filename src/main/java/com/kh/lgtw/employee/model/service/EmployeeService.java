@@ -127,6 +127,8 @@ public interface EmployeeService {
 
 	int insertDeptHead(ArrayList<EmployeeResult> list);
 
+	HashMap<String, Object> getHolidayList(Integer empNo);
+
 
 
 }
