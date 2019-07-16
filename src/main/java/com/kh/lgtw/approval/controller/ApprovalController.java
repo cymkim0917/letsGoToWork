@@ -840,7 +840,7 @@ public class ApprovalController {
 		return "성공";
 	}
 	
-	// 문서 합의결재
+	// 문서 재무합의
 	@RequestMapping(value = "/approval/updatePayAgree", produces = "application/text; charset=utf8")
 	public @ResponseBody String updatePayAgree(String adNo, int empNo, String status) {
 		
@@ -1000,8 +1000,6 @@ public class ApprovalController {
 	public Map<String, ArrayList<HashMap<String, Object>>> selectEmp(){
 		
 		Map<String, ArrayList<HashMap<String, Object>>> map = as.selectEmp();
-//		System.out.println(map.get("empList"));
-//		System.out.println(map.get("deptList"));
 		
 		return map;
 	}
@@ -1012,8 +1010,6 @@ public class ApprovalController {
 	public Map<String, ArrayList<HashMap<String, Object>>> selectUnderDept(@RequestParam(value = "deptCode") String deptCode){
 		
 		Map<String, ArrayList<HashMap<String, Object>>> map = as.selectUnderDept(deptCode);
-//		System.out.println("하위부서 : " + map.get("deptList"));
-//		System.out.println("하위부서 : " + map.get("empList"));
 		
 		return map;
 		

@@ -768,7 +768,7 @@ public class ApprovalDaoImpl implements ApprovalDao{
 			
 			map.put("alEmpno", process[i]);
 			map.put("alRoll", "처리자");
-			map.put("alLevel", 1);
+			map.put("alLevel", i + 1);
 			map.put("status", "처리대기");
 			
 			result1 = session.insert("Approval.insertApprovalList", map);
