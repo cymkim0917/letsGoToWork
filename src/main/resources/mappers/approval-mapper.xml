@@ -424,7 +424,7 @@
 		AND AD_STATUS != '반려'
 		AND AD_STATUS != '저장'
 		<!-- AND (AD_STATUS = '대기' OR AD_STATUS = '합의대기' OR AD_STATUS = '재무합의대기') -->
-		AND (AL_ROLL = '합의자' OR AL_ROLL = '결재자' OR AL_ROLL = '재무합의자' OR AL_ROLL = '수신자' OR AL_ROLL = '신청자')
+		AND (AL_ROLL = '합의자' OR AL_ROLL = '결재자' OR AL_ROLL = '재무합의자' OR AL_ROLL = '수신자' OR AL_ROLL = '신청자' OR AL_ROLL = '처리자')
 		AND AD_LEVEL = AL_LEVEL
 		ORDER BY AD_START_DATE DESC
 	</select>
@@ -457,11 +457,15 @@
 		WHERE AL_EMPNO = #{empNo}
 		AND AD_STATUS != '반려'
 		AND AD_STATUS != '저장'
-		AND (AL_STATUS = AD_STATUS
+		AND ((AL_STATUS = AD_STATUS OR AL_STATUS != AD_STATUS) 
 			AND (AL_ROLL = '합의자' OR AL_ROLL = '결재자' OR AL_ROLL = '재무합의자' OR AL_ROLL = '수신자' OR AL_ROLL = '신청자')
 			AND	AD_LEVEL < AL_LEVEL
 	        OR (AL_ROLL = '합의자' OR AL_ROLL = '결재자' OR AL_ROLL = '재무합의자' OR AL_ROLL = '수신자' OR AL_ROLL = '신청자')
-       		AND AL_STATUS <> '결재' AND	AD_LEVEL < AL_LEVEL)
+      		AND AL_STATUS <> '결재' AND	AD_LEVEL < AL_LEVEL
+      		OR (AL_ROLL = '합의자' OR AL_ROLL = '재무합의자' OR AL_ROLL = '수신자' OR AL_ROLL = '신청자')
+      		AND AL_STATUS <> '결재' AND	AD_LEVEL < AL_LEVEL
+            OR (AD.AD_STATUS = '대기' AND AL_STATUS = '처리대기'))
+      		ORDER BY AD_START_DATE DESC
 		]]>
 	</select>
 	
@@ -476,13 +480,14 @@
 		WHERE AL_EMPNO = #{empNo}
 		AND AD_STATUS != '반려'
 		AND AD_STATUS != '저장'
-		AND (AL_STATUS = AD_STATUS
+		AND ((AL_STATUS = AD_STATUS OR AL_STATUS != AD_STATUS) 
 			AND (AL_ROLL = '합의자' OR AL_ROLL = '결재자' OR AL_ROLL = '재무합의자' OR AL_ROLL = '수신자' OR AL_ROLL = '신청자')
 			AND	AD_LEVEL < AL_LEVEL
 	        OR (AL_ROLL = '합의자' OR AL_ROLL = '결재자' OR AL_ROLL = '재무합의자' OR AL_ROLL = '수신자' OR AL_ROLL = '신청자')
       		AND AL_STATUS <> '결재' AND	AD_LEVEL < AL_LEVEL
       		OR (AL_ROLL = '합의자' OR AL_ROLL = '재무합의자' OR AL_ROLL = '수신자' OR AL_ROLL = '신청자')
-      		AND AL_STATUS <> '결재' AND	AD_LEVEL <= AL_LEVEL)
+      		AND AL_STATUS <> '결재' AND	AD_LEVEL < AL_LEVEL
+            OR (AD.AD_STATUS = '대기' AND AL_STATUS = '처리대기'))
       		ORDER BY AD_START_DATE DESC
 		]]>
 	</select>

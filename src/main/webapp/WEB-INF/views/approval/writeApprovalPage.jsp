@@ -850,7 +850,7 @@
 				type:"get",
 				success:function(data){
 					console.log("성공");
-					
+					$("select[name='empList']").children().remove();
 					for(var i = 0; i < data.empList.length; i++) {
 							console.log(data.empList[i].empName);
 							var $option = $("<option id='" + data.empList[i].empNo + "' value='" + data.empList[i].empNo + "'>");

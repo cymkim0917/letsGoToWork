@@ -156,26 +156,15 @@
 					<table class="table" >
 				    <thead>
 				      <tr>
-				        <th>게시글 번호</th>
-				        <th>게시글 제목</th>
-				        <th>게시글 작성자</th>
-				        <th>게시글 작성일자</th>
+				        <th>번호</th>
+				        <th>제목</th>
+				        <th>작성자</th>
+				        <th>작성일자</th>
 				      </tr>
 				    </thead>
-				    
-				    <c:forEach var="c" items="${list }">  
-				    <tbody>
+				    <tbody id="boardArea">
 				     
-				      
-				      <tr>
-				        <td ><input type="hidden" name="contentNO" value="${c.contentNO }"> ${c.ord}</td>
-				        <td>${c.btitle}</td>
-				        <td>${c.createUserName}</td>
-						<td>${c.createDate}</td>				        
-				      </tr>
 				   	 </tbody>
-				   	 </c:forEach> 
-				 
 				  </table>
 				</div>
 				
@@ -371,12 +360,26 @@
 	  			type:"get",
 	  			data:{bno:bno},
 	  			success:function(data){
-	  				
-	  				alert(data);
-					console.log(data);
+	  				for(var i = 0; i < data.length; i++) {
+		  				var $tr = $("<tr>");
+		  				var $cNoTd = $("<td>" + data[i].contentNO + "</td>");
+		  				var $btitleTd = $("<td>" + data[i].btitle + "</td>");
+		  				var $createUserNameTd = $("<td>" + data[i].createUserName + "</td>");
+		  				var $createDateTd = $("<td>" + data[i].createDate.substring(0, 10) + "</td>");
+		  				
+		  				$tr.append($cNoTd);
+		  				$tr.append($btitleTd);
+		  				$tr.append($createUserNameTd);
+		  				$tr.append($createDateTd);
+		  				
+		  				$("#boardArea").append($tr);
+	  				}
 	  				
 	  			}
+	  		});
 	  	});
+	      
+
 	      
 	</script>
 	

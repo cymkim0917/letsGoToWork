@@ -377,22 +377,27 @@ public class ApprovalServiceImpl implements ApprovalService{
 					String result4 = ad.selectApprovalYN(session, map);
 					if(result4.equals("Y")) {
 						int result5 = ad.updateAdStatus(session, map, "완료");
+						return result5;
 					}else {
 						int result6 = ad.countAgreeMember(session, map);
 						int result7 = ad.countPayAgreeMember(session, map);
 						if(result6 > 0) {
 							int result8 = ad.updateAdStatusAndLevel(session, map, "합의대기");
+							return result8;
 						}else if(result7 > 0){
 							int result9 = ad.updateAdStatusAndLevel(session, map, "재무합의대기");
+							return result9;
 						}
+						return result2;
 					}
 				}
 			}
+			return result2;
 		}else {
 			int result5 = ad.updateAdStatus(session, map, "반려");
+			return result5;
 		}
 		
-		return result;
 	}
 	//문서합의
 	@Override
@@ -440,7 +445,7 @@ public class ApprovalServiceImpl implements ApprovalService{
 		int result = ad.updateApproval(session, map);
 		
 		if(result > 0 && ((String)map.get("status")).equals("결재")) {
-			int result2 = ad.updateAdLevel(session, map);
+			/* int result2 = ad.updateAdLevel(session, map); */
 			String result3 = ad.selectApplyApprovalYN(session, map);
 			if(result3.equals("Y")) {
 				String result4 = ad.selectApprovalYN(session, map);

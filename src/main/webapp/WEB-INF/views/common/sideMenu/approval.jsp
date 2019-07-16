@@ -46,7 +46,7 @@
 						<li onclick="location.href='${ contextPath }/showSaveDcm.ap'" class="list">임시저장문서</li>
 					</ul>
 				</div>
-			<c:if test="${ sessionScope.loginEmp != null && sessionScope.loginEmp.empId.equals('admin')}">
+			<c:if test="${ sessionScope.loginEmp != null && sessionScope.loginEmp.empId.equals('jh7771')}">
 				<button style="margin-top:8px;" onclick="myFunction('option')" class="accordionBtn">관리자설정</button>
 					<div id="option" class="w3-container w3-hide w3-animate-opacity contentSelectArea">
 						<ul>
