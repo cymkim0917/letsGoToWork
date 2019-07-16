@@ -12,16 +12,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-	<!--  <style>
-  	
-  		.table{font-size:150%; }
-  
-  		
-  		
-  		
-  		#searcArea{font-size:150%;}
-  	
-  	</style> -->
+ <link rel="shortcut icon" href="${ contextPath }/resources/images/favicon.ico">
 </head>
 <body>
 	

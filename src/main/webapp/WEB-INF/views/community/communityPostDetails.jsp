@@ -16,7 +16,7 @@
    
    </style> -->
 
-
+ <link rel="shortcut icon" href="${ contextPath }/resources/images/favicon.ico">
 </head>
 <body>
    <jsp:include page="../common/menubar.jsp"/>   
@@ -77,7 +77,7 @@
                 <br>
                 <div>
                 <c:forEach var="c" items="${list }">  
-                   <%-- <c:if test="${c.status eq 'N'}"> --%> 
+                   <c:if test="${c.status eq 'N'}"> 
                    <table class="table table-striped"  >
                     <thead>
                       <tr> 
@@ -149,9 +149,10 @@
                         
                 </thead>   
             </table>
-           <%--  </c:if> --%>
-           			 </c:forEach> 
-            
+           
+          </c:if>
+     </c:forEach> 
+          
             
             <table id="replyTable" class="table table-striped">
             
@@ -182,6 +183,9 @@
            
             
         	 </div>
+        	  <c:forEach var="c" items="${list }">
+                  <c:if test="${c.status eq 'N'}"> 
+        	 
      		 <div class="paging"   align="center" >
 						<ul class="pagination">
 							<li><a href="#"><</a></li>
@@ -193,6 +197,8 @@
 							<li><a href="#">></a></li>
 						</ul>
 			</div>
+			</c:if>
+			</c:forEach>
       	</section>
    </div>
    
@@ -396,7 +402,7 @@ function createPaging(pageInfo){
                    type:"post",
                    success:function(date){
                       if(date == "ok"){
-                         alert("댓글 작성이 완료 되었습니다.");
+                         /* alert("댓글 작성이 완료 되었습니다."); */
                          location.href='communityPostDetails.co?contentNO='+contentno;
                       }else{
                          console.log("FAIL");

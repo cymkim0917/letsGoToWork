@@ -245,7 +245,8 @@
         JOIN CONTENT C ON(C.CONTENT_NO = CC.CONTENT_NO)
         JOIN EMPLOYEE E ON(CC.CM_WRITER = E.EMPNO)
         WHERE CC.CONTENT_NO=#{contentNO}
-        AND STAUTS = 'N'        	
+        AND STAUTS = 'N' 
+        ORDER BY CC.COMMENT_NO DESC      	
 	</select> 
 	
 	
@@ -298,6 +299,7 @@
             JOIN EMPLOYEE E  ON (E.EMPNO = CC.CM_WRITER)
             WHERE CC.CONTENT_NO =  #{psno}
             AND CC.STAUTS='N'
+            ORDER BY CC.COMMENT_NO DESC 
 	      
 	      
 		
