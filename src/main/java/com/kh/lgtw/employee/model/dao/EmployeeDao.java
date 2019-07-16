@@ -131,6 +131,9 @@ public interface EmployeeDao{
 	ArrayList<DeptVo> deptExcelList(SqlSession sqlSession);
 
 	List<DeptVo> excelDeptUpdate(SqlSession sqlSession, List<DeptVo> list);
+	
+	//내 휴가 조회 - 욱
+	HashMap<String, Object> getHolidayList(SqlSession sqlSession, Integer empNo);
 
 	
 	
