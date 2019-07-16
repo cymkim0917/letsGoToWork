@@ -125,7 +125,7 @@ public class MailDaoImpl implements MailDao{
 	// s3에서 받아온 정보를 데이터베이스에 insert
 	@Override
 	public int insertReciveMail(SqlSession sqlSession, Mail reciveMail) {
-		System.out.println("Message : " + reciveMail);
+		System.out.println("insertReciveMail reciveMail : " + reciveMail);
 		return sqlSession.insert("Mail.insertReciveMail", reciveMail);
 	}
 

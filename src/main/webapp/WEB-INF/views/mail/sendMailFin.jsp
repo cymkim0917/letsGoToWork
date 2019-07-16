@@ -44,7 +44,7 @@
 				</table>
 				<div id="btnArea" align="center">
 					<button onclick="location.href='${contextPath}/allList.ma'">메일 홈</button>
-					<button onclick="location.href='#'">보낸 메일함</button>
+					<button onclick="location.href='${ contextPath }/allList.ma?listType=send'">보낸 메일함</button>
 				</div>
 			</div> <!-- content -->
 		</section> 

@@ -377,8 +377,122 @@
 	  				
 	  			}
 	  		});
+
+	  		
+	  		$.ajax({
+				url : "allSelectSchedule/sc",
+				type : "get",
+				success : function(data) {
+					console.log(data.scList);
+
+					for ( var key in data.scList) {
+						var id = data.scList[key].scheduleNo;
+						
+						if (data.scList[key].schedulerList[0].schedulerType == "개인") {
+							var title = data.scList[key].scheduleName;
+						} else {
+							var title = "[GS] " + data.scList[key].scheduleName;
+						}
+						var startD = data.scList[key].startDate.split(" ");
+						var endD = data.scList[key].endDate.split(" ");
+						var color = data.scList[key].schedulerList[0].schedulerColor;
+						var startT = data.scList[key].startTime;
+						var endT = data.scList[key].endTime;
+						var type = data.scList[key].schedulerList[0].schedulerType;
+						var endDate = new Date(endD[0]);
+
+						if (data.scList[key].schedulerList[0].schedulerType == "공용"
+								&& data.scList[key].groupList[0].gmStatus == "N") {
+
+						} else if (data.scList[key].schedulerList[0].schedulerType == "공용"
+								&& data.scList[key].groupList[0].authority == "N") {
+							if (startT == null) {
+								endDate.setDate(endDate.getDate() + 1);
+								var event = {
+									id : id,
+									title : title,
+									start : startD[0],
+									end : endDate.format("yyyy-MM-dd"),
+									color : color,
+									classNames : [ type, "수정불가" ]
+								}
+							} else {
+								endDate.setDate(endDate.getDate());
+								var event = {
+									id : id,
+									title : title,
+									start : startD[0] + "T" + startT,
+									end : endDate.format("yyyy-MM-dd")
+											+ "T" + endT,
+									color : color,
+									classNames : [ type, "수정불가" ]
+								}
+							}
+
+							console.log(event);
+							calendar.addEvent(event);
+
+						} else {
+							if (startT == null) {
+								endDate.setDate(endDate.getDate() + 1);
+								var event = {
+									id : id,
+									title : title,
+									start : startD[0],
+									end : endDate.format("yyyy-MM-dd"),
+									color : color,
+									classNames : [ type ]
+								}
+							} else {
+								endDate.setDate(endDate.getDate());
+								var event = {
+									id : id,
+									title : title,
+									start : startD[0] + "T" + startT,
+									end : endDate.format("yyyy-MM-dd")
+											+ "T" + endT,
+									color : color,
+									classNames : [ type ]
+								}
+							}
+
+							console.log(event);
+							calendar.addEvent(event);
+						}
+
+					}
+
+				}
+			});
 	  	});
 	      
+	      Date.prototype.format = function(f) {
+	      	    if (!this.valueOf()) return " ";
+	      	 
+	      	    var weekName = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+	      	    var d = this;
+	      	     
+	      	    return f.replace(/(yyyy|yy|MM|dd|E|hh|mm|ss|a\/p)/gi, function($1) {
+	      	        switch ($1) {
+	      	            case "yyyy": return d.getFullYear();
+	      	            case "yy": return (d.getFullYear() % 1000).zf(2);
+	      	            case "MM": return (d.getMonth() + 1).zf(2);
+	      	            case "dd": return d.getDate().zf(2);
+	      	            case "E": return weekName[d.getDay()];
+	      	            case "HH": return d.getHours().zf(2);
+	      	            case "hh": return ((h = d.getHours() % 12) ? h : 12).zf(2);
+	      	            case "mm": return d.getMinutes().zf(2);
+	      	            case "ss": return d.getSeconds().zf(2);
+	      	            case "a/p": return d.getHours() < 12 ? "오전" : "오후";
+	      	            default: return $1;
+	      	        }
+	      	    });
+	      	};
+	      	 
+	      	String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s += this; } return s;};
+	      	String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
+	      	Number.prototype.zf = function(len){return this.toString().zf(len);
+	     };
 
 	      
 	</script>

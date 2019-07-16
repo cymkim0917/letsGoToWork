@@ -30,6 +30,7 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.InitiateMultipartUploadRequest;
 import com.amazonaws.services.s3.model.InitiateMultipartUploadResult;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PartETag;
 import com.amazonaws.services.s3.model.ResponseHeaderOverrides;
 import com.amazonaws.services.s3.model.S3Object;
@@ -48,8 +49,8 @@ public class AwsS3 {
 	
 	public AwsS3() {
 		// 생성자가 작동하면 기본적으로 빌드를 한다.
-		// buildS3();
-
+		buildS3();
+		this.s3Client = this.conn;
 	}
 	
 	// 빌드하기 
@@ -305,6 +306,11 @@ public class AwsS3 {
 		
 		// download에서 가져온 fullObject방식대로 객체를 불러온다.
 		S3Object object = s3Client.getObject(new GetObjectRequest(bucketName, emlKey));
+		
+		System.out.println("메타 데이터 : " + object.getObjectMetadata());
+		ObjectMetadata omd = object.getObjectMetadata();
+		System.out.println("contentType : " + omd.getContentType());
+		System.out.println(omd.getRawMetadata());
 		
 		// System.out.println("getEmlFile 내에서 objectContent출력 ");
 		// 출력은 일반 파일이랑 동일하게 된다. 
