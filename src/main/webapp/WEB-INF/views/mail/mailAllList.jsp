@@ -9,8 +9,8 @@
 <title>LetsGoToWork</title>
 <style>
 	.listTable [type="checkbox"]{
-		width: 20px;
-		height : 20px;
+		width: 15px;
+		height : 15px;
 	}
 	.bottomBtn{
 		margin-right: 7%;
@@ -59,17 +59,18 @@
 </head>
 <body>
 	<jsp:include page="../common/menubar.jsp"/>
+	<c:set var="listType" value="${ listType }"/>
+	<input type="hidden" id="listType" value="${ listType }"/>
 	<c:set var="mappingUrl" value="allList.ma"/>
-	<%-- <c:set var="listType" value="all"/> --%>
-	
+
 	<div class="row wrap">
 		<jsp:include page="../common/sideMenu/mail.jsp"/>
 		
 		<section class="col-sm-10">
-		<%-- <button onclick="location.href='${contextPath}/mail/sendFin'">보내기완료 페이지</button> --%>
+		<%-- <button onclick="location.href='${contextPath}/mail/sendFin'">보내기완료 페이지</button> --%><br>
 			<div class="content" align="center">
 				<form class="searchArea form-group" align="left" action="${ contextPath }/mail/search">
-					<input type="hidden" name="listType" value="${ pageType }"/>
+					<input type="hidden" name="listType" value="${ listType }"/>
 					<select class="searchType form-control" >
 						<option value="sName">이름</option>
 						<option value="sEmail">이메일</option>
@@ -79,16 +80,15 @@
 					<input type="text" name="sName" class="form-control serarhValue"/>&nbsp;
 					<input type="submit" value="검색하기" class="form-control searchBtn"/>
 				</form>
-				<button onclick="location.href='${ contextPath }/mail/s3'">s3테스트</button>
 				<div class="tableArea" align="center">
 					<table class="listTable">
 						<tr>
-							<th><input type="checkbox" id="wholeCheck"/></th>
-							<th width="10%">읽음여부</th>
-							<th width="16%">이름</th>
-							<th width="14%">메일종류</th>
+							<th width="3%"><input type="checkbox" id="wholeCheck"/></th>
+							<th width="8%">읽음여부</th>
+							<th width="23%">이름</th>
+							<th width="10%">메일종류</th>
 							<th>제목</th>
-							<th width="18%">날짜</th>
+							<th width="12%">날짜</th>
 						</tr>
 						<c:forEach items="${ list }" var="mail">
 							<tr>
@@ -97,10 +97,10 @@
 								</td>
 								<td>
 									<c:if test="${ mail.rStatus == 'Y' }">
-										<img src="${ contextPath }/resources/images/mail/readMailY.PNG" width="50px">
+										<img src="${ contextPath }/resources/images/mail/readMailY.PNG" width="40px">
 									</c:if>
 									<c:if test="${ mail.rStatus == 'N' }">
-										<img src="${ contextPath }/resources/images/mail/readMailN.PNG" width="70px">
+										<img src="${ contextPath }/resources/images/mail/readMailN.PNG" width="50px">
 									</c:if>
 								</td>
 								<td>
@@ -115,7 +115,7 @@
 										</c:if>
 									</c:if>
 									<c:if test="${ !empty mail.empName }">
-										<c:out value="${ mail.empName } ${ mail.jobName } - ${ mail.deptName }"/><br>
+										<c:out value="${ mail.empName } ${ mail.jobName }/${ mail.deptName }"/><br>
 										<c:if test="${ mail.sendMail eq loginEmp.email }">
 											(<c:out value="${ mail.reciveMail }"/>)
 										</c:if>
@@ -149,17 +149,18 @@
 						<button onclick="changeStatus('read');">읽음</button>
 						<button onclick="changeStatus('delete');">삭제</button>
 					</div>
+					<button onclick="location.href='${ contextPath }/mail/s3'">s3테스트</button>
 					<div class="paging">
 						<ul class="pagination">
 							<c:if test="${ !empty pi }">
 								<c:if test="${ pi.startPage > 1 }">
-									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.startPage - pi.buttonCount }"><<</a></li>
+									<li><a href="${ contextPath }/${ mappingUrl }?listType=${ listType }&currentPage=${ pi.startPage - pi.buttonCount }"><<</a></li>
 								</c:if>
 								<c:if test="${ pi.startPage <= 1 }">
 									<li><a href="#"><<</a></li>
 								</c:if>
 								<c:if test="${ 1 != pi.currentPage }">
-									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.currentPage - 1}"><</a></li>
+									<li><a href="${ contextPath }/${ mappingUrl }?listType=${ listType }&currentPage=${ pi.currentPage - 1}"><</a></li>
 								</c:if>
 								<c:if test="${ 1 == pi.currentPage }">
 									<li><a href="#"><</a></li>
@@ -169,17 +170,17 @@
 										<li class="active"><a>${ pageNum }</a></li>
 									</c:if>
 									<c:if test="${ pageNum != pi.currentPage }">
-										<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pageNum }">${ pageNum }</a></li>
+										<li><a href="${ contextPath }/${ mappingUrl }?listType=${ listType }&currentPage=${ pageNum }">${ pageNum }</a></li>
 									</c:if>
 								</c:forEach>
 								<c:if test="${ pi.currentPage != pi.maxPage }">
-									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.currentPage + 1 }">></a></li>
+									<li><a href="${ contextPath }/${ mappingUrl }?listType=${ listType }&currentPage=${ pi.currentPage + 1 }">></a></li>
 								</c:if>
 								<c:if test="${ pi.currentPage == pi.maxPage }">
 									<li><a href="#">></a></li>
 								</c:if>
 								<c:if test="${ pi.endPage != pi.maxPage }">
-									<li><a href="${ contextPath }/${ mappingUrl }?currentPage=${ pi.endPage + 1 }">>></a></li>
+									<li><a href="${ contextPath }/${ mappingUrl }?listType=${ listType }&currentPage=${ pi.endPage + 1 }">>></a></li>
 								</c:if>
 								<c:if test="${ pi.endPage == pi.maxPage }">
 									<li><a href="#">>></a></li>
@@ -251,6 +252,31 @@
 			$(this).siblings("[type=text]").attr("name", optionVal);
 			// console.log($(this).siblings("[type=text]").attr("name"));
 		})
+		
+		// 사이드메뉴 active 설정  
+		$(function(){
+			$(".sidenav > ul *").removeClass("sidebar-active");
+			
+			var listType = $("#listType").val();
+			console.log(listType);
+			if(listType == 'all' || listType == ''){
+				$("#all").addClass('sidebar-active');
+				$("#all").children("a").addClass("sidebar-active");
+			}else if(listType == 'receive'){
+				$("#receive").addClass('sidebar-active');
+				$("#receive").children("a").addClass("sidebar-active");
+			}else if(listType == 'send'){
+				$("#send").addClass('sidebar-active');
+				$("#send").children("a").addClass("sidebar-active");
+			}else if(listType == 'outbox'){
+				$("#outbox").addClass('sidebar-active');
+				$("#outbox").children("a").addClass("sidebar-active");
+			}else if(listType == 'trash'){
+				$("#trash").addClass('sidebar-active');
+				$("#trash").children("a").addClass("sidebar-active");
+			}
+		})
+		
 	</script>
 	
 	<jsp:include page="../common/footer.jsp" />

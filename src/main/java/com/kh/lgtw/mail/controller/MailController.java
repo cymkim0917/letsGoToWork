@@ -13,6 +13,10 @@ import java.util.Map;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,7 +74,7 @@ public class MailController {
 	}
 	
 	// 전체 메일함 조회
-	@RequestMapping("allList.ma") 
+	@RequestMapping("allList.ma")
 	public String selectMailList(HttpServletRequest request, HashMap<String, Object> listCondition, Model model) {
 		// 페이징 처리 
 		int currentPage = 1;
@@ -78,9 +82,15 @@ public class MailController {
 			currentPage = Integer.parseInt(request.getParameter("currentPage"));
 		}
 		
+		if(request.getParameter("listType") != null) {
+			listCondition.put("listType", request.getParameter("listType"));
+		}
+		
 		// 로그인 회원 메일 조회
 		String empMail = ((Employee)request.getSession().getAttribute("loginEmp")).getEmail();
 		listCondition.put("empMail", empMail);
+		
+		System.out.println("listCondition : " + listCondition);
 		
 		// int listCount = ms.getMailListCount();
 		int listCount = ms.getMailSearchListCount(listCondition);
@@ -94,6 +104,7 @@ public class MailController {
 		if(list != null) {
 			model.addAttribute("list", list);
 			model.addAttribute("pi", pi);
+			model.addAttribute("listType", listCondition.get("listType"));
 			return "mail/mailAllList"; 
 		}else {
 			model.addAttribute("msg", "리스트 조회에 실패!");
@@ -101,6 +112,55 @@ public class MailController {
 			return "common/errorPage";
 		}
 	}
+	
+	// 메일 검색
+		@RequestMapping("mail/search") 
+		public String selectSearchMailList(@RequestParam HashMap<String, Object> listCondition, 
+					Model model, HttpServletRequest request) {
+			// 페이징 설정
+			int currentPage = 1;
+			if(request.getParameter("currentPage") != null) {
+				currentPage = Integer.parseInt(request.getParameter("currentPage"));
+			}
+			int listCount = ms.getMailSearchListCount(listCondition);
+			System.out.println("검색 listCount : " + listCount);
+			PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
+			
+			// 로그인 회원 메일 조회
+			String empMail = ((Employee)request.getSession().getAttribute("loginEmp")).getEmail();
+			listCondition.put("empMail", empMail);
+
+			// 이름으로 검색했을 때 사원 메일 검색
+			List<String> sMail = null;
+			if(listCondition.get("sName") != null) {
+				sMail = es.selectEmpEamilForName((String)listCondition.get("sName"));
+				listCondition.put("sMail", sMail);
+				if(sMail.size() <= 0) {
+					model.addAttribute("list", null);
+					model.addAttribute("listCondition", listCondition);
+					return "mail/mailAllList";
+				}
+			}
+			System.out.println("sMail : " + sMail);
+			System.out.println("listConition : " + listCondition);
+			
+			// 검색한 메일 리스트 조회
+			ArrayList<Mail> list = ms.selectSearchMailList(pi, listCondition);
+			System.out.println("메일 리스트 조회  : " + list);
+
+			if(list != null) {
+				model.addAttribute("list", list);
+				model.addAttribute("pi", pi);
+				model.addAttribute("listCondition", listCondition);
+				model.addAttribute("listType", listCondition.get("listType"));
+				
+				return "mail/mailAllList";
+			}else {
+				model.addAttribute("msg", "리스트 조회에 실패!");
+				
+				return "common/errorPage";
+			}
+		}
 	
 	// 메일쓰기페이지
 	@RequestMapping("mail/writeForm")
@@ -164,6 +224,9 @@ public class MailController {
 		boolean existAtt = !(mailAttachment.getOriginalFilename()).equals("");
 		String mailDomain = mail.getReciveMail()
 						.substring(mail.getReciveMail().indexOf('@'));
+		
+		String signUrl = "https://lgtw-attachment.s3.ap-northeast-2.amazonaws.com/%EC%A7%80%ED%95%98%EC%B2%A0%ED%87%B4%EA%B7%BC.jpg";
+		mail.setmContent(mail.getmContent() + "<br><br><img src='" + signUrl + "' width='500px;'/>");
 
 		String filePath = "", root = "", changeName ="", originFileName ="", ext ="";
 		Attachment mailAtt = new Attachment();
@@ -248,54 +311,6 @@ public class MailController {
 		return "";
 	}
 	
-	// 메일 검색
-	@RequestMapping("mail/search") 
-	public String selectSearchMailList(@RequestParam HashMap<String, Object> listCondition, 
-				Model model, HttpServletRequest request) {
-		// 페이징 설정
-		int currentPage = 1;
-		if(request.getParameter("currentPage") != null) {
-			currentPage = Integer.parseInt(request.getParameter("currentPage"));
-		}
-		int listCount = ms.getMailSearchListCount(listCondition);
-		System.out.println("검색 listCount : " + listCount);
-		PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
-		
-		// 로그인 회원 메일 조회
-		String empMail = ((Employee)request.getSession().getAttribute("loginEmp")).getEmail();
-		listCondition.put("empMail", empMail);
-
-		// 이름으로 검색했을 때 사원 메일 검색
-		List<String> sMail = null;
-		if(listCondition.get("sName") != null) {
-			try {
-				sMail = es.selectEmpEamilForName((String)listCondition.get("sName"));
-				listCondition.put("sMail", sMail);
-			}catch(Exception e) {
-				System.out.println("이름으로 검색했을 때 오류가 발생합니다.");
-				System.out.println("error : " + e.getMessage());
-			}
-		}
-		System.out.println("sMail : " + sMail);
-		System.out.println("listConition : " + listCondition);
-		
-		// 검색한 메일 리스트 조회
-		ArrayList<Mail> list = ms.selectSearchMailList(pi, listCondition);
-		System.out.println("메일 리스트 조회  : " + list);
-
-		if(list != null) {
-			model.addAttribute("list", list);
-			model.addAttribute("pi", pi);
-			model.addAttribute("listCondition", listCondition);
-			
-			return "mail/mailAllList";
-		}else {
-			model.addAttribute("msg", "리스트 조회에 실패!");
-			
-			return "common/errorPage";
-		}
-	}
-	
 	// 받은메일함
 	@RequestMapping("receiveList.ma")
 	public String selectReceiveMailList() {
@@ -363,6 +378,7 @@ public class MailController {
 	// s3 버킷으로 들어오 메시지를 DB에 넣어주는 메소드
 	@RequestMapping("mail/s3")
 	public String runS3Method() {
+		s3 = new AwsS3();
 		// **** 프로세스  **** 
 		// 리스트를 조회할때 버킷을 조회해서 받은 파일이 존재하면 -> eml파일로 복사후 삭제과정
 		// eml파일로 복사후 eml형식을 받아와 메시지 객체에 저장한다. 
@@ -394,18 +410,36 @@ public class MailController {
 			
 			// eml파일 처리하는 메소드 
 			Message message= s3.getEmlFile(object.getKey());
+			// System.out.println("\n\n\n\n\n메시지 객체 분석해보자 medssage:  " + message.toString() + "\n\n\n\n");
 			
 			Mail reciveMail = new Mail();
 			try {
-				reciveMail.setMailType("받은메일");
-				reciveMail.setObjContent(message.getContent());
+				MimeMultipart mm = (MimeMultipart) message.getContent();
+				MimeBodyPart mb = (MimeBodyPart) mm.getBodyPart(1);
+				//System.out.println(mb.getFileName());
+//				for(int i = 0; i < message.getReplyTo().length; i++) {
+//					System.out.println(i + "번째 : " + message.getReplyTo()[i]);
+//				}
+//				System.out.println();
+//				for(int i = 0; i < message.getFrom().length; i++) {
+//					System.out.println(i + "번째 : " + message.getFrom()[i]);
+//				}
+				
+				String from = String.valueOf(message.getFrom()[0]);
+				// System.out.println("String 변환 후 : " + from );
+				from = from.substring(from.indexOf('<') + 1, from.indexOf('>'));
+				// System.out.println("자른 후 from : " + from);
+						
+				
+				reciveMail.setObjContent(mb.getContent());
 				reciveMail.setmTitle(message.getSubject());
 				reciveMail.setmSize(message.getSize());
 				reciveMail.setSendStringDate(message.getSentDate());
-				reciveMail.setSendMail(message.getFrom()[0].toString());
+				reciveMail.setSendMail(from);
 				reciveMail.setReciveMail(message.getAllRecipients()[0].toString());
 			} catch (IOException | MessagingException e) {
-				e.printStackTrace();
+				System.out.println("eml을 DB에 저장하기 실패!");
+				System.out.println("에러 메시지 : " + e.getMessage());
 			}
 
 			// 메시지 객체에 저장해서 데이터를 불러온 후에 데이터베이스에 맞춰서 저장
@@ -464,7 +498,6 @@ public class MailController {
 	   }
 		return "mail/mailDetail";
 	}
-	
 	
 	
 	//----------------------------------------------------------------------------------------
