@@ -124,6 +124,14 @@ public interface EmployeeDao{
 
 	ArrayList<Attendance> selectAttendanceList(SqlSession sqlSession, int empNo);
 
+	int deleteLeaveEmp(SqlSession sqlSession, ArrayList<Object> empList);
+
+	int insertDeptHead(SqlSession sqlSession, ArrayList<EmployeeResult> list);
+
+	ArrayList<DeptVo> deptExcelList(SqlSession sqlSession);
+
+	List<DeptVo> excelDeptUpdate(SqlSession sqlSession, List<DeptVo> list);
+
 	
 	
 }

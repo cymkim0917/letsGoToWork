@@ -55,7 +55,7 @@
 					<button id="searchBtn">검색</button>
 				</div>
 				<div>
-					<a href="#" onclick="showModal()">휴직자 추가</a> &nbsp;&nbsp; <a href="#" onclick="deleteManager();">휴직자 삭제</a> 
+					<a href="#" onclick="showModal()">휴직자 추가</a> &nbsp;&nbsp; <a href="#" onclick="deleteLeaveEmp();">휴직자 삭제</a> 
 				</div>
 				<br>
 				<form>
@@ -82,40 +82,6 @@
 				</form>
 			 	 	<br>
 			 	 	
-			 	 	<!-- 페이징 -->
-			 	 <%-- 	 <div id="pagingArea" align="center">
-						<c:if test="${pi.currentPage<=1 }">
-							[이전] 
-						</c:if>
-						<c:if test="${pi.currentPage>1 }">
-							<c:url var="blistBack" value="/showEmployeeAdmin.em">
-								<c:param name="currentPage" value="${pi.currentPage -1 }"/>
-							</c:url>
-							<a href="${blistBack }">[이전]</a> 
-						</c:if>
-						
-						<c:forEach var="p" begin="${pi.startPage }" end="${pi.endPage }">
-							<c:if test="${p eq pi.currentPage }">
-								<font color="red" size="4"><b>[${p }]</b></font>
-							</c:if>
-							<c:if test="${p ne pi.currentPage }">
-								<c:url var="blistCheck" value="/showEmployeeAdmin.em">
-									<c:param name="currentPage" value="${ p }"/>
-								</c:url>
-								<a href="${blistCheck }">${p }</a>
-							</c:if>
-						</c:forEach>
-						
-						<c:if test="${pi.currentPage == pi.maxPage }">
-							 [다음]
-						</c:if>
-						<c:if test="${pi.currentPage < pi.maxPage }">
-							<c:url var="blistEnd" value="/showEmployeeAdmin.em">
-								<c:param name="currentPage" value="${pi.currentPage +1 }"/>
-							</c:url>
-							<a href="${blistEnd }">[다음]</a>
-						</c:if>
-					</div> --%>
 			</div>
 			<!-- 모달 -->
 			<button type="button" class="btn btn-info btn-lg modalBtn" data-toggle="modal" data-target="#myModal" onclick="selectEmp();" style="display:none">Open Modal</button>
@@ -156,7 +122,7 @@
 					      	</div>
 					     </div>
 						     <div class="modal-footer">
-						     	<button type="button" class="btn btn-default" onclick="insertApprovalMng();" data-dismiss="modal">추가하기</button>
+						     	<button type="button" class="btn btn-default" onclick="insertLeaveEmp();" data-dismiss="modal">추가하기</button>
 			          			<button type="button" class="btn btn-default" data-dismiss="modal">취소</button>
 			          			
 			       			 </div>
@@ -343,7 +309,7 @@
 	});
 	
 	//휴직자 추가
-	function insertApprovalMng(){
+	function insertLeaveEmp(){
 		var empArr = new Array();
 		var reason = new Array();
 		$(".circleList").children().each(function(){
@@ -380,7 +346,7 @@
 		$(icon).parent().remove();
 	};
 	
-	function deleteManager(){
+	function deleteLeaveEmp(){
 		if(confirm("정말로 삭제하시겠습니까?")){
 			var empArr = new Array();
 			$("input[name='check']").each(function(){
@@ -394,12 +360,12 @@
 			}
 			
 			$.ajax({
-				url:"${contextPath}/approval/deleteManager",
+				url:"${contextPath}/employee/deleteLeaveEmp",
 				type:"post",
 			    contentType: 'application/json; charset=utf-8',
 	            data: JSON.stringify(object),
 				success:function(data){
-					alert(data + "명의 관리자가 삭제되었습니다.");
+					alert(data + "명의 휴직자가 정상 처리 되었습니다.");
 					window.location.reload();
 				},
 				error:function(data){

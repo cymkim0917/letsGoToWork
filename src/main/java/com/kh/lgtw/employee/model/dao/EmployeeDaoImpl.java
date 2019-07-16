@@ -391,6 +391,53 @@ public class EmployeeDaoImpl implements EmployeeDao{
 		return (ArrayList)sqlSession.selectList("Employee.selectAttendanceList", empNo);
 	}
 
+	@Override
+	public int deleteLeaveEmp(SqlSession sqlSession, ArrayList<Object> empList) {
+		int result= 0;
+		
+		for(int i = 0; i<empList.size(); i++) {
+			
+			int empNo = Integer.parseInt((String)empList.get(i));
+			
+			result += sqlSession.update("Employee.deleteLeaveEmp",empNo);
+			System.out.println("추가중"+i+empNo);
+		}
+		
+		
+		return result;
+	}
+
+	@Override
+	public int insertDeptHead(SqlSession sqlSession, ArrayList<EmployeeResult> list) {
+		int result = 0;
+		
+		for(int i =0; i<list.size(); i++) {
+			result += sqlSession.update("Employee.insertDeptHead",list.get(i));
+		}
+		
+		System.out.println("결과 출력 : " + result);
+		
+		return result;
+	}
+
+	@Override
+	public ArrayList<DeptVo> deptExcelList(SqlSession sqlSession) {
+		return (ArrayList)sqlSession.selectList("Employee.selectDeptList");
+	}
+
+	@Override
+	public List<DeptVo> excelDeptUpdate(SqlSession sqlSession, List<DeptVo> list) {
+		for(int i = 0; i<list.size(); i++) {
+			System.out.println("포문시작");
+			sqlSession.insert("Employee.insertDeptExcel", list.get(i));
+		}
+		
+		System.out.println("포문완료");
+		
+		return list;
+
+	}
+
 
 
 }

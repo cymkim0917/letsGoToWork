@@ -266,7 +266,6 @@
 	    	  var object = {
 	    			  workArr:workArr
 				}
-	    	  
 	    	  $.ajax({
 	    		  url:"${contextPath}/employee/goToWork",
 	    		  type:"post",
@@ -281,7 +280,6 @@
 	    			  alert("실패");
 	    		  }
 	    	  });
-	    	  
 	      }
 	      
 	      function offWork(){
@@ -303,7 +301,6 @@
 	    	    console.log('퇴근'+today);
 	    	  
 	    	  var workTime = hours+":"+minutes;
-	    	  
 	    	  var workArr = new Array();
 	    	  
 	    	  workArr.push(empNo);
@@ -465,7 +462,6 @@
 				}
 			});
 	  	});
-	      
 	      Date.prototype.format = function(f) {
 	      	    if (!this.valueOf()) return " ";
 	      	 
@@ -493,9 +489,6 @@
 	      	String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
 	      	Number.prototype.zf = function(len){return this.toString().zf(len);
 	     };
-
-	      
 	</script>
-	
 </body>
 </html>

@@ -239,7 +239,7 @@ public class EmployeeController {
 			return "employee/updateEmpClctv";
 		}
 		
-		//직급,팀장 추가
+		//팀장 추가
 		@RequestMapping("showlevelCaptain.em")
 		public String showlevelCaptain(Model model) {
 			
@@ -544,6 +544,22 @@ public class EmployeeController {
 			return result+"";
 		}
 		
+		//휴직자 삭제
+		@RequestMapping(value="/employee/deleteLeaveEmp", produces="application/text; charset=utf8")
+		@ResponseBody
+		public String deleteLeaveEmp(@RequestBody Map<String, Object> map) {
+			
+			System.out.println(map.get("empArr"));
+			
+			ArrayList<Object> empList = (ArrayList)map.get("empArr");
+			
+			
+			
+			int result = empService.deleteLeaveEmp(empList);
+			
+			
+			return result+"";
+		}
 		
 		//휴직자 조회
 		@RequestMapping("selectLeaveList.em")
@@ -591,6 +607,48 @@ public class EmployeeController {
 			model.addAttribute("list", list);
 			
 			return "employee/leaveEmpAdmin";
+		}
+		
+		@RequestMapping(value="/employee/insertDeptHead", produces="application/text; charset=utf8")
+		@ResponseBody
+		public String insertDeptHead(@RequestBody Map<String, Object> map) {
+			
+			System.out.println(map.get("empArr"));
+			
+			System.out.println("부서장으로 들오나~");
+			
+			ArrayList<Object> empList = (ArrayList)map.get("empArr");
+			ArrayList<Object> dept = (ArrayList)map.get("dept");
+			ArrayList<EmployeeResult> list = new ArrayList<EmployeeResult>();
+			EmployeeResult emp = null;
+			System.out.println(empList.size());
+			
+			int[] empNo = new int[empList.size()];
+			String[] deptName = new String[dept.size()];
+			
+			
+			for(int i =0; i<empList.size(); i++) {
+				empNo[i] = Integer.parseInt((String)empList.get(i));
+				deptName[i] = (String)dept.get(i);
+			}
+			
+			for(int i=0; i<empNo.length; i++) {
+				emp = new EmployeeResult();
+				emp.setEmpNo(empNo[i]);
+				emp.setDeptName(deptName[i]);
+				list.add(emp);
+			}
+			
+			
+			
+			for(int i=0; i<list.size(); i++) {
+				System.out.println(list.get(i));
+			}
+			
+			int result = empService.insertDeptHead(list);
+			
+			
+			return result+"";
 		}
 		
 	// ------------------------조직도--------------------------
@@ -984,7 +1042,7 @@ public class EmployeeController {
 	
 	
 	
-	//DB에 있는 직원 다운로드
+		//DB에 있는 직원 다운로드
 		@RequestMapping("dbEmpList.em")
 		public void dbEmpList(Model model, HttpServletRequest request, HttpServletResponse response) {
 			empService.dbEmpList(response);
@@ -1096,17 +1154,29 @@ public class EmployeeController {
 				
 				row = sheet1.createRow(2);
 				cell = row.createCell(0);
-				cell.setCellValue("kh1223");
+				cell.setCellValue("kh1224");
 				cell = row.createCell(1);
-				cell.setCellValue("5678");
+				cell.setCellValue("1234");
 				cell = row.createCell(2);
 				cell.setCellValue("세종대왕");
 				cell = row.createCell(3);
-				cell.setCellValue("010-5959-7979");
+				cell.setCellValue("sesejong@lgtw.ga");
 				cell = row.createCell(4);
-				cell.setCellValue("Y");
+				cell.setCellValue("010-5546-7979");
 				cell = row.createCell(5);
-				cell.setCellValue("2019-01-02");
+				cell.setCellValue("2015-01-01");
+				cell = row.createCell(6);
+				cell.setCellValue("1995-05-01");
+				cell = row.createCell(7);
+				cell.setCellValue("남자");
+				cell = row.createCell(8);
+				cell.setCellValue("천재");
+				cell = row.createCell(9);
+				cell.setCellValue("개발1팀");
+				cell = row.createCell(10);
+				cell.setCellValue("사원");
+				cell = row.createCell(11);
+				cell.setCellValue("Y");
 				
 				System.out.println("엑셀생성");
 				response.setHeader("Content-Type","text/html; charset=utf-8");
@@ -1126,26 +1196,34 @@ public class EmployeeController {
 		}
 		
 		
+		@RequestMapping("deptExcelList.em")
+		public void deptExcelList(Model model, HttpServletRequest request, HttpServletResponse response) {
+			empService.deptExcelList(response);
+		}
+		
+		//직원 일괄 수정
+				@RequestMapping("deptUpdateExcelUpload.em")
+				public ModelAndView deptUpdateExcelUpload(MultipartHttpServletRequest request) {
+					MultipartFile excelFile = request.getFile("excelFile");
+					String filePath = excelFile.getOriginalFilename();
+					List<DeptVo> list = new ArrayList<>();
+					
+					if(filePath.toUpperCase().endsWith(".XLS")) {
+						
+						//list = empService.xlsEmpUpdate(request, excelFile);
+					
+					}else if(filePath.toUpperCase().endsWith(".XLSX")) {
+						list = empService.xlsxdeptUpdate(request, excelFile);
+					}
+					
+					
+					ModelAndView view = new ModelAndView();
+					
+					view.setViewName("redirect:showUpdateEmpClctv.em");
+					
+					return view;
+					
+				}
+		
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

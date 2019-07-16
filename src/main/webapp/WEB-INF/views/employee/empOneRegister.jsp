@@ -229,9 +229,6 @@
 	    }
 	 
 </script>
-
-
-
 	
 </body>
 </html>

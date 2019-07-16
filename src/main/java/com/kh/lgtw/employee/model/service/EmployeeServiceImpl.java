@@ -528,6 +528,56 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public ArrayList<DeptVo> selectOrgDept() {
 		return empDao.selectOrgDept(sqlSession);
 	}
+	
+	@Override
+	public void deptExcelList(HttpServletResponse response) {
+		
+		ArrayList<DeptVo> list = empDao.deptExcelList(sqlSession);
+		
+		SXSSFWorkbook wb = new SXSSFWorkbook();
+		Sheet sheet = wb.createSheet();
+		
+		sheet.setColumnWidth(0, 5000);
+		sheet.setColumnWidth(1, 5000);
+		sheet.setColumnWidth(2, 5000);
+		sheet.setColumnWidth(3, 7000);
+		
+		Row row = null;
+		Cell cell = null;
+		
+		row = sheet.createRow(0);
+		
+		cell = row.createCell(0);
+		cell.setCellValue("부서코드(부서코드는 규칙을 보고 따라 지정해주세요)");
+		cell = row.createCell(1);
+		cell.setCellValue("부서명");
+		cell = row.createCell(2);
+		cell.setCellValue("상위부서");
+		cell = row.createCell(3);
+		cell.setCellValue("부서코드 규칙 : D로 시작하고 1레벨은 D1-0, 2레벨은 D2-0으로 입력하여 주세요/상위 부서는 부서코드를 입력해주세요");
+		
+		for(int i = 0; i<list.size(); i++) {
+			row = sheet.createRow(i+1);
+				cell = row.createCell(0);
+				cell.setCellValue(list.get(i).getDeptCode());
+				cell = row.createCell(1);
+				cell.setCellValue(list.get(i).getDeptName());
+				cell = row.createCell(2);
+				cell.setCellValue(list.get(i).getTopDept());
+		}
+		
+		try {
+			response.setHeader("Set-Cookie", "fileDownload=true; path=/");
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"deptList.xlsx\""));
+			wb.write(response.getOutputStream());
+			wb.dispose();
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 	@Override
 	public ArrayList<Attachment> selectAttachList() {
@@ -659,6 +709,109 @@ public class EmployeeServiceImpl implements EmployeeService {
 		list = empDao.selectAttendanceList(sqlSession, empNo);
 		
 		return list;
+	}
+
+	@Override
+	public int deleteLeaveEmp(ArrayList<Object> empList) {
+		return empDao.deleteLeaveEmp(sqlSession,empList);
+	}
+
+	@Override
+	public int insertDeptHead(ArrayList<EmployeeResult> list) {
+		return empDao.insertDeptHead(sqlSession,list);
+	}
+
+	@Override
+	public List<DeptVo> xlsxdeptUpdate(MultipartHttpServletRequest request, MultipartFile excelFile) {
+		
+		List<DeptVo> list = new ArrayList<>();
+		
+		MultipartFile file = request.getFile("excelFile");
+		
+		XSSFWorkbook workbook = null;
+		
+		try {
+			
+			workbook = new XSSFWorkbook(file.getInputStream());
+			
+			XSSFSheet curSheet;
+			XSSFRow curRow;
+			XSSFCell curCell;
+			DeptVo deptVo;
+			
+			String filePath = "스트링"+file.getOriginalFilename();
+			
+			//System.out.println("서비스 엑셀파일 확인" + filePath);
+			
+		for(int sheetIndex = 0; sheetIndex<workbook.getNumberOfSheets(); sheetIndex++) {
+			//System.out.println("시트 확인"+workbook.getNumberOfSheets());
+			//System.out.println(sheetIndex);
+			//System.out.println(workbook.getNumberOfSheets());
+			
+			curSheet =workbook.getSheetAt(sheetIndex);
+			
+			for(int rowIndex = 0; rowIndex<curSheet.getPhysicalNumberOfRows(); rowIndex++) {
+				//System.out.println("로우 확인"+curSheet.getPhysicalNumberOfRows());
+				if(rowIndex!=0) {
+					curRow=curSheet.getRow(rowIndex);
+					
+					deptVo = new DeptVo();
+					
+					String value;
+					
+					if(curRow.getCell(0)!=null) {
+						for(int cellIndex=0; cellIndex<curRow.getPhysicalNumberOfCells(); cellIndex++) {
+							curCell = curRow.getCell(cellIndex);
+							
+							//System.out.println("셀타입 확인:"+curCell.getCellType());
+							
+							if(true) {
+								value="";
+								
+								switch (curCell.getCellType()) {
+								case FORMULA: value = curCell.getCellFormula(); break;
+								case NUMERIC:
+									if (HSSFDateUtil.isCellDateFormatted(curCell)){ 
+										SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd"); 
+									value= formatter.format(curCell.getDateCellValue());  break;
+									}else{
+									 value = (int)curCell.getNumericCellValue() + "";
+									 break;
+									}
+								case STRING: value = curCell.getStringCellValue() + ""; break;
+								case BLANK: value = curCell.getBooleanCellValue() + ""; break;
+								case ERROR: value = curCell.getErrorCellValue() + ""; break;
+								default: value = new String(); break;
+								} // end switch
+								
+								switch(cellIndex) {
+								case 0 : deptVo.setDeptCode(value); break;
+								case 1 : deptVo.setDeptName(value); break;
+								case 2 : deptVo.setTopDept(value); break;
+								default: break;
+								}
+							}
+						}
+						
+						list.add(deptVo);
+						
+					}
+				}
+			}
+			
+		}
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		List<DeptVo> daoList = new ArrayList<>();
+		
+		daoList = empDao.excelDeptUpdate(sqlSession, list);
+		
+		
+		return daoList;
 	}
 
 

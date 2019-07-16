@@ -67,6 +67,11 @@ public interface EmployeeService {
 	HashMap<String, Object> selectLevelCaptain();
 
 	ArrayList<DeptVo> selectOrgDept();
+	
+	void deptExcelList(HttpServletResponse response);
+
+	List<DeptVo> xlsxdeptUpdate(MultipartHttpServletRequest request, MultipartFile excelFile);
+
 
 	ArrayList<Attachment> selectAttachList();
 
@@ -117,6 +122,11 @@ public interface EmployeeService {
 	int appHoliday(HashMap<String, Object> params);
 
 	ArrayList<Attendance> selectAttendanceList(int empNo);
+
+	int deleteLeaveEmp(ArrayList<Object> empList);
+
+	int insertDeptHead(ArrayList<EmployeeResult> list);
+
 
 
 }
