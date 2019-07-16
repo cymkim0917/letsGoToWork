@@ -132,6 +132,10 @@ public interface EmployeeDao{
 
 	List<DeptVo> excelDeptUpdate(SqlSession sqlSession, List<DeptVo> list);
 
+	int getSearchEmpAdminCount(SqlSession sqlSession, EmployeeResult employee);
+
+	ArrayList<EmployeeResult> searchEmpUserAdmin(SqlSession sqlSession, PageInfo pi, EmployeeResult employee);
+
 	
 	
 }

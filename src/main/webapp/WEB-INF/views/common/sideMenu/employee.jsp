@@ -37,6 +37,7 @@
 					<li class="list" onclick="location.href='${contextPath}/showAttendStatus.em'">근태 현황</li>
 				</ul>
 			</div>
+			<c:if test="${ sessionScope.loginEmp != null && sessionScope.loginEmp.managerType.equals('인사관리자')}">
 			<button onclick="myFunction('Demo3')" class="accordionBtn">
 				인사관리
 			</button>
@@ -46,6 +47,8 @@
 					<li class="list" onclick="location.href='${contextPath}/showEmployeeAdmin.em'">사용자 관리</li>
 					<li class="list" onclick="location.href='${contextPath}/showlevelCaptain.em'">부서장 관리</li>
 					<li class="list" onclick="location.href='${contextPath}/showPrsnlManager.em'">인사관리자</li>
+					<li class="list" onclick="location.href='${contextPath}/showLeaveEmpAdmin.em'">휴직자 관리</li>
+					<li class="list" onclick="location.href='${contextPath}/showLeaveEmpAdmin.em'">휴직자 관리</li>
 				</ul>
 			</div>
 			<button onclick="myFunction('Demo4')" class="accordionBtn">
@@ -54,17 +57,18 @@
 			<div id="Demo4" class="w3-container w3-hide w3-animate-opacity contentSelectArea">
 				<ul>
 					<li class="list" onclick="location.href='${contextPath}/showHolidayApplyAdmin.em'">휴가 생성</li>
-					<li class="list" onclick="location.href='${contextPath}/showHolidayTotal.em'">휴가 관리</li>
+					<%-- <li class="list" onclick="location.href='${contextPath}/showHolidayTotal.em'">휴가 관리</li> --%>
 				</ul>
 			</div>
-			<button onclick="myFunction('Demo5')" class="accordionBtn">
+			<%-- <button onclick="myFunction('Demo5')" class="accordionBtn">
 				근태관리
 			</button>
 			<div id="Demo5" class="w3-container w3-hide w3-animate-opacity contentSelectArea">
 				<ul>
 					<li class="list" onclick="location.href='${contextPath}/showLeaveEmpAdmin.em'">휴직자 관리</li>
 				</ul>
-			</div>
+			</div> --%>
+			</c:if>
 		</li>
 	</ul>
 	

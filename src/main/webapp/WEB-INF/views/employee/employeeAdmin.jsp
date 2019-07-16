@@ -7,31 +7,23 @@
 <meta charset="UTF-8">
 <title>LetsGoToWork</title>
 <style>
-	#searchArea{
-		height:35px;
-		width: 250px;
-		border:1px solid #1b5ac2;
-		background:#ffffff;
-		margin-left:78%;
-		
+	
+	.selecBox{
+		width: 200px;
+		padding: .8em .5em;
+		border: 1px solid #999;
+		font-family: inherit;
+		background: url('resources/images/arrow.jpg') no-repeat 95% 50%;
+		border-radius: 0px;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
 	}
-	#searchInput{
-		font-size:14px;
-		width:190px;
-		padding:5px;
-		border:0px;
-		outline:none;
-		float:left;
+	
+	#searchTable{
+		width:50%;
 	}
-	#searchBtn{
-		width:50px;
-		height:100%;
-		border:0px;
-		background: #1b5ac2;
-		outline:none;
-		float:right;
-		color:#ffffff;
-	}
+	
 	.cancle{
 		color:skyblue;
 	}
@@ -51,9 +43,25 @@
 			<button type="button" class="btn btn-primary" onclick="location.href='showUpdateEmpClctv.em'">사용자 일괄 수정</button>
 			<hr>
 			<div class="content">
-				<div id="searchArea">
-					<input id="searchInput" type="text" name="" placeholder="ID, 이름 검색">
-					<button id="searchBtn">검색</button>
+							<div id="searchArea">
+					<form action="searchEmpUserAdmin.em" method="post">
+						<table class="table" id="searchTable">
+							<tr>
+								<td width="20%;">
+									<select class="selecBox" name="deptCode">
+										<c:forEach var="dept" items="${deptList }" varStatus="status">
+											<option value="${dept.deptCode }"><c:out value="${dept.deptName }"/></option>
+										</c:forEach>
+									</select>
+								</td>
+								<td>
+									<button type="submit" class="btn btn-primary">검색</button>
+								</td>
+								
+							</tr>
+						
+						</table>
+					</form>
 				</div>
 				<br>
 				<form action="insertEmpQuick.em" method="post">

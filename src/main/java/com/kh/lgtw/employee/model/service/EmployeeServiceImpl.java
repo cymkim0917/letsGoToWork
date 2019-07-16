@@ -814,6 +814,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return daoList;
 	}
 
+	@Override
+	public int getSearchEmpAdminCount(EmployeeResult employee) {
+		return empDao.getSearchEmpAdminCount(sqlSession, employee);
+	}
+
+	@Override
+	public ArrayList<EmployeeResult> searchEmpUserAdmin(PageInfo pi, EmployeeResult employee) {
+		return empDao.searchEmpUserAdmin(sqlSession, pi, employee);
+	}
+
 
 
 }

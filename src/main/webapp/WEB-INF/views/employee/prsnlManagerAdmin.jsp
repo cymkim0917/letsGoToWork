@@ -99,9 +99,9 @@
 					      	<div class="col-sm-5 signForm" id="circle">
 					      		<div class="row">
 						      		<div>
-						      			<div class="col-sm-2">
+						      			<div class="col-sm-2" style="padding-top:170px;">
 								      		<button class="btn inout" name="inputCircle" type="button">></button>
-								      		<button class="btn inout" name="outputCircle" type="button"><</button>
+								      		<button class="btn inout" name="outputCircle" type="button" style="margin-top:20px"><</button>
 						      			</div>
 						      			<div class="col-sm-10">
 						      				<label class="col-sm-12">사원</label>
