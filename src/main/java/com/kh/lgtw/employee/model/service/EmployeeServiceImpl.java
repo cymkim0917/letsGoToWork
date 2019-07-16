@@ -637,8 +637,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Override
 	public int holidayInsertAdmin() {
-		// TODO Auto-generated method stub
-		return 0;
+		return empDao.holidayInsertAdmin(sqlSession);
 	}
 
 	@Override
@@ -812,6 +811,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		
 		return daoList;
+	}
+	
+	//내 휴가 조회 - 욱
+	@Override
+	public HashMap<String, Object> getHolidayList(Integer empNo) {
+		return empDao.getHolidayList(sqlSession,empNo);
 	}
 
 	@Override

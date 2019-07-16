@@ -437,6 +437,16 @@ public class EmployeeDaoImpl implements EmployeeDao{
 		return list;
 
 	}
+	
+	//내 휴가 조회 - 욱
+	@Override
+	public HashMap<String, Object> getHolidayList(SqlSession sqlSession, Integer empNo) {
+		HashMap<String, Object> hmap = new HashMap<String, Object>();
+		hmap.put("applyList", sqlSession.selectList("Employee.applyList",empNo));
+		hmap.put("myHoliList", sqlSession.selectList("Employee.myHoliList",empNo));
+		
+		return hmap;
+	}
 
 	@Override
 	public int getSearchEmpAdminCount(SqlSession sqlSession, EmployeeResult employee) {

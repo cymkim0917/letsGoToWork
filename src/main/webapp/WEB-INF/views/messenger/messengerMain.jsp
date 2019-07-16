@@ -319,7 +319,7 @@ body {
 			var $readTd = $("<td>").append($readImg);
 			var $nameTd;
 			if($(".title").attr("id") == 'sto'){
-				$nameTd = $("<td>").text(messengerInfo[i].empName+" ("+messengerInfo[i].deptName+") "+"- " + messengerInfo[i].jobName + " 외 " + messengerInfo[i].gNum + "명");
+				$nameTd = $("<td>").text(messengerInfo[i].empName+" ("+messengerInfo[i].deptName+") "+"- " + messengerInfo[i].jobName + " 등 " + messengerInfo[i].gNum + "명");
 			}else{
 				$nameTd = $("<td>").text(messengerInfo[i].empName+" ("+messengerInfo[i].deptName+") "+"- " + messengerInfo[i].jobName);				
 			}
@@ -617,7 +617,7 @@ body {
 		}else if($(".title").attr("id") == 'sto'){
 			stoMessenger();
 		}else if($(".title").attr("id") == 'del'){
-			
+			delMessenger();
 		}
 
 	}

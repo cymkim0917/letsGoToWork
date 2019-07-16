@@ -5,13 +5,17 @@
  
 <style>
 	.accordionBtn:hover{
-		background:white !important;
+		background:rgba(0, 60, 179, .8) !important;
 	}
 	
 	.list{
 		font-size:15px !important;
 		cursor:pointer;
 	}
+	.accordionBtn{
+		margin-top:5px;
+	}
+	
 </style>
 
 <div id="accordion" class="col-sm-2 sidenav visible-sm visible-md visible-lg">

@@ -24,6 +24,35 @@
     text-decoration: none;
     border-radius: 5px;
 }
+
+	#sendInput{
+		display: block;
+	    width: 100%;
+	    height: 34px !important;
+	    padding: 6px 12px;
+	    font-size: 14px;
+	    line-height: 1.42857143;
+	    color: #555;
+	    background-color: #fff;
+	    background-image: none;
+	    border: 1px solid #ccc;
+	    border-radius: 4px;
+	    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	    transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+	    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+	    width: 100%;
+	    margin-bottom: 10px;
+	    border: 1px solid #cdcdcd;
+	}
+	.plusBtn{
+		margin-top:8px !important;
+	}
+
 </style>
 </head>
 <body>
@@ -33,14 +62,14 @@
 		<jsp:include page="../common/sideMenu/messenger.jsp"/>
 		
 		<section class="col-sm-10">
-			<h1 class="title">쪽지보내기</h1>	
+			<h1 class="title" style="text-align:center; font-size:18px; border-bottom:2px solid black; height:40px;">쪽지전송</h1>	
 			<form id="messengerSendForm" method="post">	
 				<div class="content">
 					<table style="width:100%">
 						<tr>
 							<td>
 								<label>제목</label>
-								<input name="messengerName" type="text" style="width:100%; margin-bottom:10px; border:1px solid #cdcdcd"/>
+								<input name="messengerName" id="msgName" class="form-control" type="text" style="width:100%; margin-bottom:10px; border:1px solid #cdcdcd"/>
 							</td>
 						</tr>
 						<tr>
@@ -55,12 +84,13 @@
 							<td><label>쪽지내용</label></td>
 						</tr>
 					</table>			
-					<textarea name="messengerContent" style="width:100%; height:300px;"></textarea>
+					<textarea name="messengerContent" id="msgContent" class="form-control" style="width:100%; height:300px;"></textarea>
 					<input type="hidden" class="sendType" name="sendType">
+					<br>
 					<div style="text-align:center">
-						<button type="button" onclick="sendMessenger('send')">전송</button>
-						<button type="button" onclick="sendMessenger('save')">임시저장</button>
-						<button type="button">취소</button>
+						<button type="button" class="btn btn-md" onclick="sendMessenger('send')">전송</button>
+						<button type="button" class="btn btn-md" onclick="sendMessenger('save')">임시저장</button>
+						<button class="btn btn-md" type="button">취소</button>
 					</div>
 				</div>
 				<input type="hidden" name="sender" value="${sessionScope.loginEmp.empNo}">
@@ -343,12 +373,22 @@
 		};
 		
 		function sendMessenger(value){
-			var $form = $("#messengerSendForm"); 
-			$(".sendType").val(value);							
+			if($("#msgContent").val() == "" || $("#msgName").val() == ""){
+				alert("메세지를 작성해주세요");
+			}else{
+				var $form = $("#messengerSendForm"); 
+				$(".sendType").val(value);							
+				
+				$form.attr("action","${contextPath}/messenger/sendMessenger");
+				$form.submit();
+			}
 			
-			$form.attr("action","${contextPath}/messenger/sendMessenger");
-			$form.submit();
+			
 		}
+		
+		$(".accordionBtn").click(function(){
+			location.href = '${contextPath}/messenger';
+		});
 		
 		
 	

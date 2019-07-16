@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.kh.lgtw.approval.model.vo.PageInfo;
 import com.kh.lgtw.common.CommonUtils;
 import com.kh.lgtw.common.Pagination;
+import com.kh.lgtw.common.Pagination2;
 import com.kh.lgtw.community.model.service.CommunityService;
 import com.kh.lgtw.community.model.vo.Community;
 import com.kh.lgtw.community.model.vo.CommunityAttachment;
@@ -323,8 +324,17 @@ public class CommunityController {
 			System.out.println("잘못된 접근 입니다");
 			return "redirect:/communityPostDetails.co?contentNO=" + cp.getContentNO();
 		}
+		
+		
 
 	}
+	
+	//게시글 수정 취소 
+		@RequestMapping("communityPostUpdateCencel.co")
+		public String communityPostUpdateCencel(HttpServletRequest request ,int contentNO) {
+
+			return "redirect:communityPostDetails.co?contentNO="+contentNO;
+		}	
 
 	// 게시글 삭제
 	@RequestMapping("communityPostDelete.co")
@@ -547,7 +557,7 @@ public class CommunityController {
 	{
 		ObjectMapper mapper = new ObjectMapper();
 		int listcount = cs.commentListcount(contentno);
-		PageInfo pi = Pagination.getPageInfo(curPage, listcount);
+		PageInfo pi = Pagination2.getPageInfo(curPage, listcount);
 		
 		System.out.println("listcount 값 확인:"+listcount);
 		System.out.println("pi값 확인:" +pi);

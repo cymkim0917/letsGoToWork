@@ -17,7 +17,7 @@
 	  
 	  	#searcArea{font-size:150%;} */
   </style>
-
+	 <link rel="shortcut icon" href="${ contextPath }/resources/images/favicon.ico">
 </head>
 <body>
 	

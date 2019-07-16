@@ -130,6 +130,8 @@ public interface EmployeeService {
 	int getSearchEmpAdminCount(EmployeeResult employee);
 
 	ArrayList<EmployeeResult> searchEmpUserAdmin(PageInfo pi, EmployeeResult employee);
+  
+	HashMap<String, Object> getHolidayList(Integer empNo);
 
 
 
