@@ -251,7 +251,7 @@
 				
 				<!-- 개인캘린더 추가 모달 -->
 				<div class="modal fade" id="empSchedulerModal" role="dialog">
-			    <div class="modal-dialog modal-sm">
+			    <div class="modal-dialog">
 			    
 			      <!-- Modal content-->
 			      <div class="modal-content">
@@ -295,7 +295,7 @@
 			  <!-- 개인캘린더 수정 모달 -->
 			  <button style="display:none" id="updateScheduler" data-toggle="modal" data-target="#updateEmpScrModal"></button>
 				<div class="modal fade" id="updateEmpScrModal" role="dialog">
-			    <div class="modal-dialog modal-sm">
+			    <div class="modal-dialog">
 			    
 			      <!-- Modal content-->
 			      <div class="modal-content">
