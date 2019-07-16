@@ -90,7 +90,7 @@ public class MailController {
 		String empMail = ((Employee)request.getSession().getAttribute("loginEmp")).getEmail();
 		listCondition.put("empMail", empMail);
 		
-		System.out.println("listCondition : " + listCondition);
+		// System.out.println("listCondition : " + listCondition);
 		
 		// int listCount = ms.getMailListCount();
 		int listCount = ms.getMailSearchListCount(listCondition);
@@ -123,7 +123,7 @@ public class MailController {
 				currentPage = Integer.parseInt(request.getParameter("currentPage"));
 			}
 			int listCount = ms.getMailSearchListCount(listCondition);
-			System.out.println("검색 listCount : " + listCount);
+			// System.out.println("검색 listCount : " + listCount);
 			PageInfo pi = Pagination.getPageInfo(currentPage, listCount);
 			
 			// 로그인 회원 메일 조회
@@ -141,12 +141,12 @@ public class MailController {
 					return "mail/mailAllList";
 				}
 			}
-			System.out.println("sMail : " + sMail);
+			// System.out.println("sMail : " + sMail);
 			System.out.println("listConition : " + listCondition);
 			
 			// 검색한 메일 리스트 조회
 			ArrayList<Mail> list = ms.selectSearchMailList(pi, listCondition);
-			System.out.println("메일 리스트 조회  : " + list);
+			// System.out.println("메일 리스트 조회  : " + list);
 
 			if(list != null) {
 				model.addAttribute("list", list);
@@ -225,12 +225,14 @@ public class MailController {
 		String mailDomain = mail.getReciveMail()
 						.substring(mail.getReciveMail().indexOf('@'));
 		
-		String signUrl = "https://lgtw-attachment.s3.ap-northeast-2.amazonaws.com/%EC%A7%80%ED%95%98%EC%B2%A0%ED%87%B4%EA%B7%BC.jpg";
+		String signUrl ="https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory2&fname=http%3A%2F%2Fcfile29.uf.tistory.com%2Fimage%2F99DE764E5A80F3B70257D4";
+		// String signUrl = "https://lgtw-attachment.s3.ap-northeast-2.amazonaws.com/%EC%A7%80%ED%95%98%EC%B2%A0%ED%87%B4%EA%B7%BC.jpg";
 		mail.setmContent(mail.getmContent() + "<br><br><img src='" + signUrl + "' width='500px;'/>");
 
 		String filePath = "", root = "", changeName ="", originFileName ="", ext ="";
 		Attachment mailAtt = new Attachment();
 		int mailNo = 0;
+		
 		// 데이터에베이스에 정보 저장
 		if(existAtt) { // 첨부파일이 존재하는 메일  
 			// 첨부파일 저장 처리
@@ -254,7 +256,7 @@ public class MailController {
 			mailAtt.setFilePath(filePath);
 			mail.setmSize((int) mailAttachment.getSize());  // mail의 파일 사이즈 지정해주기 원래는 long형
 
-			System.out.println("Controller mailAttachment : " + mailAttachment);
+			// System.out.println("Controller mailAttachment : " + mailAttachment);
 			try {
 				// 파일 저장 및 DB에 저장
 				mailAttachment.transferTo(new File(filePath + "\\" + changeName + ext));
@@ -286,7 +288,7 @@ public class MailController {
 
 		// 전송요청 
 		if(existAtt) { // 첨부파일이 존재하면
-			System.out.println("mailAttachment : " + mailAttachment);
+			// System.out.println("mailAttachment : " + mailAttachment);
 			
 			File attachment;
 			try {
@@ -426,10 +428,9 @@ public class MailController {
 //				}
 				
 				String from = String.valueOf(message.getFrom()[0]);
-				// System.out.println("String 변환 후 : " + from );
+				System.out.println("String 변환 후 : " + from );
 				from = from.substring(from.indexOf('<') + 1, from.indexOf('>'));
-				// System.out.println("자른 후 from : " + from);
-						
+				System.out.println("자른 후 from : " + from);
 				
 				reciveMail.setObjContent(mb.getContent());
 				reciveMail.setmTitle(message.getSubject());
@@ -499,6 +500,16 @@ public class MailController {
 		return "mail/mailDetail";
 	}
 	
+	@ResponseBody
+	@RequestMapping("mail/countReciveMail")
+	public ResponseEntity<String> selectReciveCount(HttpSession session) {
+		String empMail = ((Employee) session.getAttribute("loginEmp")).getEmail();
+		System.out.println("empMail : " + empMail);
+		int count = ms.selectReciveMail(empMail);
+		System.out.println("count : " + count);
+		
+		return new ResponseEntity<String>(count + "", httpStatus.OK);
+	}
 	
 	//----------------------------------------------------------------------------------------
 	// 서명 추가

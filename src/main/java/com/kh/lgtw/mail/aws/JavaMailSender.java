@@ -2,6 +2,7 @@ package com.kh.lgtw.mail.aws;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 import java.util.Properties;
@@ -87,14 +88,26 @@ public class JavaMailSender extends JavaMailSenderImpl{
 			mimeMessage.setSubject(simpleMailMessage.getSubject());
 			
 			BodyPart messageBodyPart = new MimeBodyPart();
-			messageBodyPart.setText(simpleMailMessage.getText());
-			
+			// messageBodyPart.setFileName(attachment.getPath());
 			Multipart multipart = new MimeMultipart();
-
+			
+			
+			// DataBodyPart-> 얘가 contet와 attachment모두 가지고 있으니 -> 두개 같이 들어갈 수 있게 세팅해주면된다.  
+			// System.out.println("messageBodyPart content : " + messageBodyPart.getContent());
+			
 			messageBodyPart = new MimeBodyPart();
 			String fileName = attachment.getName();
 			DataSource source = new FileDataSource(attachment.getPath());
 			messageBodyPart.setDataHandler(new DataHandler(source));
+			messageBodyPart.setFileName(fileName);
+			messageBodyPart.setText(simpleMailMessage.getText());
+			System.out.println("messageBodyPart content : " + messageBodyPart.getContent());
+			System.out.println("messageBodyPart string : " + messageBodyPart.toString());
+			
+			// System.out.println("dataHandler : " + messageBodyPart.getDataHandler());
+			System.out.println("file : " + messageBodyPart.getFileName());
+			System.out.println("toString : " + messageBodyPart.toString());
+			
 			multipart.addBodyPart(messageBodyPart);
 			
 			mimeMessage.setContent(multipart);
@@ -102,6 +115,8 @@ public class JavaMailSender extends JavaMailSenderImpl{
 		} catch (MessagingException e1) {
 			System.out.println("mimeMessage에서 에러 발생");
 			System.out.println("메시징 에러 : " + e1.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		try {

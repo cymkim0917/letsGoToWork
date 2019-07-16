@@ -49,4 +49,6 @@ public interface MailDao {
 
 	String readOneMail(SqlSession sqlSession, int mailNo);
 
+	int selectReciveMail(SqlSession sqlSession, String empMail);
+
 }

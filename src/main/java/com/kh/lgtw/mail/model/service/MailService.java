@@ -42,4 +42,6 @@ public interface MailService{
 	Attachment downloadMailAtt(int no);
 
 	String readOneMail(int mailNo);
+
+	int selectReciveMail(String empMail);
 }

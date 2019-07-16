@@ -160,4 +160,10 @@ public class MailServiceImpl implements MailService{
 		return md.downloadMailAtt(sqlSession, no);
 	}
 
+	// 메인화면 받은 메일 갯수 
+	@Override
+	public int selectReciveMail(String empMail) {
+		return md.selectReciveMail(sqlSession, empMail);
+	}
+
 }
