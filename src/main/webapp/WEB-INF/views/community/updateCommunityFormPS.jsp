@@ -80,7 +80,7 @@
 					        </div>
 					        <div class="form-group">
 					            <div class="col-lg-12" align="center">
-					            	<button type="button" class="btn btn-md btn-default">수정 취소</button>
+					            	<button type="button" class="btn btn-md btn-default" onclick="location.href='communityPostUpdateCencel.co?contentNO=+${cp.contentNO}'">수정 취소</button>
 					                <button type="submit" class="btn btn-md btn-primary">수정</button>
 					            </div>
 					        </div>
