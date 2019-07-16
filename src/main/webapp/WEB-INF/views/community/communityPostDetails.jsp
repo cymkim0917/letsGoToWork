@@ -224,24 +224,12 @@
  			createPaging(data.pi);
  			
  			
- 			
- 			
- 			
- 			
- 			
- 			/* for(var i in result){
- 				output += "<td>"+result[i];
- 				output += "</td>";
- 			} 
- 				 */
  				
  			}
  		
  		}); 
  		
- 		
- 		
- 		
+	
  		
  	} 
  	
@@ -271,7 +259,7 @@
  			
  			
  			
- 			/* var $deleteBtnTd = $("<td>").append($deleteBtn);  */
+ 		
  			
  		
  			
