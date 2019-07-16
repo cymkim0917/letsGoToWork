@@ -637,8 +637,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Override
 	public int holidayInsertAdmin() {
-		// TODO Auto-generated method stub
-		return 0;
+		return empDao.holidayInsertAdmin(sqlSession);
 	}
 
 	@Override
