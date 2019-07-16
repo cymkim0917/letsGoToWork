@@ -46,8 +46,6 @@
 						</span>
 					</button>
 					<a class="navbar-brand" href="${ contextPath }">
-						<%-- <img src="${ contextPath }/resources/images/logo1.PNG" width="85px" style="position: relative; top: -15px"/> --%>
-						<%-- <img src="${ contextPath }/resources/images/logo3.png" width="85px" style="position: relative; top: -10px; left: 15px;"/> --%>
 						<img src="${ contextPath }/resources/images/logo3.png" height="60px;" style="position: relative; top: -10px; left: 15px;"/>
 					</a>
 				</div>
@@ -65,7 +63,7 @@
 						<div class="loginEmpInfo">
 							<img src="${ contextPath }/resources/images/user.png" class="empIcon">
 							<span class="empInfo">${ loginEmp.empName }님<%-- ${ loginEmp.empNo } --%></span>
-							<span onclick='location.href="${ contextPath }/logout.em";'>로그아웃</span>
+							<span onclick='location.href="${ contextPath }/logout.em";'>로웃</span>
 						</div>
 					</c:if>
 				</div>

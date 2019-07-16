@@ -251,7 +251,7 @@
 				
 				<!-- 개인캘린더 추가 모달 -->
 				<div class="modal fade" id="empSchedulerModal" role="dialog">
-			    <div class="modal-dialog">
+			    <div class="modal-dialog modal-sm">
 			    
 			      <!-- Modal content-->
 			      <div class="modal-content">
@@ -295,7 +295,7 @@
 			  <!-- 개인캘린더 수정 모달 -->
 			  <button style="display:none" id="updateScheduler" data-toggle="modal" data-target="#updateEmpScrModal"></button>
 				<div class="modal fade" id="updateEmpScrModal" role="dialog">
-			    <div class="modal-dialog">
+			    <div class="modal-dialog modal-sm">
 			    
 			      <!-- Modal content-->
 			      <div class="modal-content">
@@ -354,7 +354,7 @@
 			        </div>
 			        
 			        <div class="modal-body">
-			          <table>
+			          <table style="margin-left:auto; margin-right:auto;">
 			          	<tr>
 			          		<td width="20%"><b>캘린더</b></td>
 			          		<td colspan="2" width="70%">
@@ -390,7 +390,7 @@
 						</tr>
 						<tr>
 							<td colspan="3">
-								<textarea cols="70%" rows="10" style="resize: none;" name="scheduleContent"></textarea>
+								<textarea cols="75%" rows="10" style="resize: none;" name="scheduleContent"></textarea>
 							</td>
 						</tr>
 			          </table>
@@ -416,12 +416,12 @@
 			      <div class="modal-content">
 			        <div class="modal-header">
 			          <button type="button" class="close" data-dismiss="modal">&times;</button>
-			          <h4 class="modal-title" align="center" id="dtscTitle"><b>보기</b></h4>
+			          <h4 class="modal-title" align="center" id="dtscTitle"><b>일정 상세보기</b></h4>
 			          <h4 class="modal-title" align="center" id="udscTitle" style="display:none"><b>일정 수정</b></h4>
 			        </div>
 			        
 			        <div class="modal-body">
-			          <table>
+			          <table style="margin-left:auto; margin-right:auto;">
 			          	<tr>
 			          		<td width="20%"><b>캘린더</b></td>
 			          		<td>
@@ -521,7 +521,7 @@
 					      	<div class="col-sm-5 signForm" id="circle">
 					      		<div class="row">
 						      		<div>
-						      			<div class="col-sm-2">
+						      			<div class="col-sm-2" style="padding-top:80px;">
 								      		<button class="btn inout" name="setInputCircle" type="button"><b>></b></button>
 								      		<br><br>
 								      		<button class="btn inout" name="setOutputCircle" type="button"><b><</b></button>

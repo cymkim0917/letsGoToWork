@@ -100,11 +100,26 @@
 							</td>
 						</tr>
 					</table>
-					
+					<script>
+					/* function insertOutbox(){
+						var reciveMail = $("[name=reciveMail]").val();
+						var sendMail = $("[name=sendMail]").val();
+						var mTitle = $("[name=mTitle]").val();
+						var mContent = $("[name=mContent]").val();
+						var file = $("[name=mailAttachment]").val();
+						
+						$.ajax({
+							url: '${ contextPath }/mail/insertOutBox',
+							data: 
+							dataType : "multipart/form-data",
+							
+						});
+					} */
+					</script>
 				</form>
 				<div class="btnArea" align="center">
 					<button class="btn btn-md" onclick="submit()">전송</button>
-					<button class="btn btn-md">임시보관</button>
+					<button class="btn btn-md" onclick="insertOutbox()">임시보관</button>
 					<button class="btn btn-md">취소</button>
 				</div>
 			</div>
@@ -157,7 +172,6 @@
 					class="btn btn-primary" data-dismiss="modal">확인</button>
 			</div>
 		</div>
-	</div>
 	</div>
 
 	<script>
@@ -390,6 +404,15 @@
 			console.log(empName);
 			$("[name=reciveMail]").val(email);
 		}
+		
+		/* // 임시보관함 저장
+		function insertOutbox(){
+			$.ajax({
+				url: '${ contextPath }/mail/insertOutBox',
+				data:
+				
+			});
+		} */
 	</script>
 
 	<jsp:include page="../common/footer.jsp" />

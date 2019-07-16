@@ -677,8 +677,11 @@
                                 <tr height="75px" id="processApproval">
                                      <c:forEach begin="0" end="7" step="1" varStatus="i">
                                     	<c:if test="${ fn:length(requestScope.appList.process) > i.index }">
-                                    		<c:if test="${ requestScope.appList.process[i.index].alEmpNo == sessionScope.loginEmp.empNo && requestScope.map.adLevel == requestScope.appList.process[i.index].alLevel && requestScope.appList.process[i.index].alStatus == '처리대기'}">
+                                    		<c:if test="${ requestScope.appList.process[i.index].alEmpNo == sessionScope.loginEmp.empNo && requestScope.map.adLevel == requestScope.appList.process[i.index].alLevel && requestScope.appList.process[i.index].alStatus == '처리대기' && requestScope.map.adStatus=='처리대기'}">
                                     			<td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">결재하기</button></td>
+                                    		</c:if>
+                                    		<c:if test="${ requestScope.appList.process[i.index].alEmpNo == sessionScope.loginEmp.empNo && requestScope.map.adLevel == requestScope.appList.process[i.index].alLevel && requestScope.appList.process[i.index].alStatus == '처리대기' && requestScope.map.adStatus!='처리대기'}">
+                                    			<td><font color="red">결재대기</font></td>
                                     		</c:if>
                                     		<c:if test="${ requestScope.appList.process[i.index].alEmpNo == sessionScope.loginEmp.empNo && requestScope.map.adLevel == requestScope.appList.process[i.index].alLevel && requestScope.appList.process[i.index].alStatus == '결재'}">
                                     			<td><font color="green">결재완료</font></td>
@@ -762,7 +765,7 @@
 					</div>
 					
 					
-					<div id="area">
+					<div id="area" style="margin-top:50px;">
 					    <div>${ requestScope.map.adContent }</div>
 		 				<br><br>
 					</div>

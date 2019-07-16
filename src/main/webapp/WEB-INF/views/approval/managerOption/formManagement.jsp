@@ -10,6 +10,7 @@
 	td{
 		cursor:pointer;
 	}
+	
 </style>
 </head>
 <body>
