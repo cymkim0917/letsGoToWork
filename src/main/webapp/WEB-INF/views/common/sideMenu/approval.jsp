@@ -3,10 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>    
 <style>
 	.accordionBtn{
-		background:blue !important;
+		background:rgba(0, 60, 179, .4) !important;
 	}
 	.accordionBtn:hover{
-		background:white !important;
+		background:rgba(0, 60, 179, .8) !important;
 	}
 	.list{
 		font-size:15px !important;

@@ -152,4 +152,10 @@ public class MailDaoImpl implements MailDao{
 	public Attachment downloadMailAtt(SqlSession sqlSession, int no) {
 		return sqlSession.selectOne("Mail.selectMailAtt", no);
 	}
+
+	// 메인화면에 메일 갯수 출력
+	@Override
+	public int selectReciveMail(SqlSession sqlSession, String empMail) {
+		return sqlSession.selectOne("Mail.selectReciveMail", empMail);
+	}
 }

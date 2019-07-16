@@ -56,23 +56,40 @@
 						<li><a href="${contextPath}/mail.ma">웹메일</a></li>
 						<li><a href="${contextPath}/scheduler.sc">일정관리</a></li>
 						<li><a href="${contextPath}/messenger">메신저</a></li>
-						<li><a href="${contextPath}/communityList.co">커뮤니티</a></li>
+						<li><a href="${contextPath}/community.co">커뮤니티</a></li>
 					</ul>
 					<c:if test="${ empty loginEmp }"></c:if>
 					<c:if test="${ !empty loginEmp }">
 						<div class="loginEmpInfo">
 							<img src="${ contextPath }/resources/images/user.png" class="empIcon">
 							<span class="empInfo">${ loginEmp.empName }님<%-- ${ loginEmp.empNo } --%></span>
-							<span onclick='location.href="${ contextPath }/logout.em";'>로웃</span>
+							<%-- <span onclick='location.href="${ contextPath }/logout.em";'>로웃</span> --%>
 						</div>
+						
 					</c:if>
 				</div>
 			</div>
 		</nav>
+		<div id="userBox" align="left" style="padding:20px; width:300px; height:130px; position:absolute; display:none; right:0px; border:1px solid lightgray; z-index:100; background:white">
+			<label>${ loginEmp.empName }<%-- ${ loginEmp.empNo } --%></label><br>
+			<p>${ loginEmp.email }</p>
+			<button class="btn btn-primary" onclick='location.href="${ contextPath }/logout.em";'>로그아웃</button>
+			<button class="btn btn-default" onclick='location.href="${contextPath}/showMyPage.em";'>마이페이지</button>
+		</div>
 		
 	</header>
 	</c:if>
 	<script>
+	var cnt = 0;
+	$(".loginEmpInfo").click(function(){
+		if(cnt == 0) {
+			$("#userBox").css("display","inline-block");
+			cnt = 1;
+		}else {
+			$("#userBox").css("display","none");
+			cnt = 0;
+		}
+	});
 		// textarea클릭시 안에 내용을 지워주는 코드 
 		/* $(function(){
 			$("textarea").click(function(){
@@ -82,7 +99,7 @@
 		}) */
 		
 		// 로그아웃
-		$(".empInfo").click(function(){
+		/* $(".empInfo").click(function(){
 		  var empNo = ${loginEmp.empNo};
   		  var year = date.getFullYear();
 	    	  var month = date.getMonth()+1
@@ -133,7 +150,7 @@
 	    		  location.href="${ contextPath }/logout.em";
 	    	  }
 			
-		});
+		}); */
 		
 		var xmlHttp;
 	     

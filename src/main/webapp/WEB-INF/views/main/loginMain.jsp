@@ -8,6 +8,9 @@
 <title>LetsGoToWork</title>
 
 <style>
+	#mailCount{
+		cursor : pointer;
+	}
 	.head{
 		background:lightgray;
 		text-align:center;
@@ -20,16 +23,13 @@
 		border:1px solid #6b9cff;
 		color:#6b9cff;
 	}
-	
 	#dontWork{
 		background:orangered !important;
 	}
-	
 	#dontWork:hover{
 		background:white !important;
 		color:red;
 	}
-	
 	.page{
 	  width: 300px
 	  display: flex;
@@ -47,8 +47,6 @@
 	.bg-animate-color {
 	  animation: random-bg .5s linear infinite;
 	}
-	
-	
 	/* add animation to bg color  */
 	
 	@keyframes random-bg {
@@ -85,7 +83,6 @@
 	  /* change color of button text when fun is started   */
 	  color: salmon !important;
 	}
-	
 		/* pulsating effect on button */
 		@keyframes grow {
 		  0% {
@@ -137,14 +134,6 @@
 			</form>
 			</div>
 		</div>
-			
-			
-			
-			<!-- <script>
-				$(function(){
-					$("#loginBtn").click();
-				});
-			</script> -->
 		</c:if>
 		<c:if test="${ !empty loginEmp }">
 		<jsp:include page="../common/menubar.jsp" />
@@ -188,7 +177,7 @@
 							<th width="100px" height="50px" class="head">회람 대기</th>
 							<td width="100px"><a href="${ contextPath }/showWaitCirculationDcm.ap" id="circle"></a>건</td>
 							<th width="100px" height="50px" class="head">새메일</th>
-							<td width="100px">0건</td>
+							<td width="100px" id="mailCount">0건</td>
 						</tr>
 					</table>
 				</div>
@@ -200,19 +189,24 @@
 				</div>
 				<div class="col-sm-1"></div>
 			</div>
-			<%-- <div id="loginInfoArea">
-				<h1 align="center">${ loginEmp.empName }님이 로그인한 상태</h1>
-			</div>
-			<!-- 로그인 적용할때 이거 주석 풀고 main에 include제거하기 -->
-			<jsp:forward page="index.jsp"/> 
-			<div class="page">
-				
-			</div> --%>
-			
 		</c:if>		
 	</container>
-	
 	<script>
+		// 메일 건수 
+		$(function(){
+			console.log('실행되냐...');
+			$.ajax({
+				url : '${ contextPath }/mail/countReciveMail',
+				success : function(data){
+					console.log(data + "건");
+					
+					$("#mailCount").text(data + "건");
+				}
+			});
+		});
+		$("#mailCount").click(function(){
+			location.href="${contextPath}/allList.ma";
+		});
 		
 		var xmlHttp;
 	     
@@ -489,6 +483,8 @@
 	      	String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
 	      	Number.prototype.zf = function(len){return this.toString().zf(len);
 	     };
+	     
+	     
 	</script>
 </body>
 </html>

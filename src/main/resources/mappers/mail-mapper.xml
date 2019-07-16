@@ -263,4 +263,12 @@
 		FROM ATTACHMENT ATT
 		WHERE MAIL_NO = #{ no }
 	</select>
+	
+	<!-- 메인화면에 받은 메일 갯수 띄우기 -->
+	<select id="selectReciveMail" resultType="_int">
+		SELECT count(*)
+		FROM MAIL
+		WHERE DSTATUS = 'N'
+		AND RECIVE_MAIL = #{ empMail }
+	</select>
 </mapper>
