@@ -286,7 +286,6 @@
 	    		  success:function(data){
 	    			  console.log("성공");
 	    			  alert(data);
-	    			  window.location.reload();
 	    		  },
 	    		  error:function(data){
 	    			  alert("실패");
@@ -333,7 +332,6 @@
 	    		  success:function(data){
 	    			  console.log("성공");
 	    			  alert(data);
-	    			  window.location.reload();
 	    		  },
 	    		  error:function(data){
 	    			  alert("실패");
@@ -372,10 +370,11 @@
 	  			data:{bno:bno},
 	  			success:function(data){
 	  				
-	  				alert(data);
+	  				/* alert(data); */
 					console.log(data);
 	  				
 	  			}
+	  		});
 	  	});
 	      
 	</script>

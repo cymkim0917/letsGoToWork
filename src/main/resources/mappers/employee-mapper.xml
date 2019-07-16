@@ -293,6 +293,10 @@
 		ORDER SIBLINGS BY DEPT_CODE
 	</select>
 	
+	<insert id="insertDeptExcel" parameterType="DeptVo">
+		INSERT INTO DEPT(DEPT_CODE, DEPT_NAME, TOP_DEPT) VALUES (#{deptCode},#{deptName},#{topDept})
+	</insert>
+	
 	<select id="attachList" resultMap="attachment">
 		SELECT ATTACHMENT_NO, ORIGIN_NAME, CHANGE_NAME, EMPNO
 		FROM ATTACHMENT
@@ -352,6 +356,10 @@
 		LEFT JOIN DEPT D ON (DH.DEPT_CODE=D.DEPT_CODE)
 		WHERE E.STATUS ='Y' AND E.EMP_ID != 'admin'
 	</select>
+	
+	<update id="insertDeptHead" parameterType="EmployeeResult">
+		UPDATE DEPT SET MANAGER_EMPNO = #{empNo} WHERE DEPT_CODE=(SELECT DEPT_CODE FROM DEPT WHERE DEPT_NAME =#{deptName})
+	</update>
 	
 	<update id="insertPrsnlManager" parameterType="_int">
 		UPDATE EMPLOYEE SET MANAGER_TYPE = '인사관리자' WHERE EMPNO = #{empNo}
@@ -546,5 +554,10 @@
 		INSERT INTO HOLIDAY_CHECK
 			VALUES(SEQ_HC_NO.NEXTVAL,SYSDATE,'승인',null,#{empNo}, #{rhNum})
 	</insert>
+	
+	<update id="deleteLeaveEmp" parameterType="_int">
+		UPDATE EMPLOYEE SET STATUS='Y' WHERE EMPNO=#{empno}  
+	</update>
+	
 	
 </mapper>

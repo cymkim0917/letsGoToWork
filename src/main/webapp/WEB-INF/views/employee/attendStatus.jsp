@@ -25,9 +25,11 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 	<script>
 	
-		var attDay = "${attList[0].attendanceDate}";
 		
 		document.addEventListener('DOMContentLoaded', function() {
+			
+		var attDay = "${attList[0].attendanceDate}";
+			
 		  var calendarEl = document.getElementById('calendar');
 		  var initialLocaleCode = 'ko';
 
@@ -46,20 +48,45 @@
 		      businessHours: true,
 		      editable: true,
 		      eventLimit: true,
-		      events: [
-		    	  {
-		    		  id:'test',
-		    		  title:'들어가나요~~~?',
-		    		  start:attDay,
-		    		  backgroundColor:'red'
-		    	  }
-		      ]
+		      events:[]
 		  });
 		  calendar.render();
+		
+		  var result = new Array();
+			
+			<c:forEach items="${attList}" var="att">
+				var json = new Object();
+				json.attendanceDate="${att.attendanceDate}";
+				json.empNo="${att.empNo}";
+				json.startTime = "${att.startTime}";
+				json.endTime = "${att.endTime}";
+				json.status = "${att.status}";
+				result.push(json);
+			 </c:forEach>
+			 
+			 console.log(result.length);
+			 
+			 var list = new Array();
+			 
+			 for(var i =0; i<result.length; i++){
+				 var color ='';
+				 if(result[i].status =='정상'){
+					color='skyblue';
+				 }else{
+					 color='red';
+				 }
+				 list[i]={id:result[i].empNo,title:'출근'+result[i].startTime+'/'+'퇴근'+result[i].endTime,start:result[i].attendanceDate,backgroundColor:color};
+			 } 
+			 
+			 console.log(list[0]);                 
+			 for(var key in list){
+				 console.log(list[key]);
+				 calendar.addEvent(list[key]);
+			 }
+		
+		
+		
 		});
-		
-		
-		
 	</script>
 <style>
 	p{
@@ -75,74 +102,22 @@
 	<jsp:include page="../common/menubar.jsp"/>
 	<div class="row wrap">
 		<jsp:include page="../common/sideMenu/employee.jsp"/>
-		<fmt:formatDate value="${attList[0].attendanceDate}" pattern="yyyy-MM-dd"/>
 		<section class="col-sm-10">
 			<h1 class="title">근태현황</h1>
-			<button type="button" class="btn btn-primary" onclick="location.href='showAttendStatus.em'">근태현황</button>
-			<button type="button" class="btn btn-primary" onclick="location.href='showUpdateAttenStatus.em'">근태 수정 내역</button>
+			<!-- <button type="button" class="btn btn-primary" onclick="location.href='showAttendStatus.em'">근태현황</button>
+			<button type="button" class="btn btn-primary" onclick="location.href='showUpdateAttenStatus.em'">근태 수정 내역</button> -->
 			<hr>
 			<div class="content">
 				<p>출/퇴근</p>
 				<div id="calendar">
 				
-				
 				</div>
 				<hr>
-				<p>근태 통계</p>
-				<table class="table">
-					    <thead>
-						      <tr class="info">
-						        <th><input type="text" value="${attList[0].attendanceDate }" id="start"></th>
-						        <th>소속</th>
-						        <th>무단 결근</th>
-						        <th>무단 지각</th>
-						        <th>미체크</th>
-						      </tr>
-					    </thead>
-					    <tbody>
-					      	<tr>
-					      		<td>김규형</td>
-					      		<td>개발1팀</td>
-					      		<td>0회</td>
-					      		<td>0회</td>
-					      		<td>0회</td>
-					      	</tr>
-					    </tbody>
-				 	 </table>
+				
 			</div>
 		</section>
 	</div>
 	<jsp:include page="../common/footer.jsp" />
-	
-		<%-- $(function(){
-			for(int i=0; i<${attList.length}; i++){
-				
-				var title = '출근 '+ ${attList[i].startTime}  + '퇴근 ' + ${attList[i].endTime}+'('+${attList[i].status}+')';
-				var start = ${attList[i].attendanceDate}
-				
-				var color = if(attList[i].status=='정상'){
-						'skyblue';
-				}else if(${attList[i].status}=='출근미체크'||${attList[i].status}=='퇴근미체크'){
-						'pink';
-				}else{
-					'red';
-				}
-			
-			var event = {
-					title:title,
-					start:start,
-					backgroundColor:color
-			}
-		}
-		
-			console.log(event);
-			calendar.addEvent(event);
-			
-					
-					
-			
-		});
-	 --%>
 	
 </body>
 </html>
